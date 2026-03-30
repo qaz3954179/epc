@@ -20,9 +20,41 @@ export const system = createSystem(defaultConfig, {
     tokens: {
       colors: {
         ui: {
-          main: { value: "#009688" },
+          main: {
+            DEFAULT: {
+              value: "#FF6B6B",
+            },
+            200: {
+              value: 'rgba(255, 107, 107, 0.2)'
+            }
+          },
         },
       },
+    },
+    semanticTokens: {
+      colors: {
+        primary: { value: "#FF6B6B" },
+        content: {
+          DEFAULT: {
+            bg: { value: '#F9FAFB' }
+          }
+        },
+        menu: {
+          DEFAULT: {
+            color: { value: '#4B5563' },
+          },
+          active: {
+            color: { value: 'ui.main' },
+          },
+          hover: {
+            color: { value: 'colors.ui.main' },
+            bg: { value: 'colors.ui.main.200' }
+          }
+        },
+        description: {
+          value: '#6B7280'
+        }
+      }
     },
     recipes: {
       button: buttonRecipe,

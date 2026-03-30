@@ -1,10 +1,10 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react"
 import { Link } from "@tanstack/react-router"
-import { FaUserAstronaut } from "react-icons/fa"
 import { FiLogOut, FiUser } from "react-icons/fi"
 
 import useAuth from "@/hooks/useAuth"
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu"
+import { ErpcAvatar, ErpcExit, ErpcHome } from "erpc-icons/erpc"
 
 const UserMenu = () => {
   const { user, logout } = useAuth()
@@ -17,10 +17,14 @@ const UserMenu = () => {
     <>
       {/* Desktop */}
       <Flex>
+        <Button variant={"ghost"}>
+          <ErpcHome size={24} />
+          <Text>首页</Text>
+        </Button>
         <MenuRoot>
           <MenuTrigger asChild p={2}>
-            <Button data-testid="user-menu" variant="solid" maxW="sm" truncate>
-              <FaUserAstronaut fontSize="18" />
+            <Button data-testid="user-menu" variant="ghost" maxW="sm" truncate>
+              <ErpcAvatar size={16} />
               <Text>{user?.full_name || "User"}</Text>
             </Button>
           </MenuTrigger>
@@ -34,8 +38,8 @@ const UserMenu = () => {
                 py={2}
                 style={{ cursor: "pointer" }}
               >
-                <FiUser fontSize="18px" />
-                <Box flex="1">My Profile</Box>
+                <ErpcAvatar size={18} />
+                <Box flex="1">个人中心</Box>
               </MenuItem>
             </Link>
 
@@ -46,8 +50,8 @@ const UserMenu = () => {
               onClick={handleLogout}
               style={{ cursor: "pointer" }}
             >
-              <FiLogOut />
-              Log Out
+              <ErpcExit size={18} />
+              退出
             </MenuItem>
           </MenuContent>
         </MenuRoot>

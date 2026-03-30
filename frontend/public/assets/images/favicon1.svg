@@ -1,0 +1,31 @@
+<svg data-v-0dd9719b="" version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="100%" height="100%" viewBox="0 0 60.000000 60.000000" preserveAspectRatio="xMidYMid meet"
+    color-interpolation-filters="sRGB" style="margin: auto;">
+    <rect data-v-0dd9719b="" x="0" y="0" width="100%" height="100%" fill="transparent" fill-opacity="1" class="background">
+    </rect>
+    <rect data-v-0dd9719b="" x="0" y="0" width="100%" height="100%" fill="url(#watermark)" fill-opacity="1"
+        class="watermarklayer"></rect>
+    <g data-v-0dd9719b="" fill="#3299bb" class="icon-text-wrapper icon-svg-group iconsvg"
+        transform="translate(0,2)">
+        <g class="iconsvg-imagesvg" transform="translate(0,0)">
+            <g>
+                <rect fill="#3299bb" fill-opacity="0" stroke-width="2" x="0" y="0" width="60" height="56.7982809053646"
+                    class="image-rect"></rect> <svg x="0" y="0" width="60" height="56.7982809053646"
+                    filtersec="colorsb9474976999" class="image-svg-svg primary" style="overflow: visible;"><svg
+                        xmlns="http://www.w3.org/2000/svg" viewBox="8.419952392578125 0 844.570068359375 799.5">
+                        <path fill="#3299BB"
+                            d="M620.72 0c137.76 69.58 232.27 212.36 232.27 377.21 0 233.19-189.07 422.29-422.28 422.29-233.17 0-422.29-189.1-422.29-422.29C8.42 212.36 102.94 69.58 240.71 0 168.2 56.59 121.56 144.79 121.56 243.86c0 170.68 138.45 309.15 309.16 309.15 170.7 0 309.14-138.47 309.14-309.15C739.85 144.79 693.23 56.59 620.72 0z">
+                        </path>
+                        <path fill="#424242"
+                            d="M386.25 64.02c103.78 0 187.94 84.12 187.94 187.9 0 103.77-84.16 187.9-187.94 187.9-103.76 0-187.91-84.13-187.91-187.9 0-103.77 84.16-187.9 187.91-187.9z">
+                        </path>
+                        <path fill="#F90"
+                            d="M560.02 136.77c63.6 0 115.19 51.56 115.19 115.15s-51.59 115.16-115.19 115.16-115.16-51.57-115.16-115.16c0-63.59 51.56-115.15 115.16-115.15z">
+                        </path>
+                    </svg></svg>
+                <!---->
+            </g>
+        </g>
+    </g>
+    <defs v-gra="od"></defs>
+</svg>
