@@ -16,11 +16,19 @@ export type HTTPValidationError = {
 export type ItemCreate = {
   title: string
   description?: string | null
+  category?: string | null
+  task_type?: string | null
+  target_count?: number
+  coins_reward?: number
 }
 
 export type ItemPublic = {
   title: string
   description?: string | null
+  category?: string | null
+  task_type?: string | null
+  target_count?: number
+  coins_reward?: number
   id: string
   owner_id: string
 }
@@ -33,6 +41,10 @@ export type ItemsPublic = {
 export type ItemUpdate = {
   title?: string | null
   description?: string | null
+  category?: string | null
+  task_type?: string | null
+  target_count?: number
+  coins_reward?: number
 }
 
 export type Message = {
@@ -74,6 +86,7 @@ export type UserPublic = {
   is_active?: boolean
   is_superuser?: boolean
   full_name?: string | null
+  coins?: number
   id: string
 }
 
@@ -106,6 +119,56 @@ export type ValidationError = {
   msg: string
   type: string
 }
+
+export type TaskCompletionPublic = {
+  completed_at: string
+  id: string
+  item_id: string
+  user_id: string
+}
+
+export type TodayTaskPublic = {
+  id: string
+  title: string
+  description?: string | null
+  category?: string | null
+  task_type?: string | null
+  target_count: number
+  completed_count: number
+  completed_today: boolean
+}
+
+export type TodayTasksPublic = {
+  data: Array<TodayTaskPublic>
+  count: number
+}
+
+export type CoinLogPublic = {
+  name: string
+  completed_at: string
+  amount: number
+}
+
+export type CoinLogsPublic = {
+  data: Array<CoinLogPublic>
+  count: number
+}
+
+export type TaskCompletionsGetTodayCoinLogsResponse = CoinLogsPublic
+
+export type TaskCompletionsGetTodayTasksResponse = TodayTasksPublic
+
+export type TaskCompletionsCompleteTaskData = {
+  itemId: string
+}
+
+export type TaskCompletionsCompleteTaskResponse = TaskCompletionPublic
+
+export type TaskCompletionsGetHistoryData = {
+  itemId: string
+}
+
+export type TaskCompletionsGetHistoryResponse = Array<TaskCompletionPublic>
 
 export type ItemsReadItemsData = {
   limit?: number
@@ -232,3 +295,85 @@ export type UtilsTestEmailData = {
 export type UtilsTestEmailResponse = Message
 
 export type UtilsHealthCheckResponse = boolean
+
+// Prize types
+export type PrizeCreate = {
+  name: string
+  description?: string | null
+  image_url?: string | null
+  product_url?: string | null
+  price?: number | null
+  coins_cost?: number
+  stock?: number
+}
+
+export type PrizePublic = {
+  name: string
+  description?: string | null
+  image_url?: string | null
+  product_url?: string | null
+  price?: number | null
+  coins_cost: number
+  stock: number
+  id: string
+  created_at: string
+}
+
+export type PrizesPublic = {
+  data: Array<PrizePublic>
+  count: number
+}
+
+export type PrizeUpdate = {
+  name?: string | null
+  description?: string | null
+  image_url?: string | null
+  product_url?: string | null
+  price?: number | null
+  coins_cost?: number | null
+  stock?: number | null
+}
+
+export type TaobaoProductInfo = {
+  name: string
+  price?: number | null
+  image_url?: string | null
+}
+
+export type PrizesReadPrizesData = {
+  limit?: number
+  skip?: number
+}
+
+export type PrizesReadPrizesResponse = PrizesPublic
+
+export type PrizesReadPrizeData = {
+  id: string
+}
+
+export type PrizesReadPrizeResponse = PrizePublic
+
+export type PrizesCreatePrizeData = {
+  requestBody: PrizeCreate
+}
+
+export type PrizesCreatePrizeResponse = PrizePublic
+
+export type PrizesUpdatePrizeData = {
+  id: string
+  requestBody: PrizeUpdate
+}
+
+export type PrizesUpdatePrizeResponse = PrizePublic
+
+export type PrizesDeletePrizeData = {
+  id: string
+}
+
+export type PrizesDeletePrizeResponse = Message
+
+export type PrizesParseTaobaoUrlData = {
+  url: string
+}
+
+export type PrizesParseTaobaoUrlResponse = TaobaoProductInfo

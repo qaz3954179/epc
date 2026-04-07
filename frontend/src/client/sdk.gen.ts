@@ -46,6 +46,24 @@ import type {
   UtilsTestEmailData,
   UtilsTestEmailResponse,
   UtilsHealthCheckResponse,
+  TaskCompletionsGetTodayCoinLogsResponse,
+  TaskCompletionsGetTodayTasksResponse,
+  TaskCompletionsCompleteTaskData,
+  TaskCompletionsCompleteTaskResponse,
+  TaskCompletionsGetHistoryData,
+  TaskCompletionsGetHistoryResponse,
+  PrizesReadPrizesData,
+  PrizesReadPrizesResponse,
+  PrizesReadPrizeData,
+  PrizesReadPrizeResponse,
+  PrizesCreatePrizeData,
+  PrizesCreatePrizeResponse,
+  PrizesUpdatePrizeData,
+  PrizesUpdatePrizeResponse,
+  PrizesDeletePrizeData,
+  PrizesDeletePrizeResponse,
+  PrizesParseTaobaoUrlData,
+  PrizesParseTaobaoUrlResponse,
 } from "./types.gen"
 
 export class ItemsService {
@@ -544,6 +562,224 @@ export class UtilsService {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/v1/utils/health-check/",
+    })
+  }
+}
+
+export class TaskCompletionsService {
+  /**
+   * Get Today Coin Logs
+   * Get today's coin transaction logs for the current user.
+   * @returns CoinLogsPublic Successful Response
+   * @throws ApiError
+   */
+  public static getTodayCoinLogs(): CancelablePromise<TaskCompletionsGetTodayCoinLogsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/task-completions/coin-logs/today",
+    })
+  }
+
+  /**
+   * Get Today Tasks
+   * Get today's tasks with completion counts for the current user.
+   * @returns TodayTasksPublic Successful Response
+   * @throws ApiError
+   */
+  public static getTodayTasks(): CancelablePromise<TaskCompletionsGetTodayTasksResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/task-completions/today",
+    })
+  }
+
+  /**
+   * Complete Task
+   * Record a task completion. Respects the target_count limit per day.
+   * @param data The data for the request.
+   * @param data.itemId
+   * @returns TaskCompletionPublic Successful Response
+   * @throws ApiError
+   */
+  public static completeTask(
+    data: TaskCompletionsCompleteTaskData,
+  ): CancelablePromise<TaskCompletionsCompleteTaskResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/task-completions/{item_id}/complete",
+      path: {
+        item_id: data.itemId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Task Completions
+   * Get today's completion records for a specific task.
+   * @param data The data for the request.
+   * @param data.itemId
+   * @returns TaskCompletionPublic Successful Response
+   * @throws ApiError
+   */
+  public static getHistory(
+    data: TaskCompletionsGetHistoryData,
+  ): CancelablePromise<TaskCompletionsGetHistoryResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/task-completions/{item_id}/history",
+      path: {
+        item_id: data.itemId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class PrizesService {
+  /**
+   * Read Prizes
+   * 获取奖品列表
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns PrizesPublic Successful Response
+   * @throws ApiError
+   */
+  public static readPrizes(
+    data: PrizesReadPrizesData = {},
+  ): CancelablePromise<PrizesReadPrizesResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/prizes/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Prize
+   * 获取单个奖品
+   * @param data The data for the request.
+   * @param data.id
+   * @returns PrizePublic Successful Response
+   * @throws ApiError
+   */
+  public static readPrize(
+    data: PrizesReadPrizeData,
+  ): CancelablePromise<PrizesReadPrizeResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/prizes/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Create Prize
+   * 创建奖品（仅管理员）
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns PrizePublic Successful Response
+   * @throws ApiError
+   */
+  public static createPrize(
+    data: PrizesCreatePrizeData,
+  ): CancelablePromise<PrizesCreatePrizeResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/prizes/",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Prize
+   * 更新奖品（仅管理员）
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns PrizePublic Successful Response
+   * @throws ApiError
+   */
+  public static updatePrize(
+    data: PrizesUpdatePrizeData,
+  ): CancelablePromise<PrizesUpdatePrizeResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/prizes/{id}",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Prize
+   * 删除奖品（仅管理员）
+   * @param data The data for the request.
+   * @param data.id
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deletePrize(
+    data: PrizesDeletePrizeData,
+  ): CancelablePromise<PrizesDeletePrizeResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/prizes/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Parse Taobao URL
+   * 解析淘宝/天猫商品链接，自动提取商品信息
+   * @param data The data for the request.
+   * @param data.url
+   * @returns TaobaoProductInfo Successful Response
+   * @throws ApiError
+   */
+  public static parseTaobaoUrl(
+    data: PrizesParseTaobaoUrlData,
+  ): CancelablePromise<PrizesParseTaobaoUrlResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/prizes/parse-taobao-url",
+      query: {
+        url: data.url,
+      },
+      errors: {
+        422: "Validation Error",
+      },
     })
   }
 }

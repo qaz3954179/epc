@@ -88,8 +88,25 @@ const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
 
 export const getFormData = (
   options: ApiRequestOptions,
-): FormData | undefined => {
+): FormData | URLSearchParams | undefined => {
   if (options.formData) {
+    // Use URLSearchParams for application/x-www-form-urlencoded
+    if (options.mediaType === "application/x-www-form-urlencoded") {
+      const params = new URLSearchParams()
+
+      Object.entries(options.formData)
+        .filter(([, value]) => value !== undefined && value !== null)
+        .forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((v) => params.append(key, String(v)))
+          } else {
+            params.append(key, String(value))
+          }
+        })
+
+      return params
+    }
+
     const formData = new FormData()
 
     const process = (key: string, value: unknown) => {
@@ -196,7 +213,7 @@ export const sendRequest = async <T>(
   options: ApiRequestOptions<T>,
   url: string,
   body: unknown,
-  formData: FormData | undefined,
+  formData: FormData | URLSearchParams | undefined,
   headers: Record<string, string>,
   onCancel: OnCancel,
   axiosClient: AxiosInstance,

@@ -20,6 +20,7 @@ import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as CoinsLogsImport } from './routes/coins/logs'
 import { Route as LayoutTasksImport } from './routes/_layout/tasks'
 import { Route as LayoutSettingsImport } from './routes/_layout/settings'
+import { Route as LayoutPrizesImport } from './routes/_layout/prizes'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
 
@@ -70,6 +71,11 @@ const LayoutSettingsRoute = LayoutSettingsImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutPrizesRoute = LayoutPrizesImport.update({
+  path: '/prizes',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 const LayoutItemsRoute = LayoutItemsImport.update({
   path: '/items',
   getParentRoute: () => LayoutRoute,
@@ -112,6 +118,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutItemsImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/prizes': {
+      preLoaderRoute: typeof LayoutPrizesImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/settings': {
       preLoaderRoute: typeof LayoutSettingsImport
       parentRoute: typeof LayoutImport
@@ -137,6 +147,7 @@ export const routeTree = rootRoute.addChildren([
   LayoutRoute.addChildren([
     LayoutAdminRoute,
     LayoutItemsRoute,
+    LayoutPrizesRoute,
     LayoutSettingsRoute,
     LayoutTasksRoute,
     LayoutIndexRoute,

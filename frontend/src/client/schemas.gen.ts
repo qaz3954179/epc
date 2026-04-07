@@ -89,6 +89,35 @@ export const ItemCreateSchema = {
       ],
       title: "Description",
     },
+    category: {
+      anyOf: [
+        {
+          type: "string",
+          maxLength: 50,
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Category",
+    },
+    task_type: {
+      anyOf: [
+        {
+          type: "string",
+          maxLength: 50,
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Task Type",
+    },
+    target_count: {
+      type: "integer",
+      title: "Target Count",
+      default: 1,
+    },
   },
   type: "object",
   required: ["title"],
@@ -114,6 +143,35 @@ export const ItemPublicSchema = {
         },
       ],
       title: "Description",
+    },
+    category: {
+      anyOf: [
+        {
+          type: "string",
+          maxLength: 50,
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Category",
+    },
+    task_type: {
+      anyOf: [
+        {
+          type: "string",
+          maxLength: 50,
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Task Type",
+    },
+    target_count: {
+      type: "integer",
+      title: "Target Count",
+      default: 1,
     },
     id: {
       type: "string",
@@ -157,6 +215,35 @@ export const ItemUpdateSchema = {
         },
       ],
       title: "Description",
+    },
+    category: {
+      anyOf: [
+        {
+          type: "string",
+          maxLength: 50,
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Category",
+    },
+    task_type: {
+      anyOf: [
+        {
+          type: "string",
+          maxLength: 50,
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Task Type",
+    },
+    target_count: {
+      type: "integer",
+      title: "Target Count",
+      default: 1,
     },
   },
   type: "object",

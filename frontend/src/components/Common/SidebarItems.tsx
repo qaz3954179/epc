@@ -8,9 +8,9 @@ import type { UserPublic } from "@/client"
 
 const items = [
     { icon: ErpcCoins, title: "学习币", path: "/" },
-    { icon: ErpcTasks, title: "任务", path: "/items" },
-    { icon: ErpcTasks, title: "任务", path: "/tasks" },
-    { icon: ErpcGifts, title: "奖品", path: "/settings" },
+    { icon: ErpcTasks, title: "今日待办", path: "/items" },
+    { icon: ErpcTasks, title: "任务管理", path: "/tasks" },
+    { icon: ErpcGifts, title: "奖品管理", path: "/prizes" },
     { icon: ErpcPromotion, title: "推广", path: "/settings" },
     { icon: ErpcSettings, title: "设置", path: "/settings" },
     { icon: ErpcGrowth, title: "成长记录", path: "/settings" },

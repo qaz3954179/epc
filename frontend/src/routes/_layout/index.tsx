@@ -1,31 +1,25 @@
-import { Box, Button, Container, Flex, Input, List, Span, Text } from "@chakra-ui/react"
-import { createFileRoute, Link } from "@tanstack/react-router"
-
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { useQuery } from "@tanstack/react-query"
 import { ErpcCoins, ErpcListAll, ErpcWithdraw } from "erpc-icons/erpc"
 import bannerImg from '../../../public/assets/images/banner_4x.png'
+import useAuth from "@/hooks/useAuth"
+import { TaskCompletionsService } from "@/client"
+import { Box, Button, Container, Flex, Input, List, Span, Text } from '@chakra-ui/react'
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
 })
 
 function Dashboard() {
-  const logs = [
-    {
-      name: '完成每日阅读任务',
-      createdAt: '2024-01-10 14:30',
-      amount: 10
-    },
-    {
-      name: '完成数学练习',
-      createdAt: '2024-01-10 14:30',
-      amount: 5
-    },
-    {
-      name: '兑换文具',
-      createdAt: '2024-01-10 14:30',
-      amount: -20
-    }
-  ]
+  const { user } = useAuth()
+  const coins = user?.coins ?? 0
+
+  const { data: coinLogs } = useQuery({
+    queryKey: ["coinLogs", "today"],
+    queryFn: TaskCompletionsService.getTodayCoinLogs,
+  })
+
+  const logs = coinLogs?.data ?? []
 
   return (
     <>
@@ -48,7 +42,7 @@ function Dashboard() {
           >
             <Box>
               <Text color={'white'} fontWeight={'bold'} fontSize={'lg'}>学习币余额</Text>
-              <Text color={'white'} fontWeight={'bold'} fontSize={'xxx-large'}>0</Text>
+              <Text color={'white'} fontWeight={'bold'} fontSize={'xxx-large'}>{coins}</Text>
               <Text color={'whiteAlpha.800'} fontSize={'sm'}>快去完成任务赚取学习币吧~</Text>
             </Box>
             <Box aspectRatio={"square"} w={128} borderRadius={64} bg={"whiteAlpha.200"}>
@@ -69,21 +63,28 @@ function Dashboard() {
                 </Link>
               </Flex>
             </Flex>
-            {
-              logs.map((item, i) => {
-                return (
-                  <Flex key={i} marginBottom={4} bg="content.bg" p={4} borderRadius={8} h={76}>
-                    <Box flex="1">
-                      <Text fontWeight={'bold'} fontSize={16}>{item.name}</Text>
-                      <Text color={"description"} fontSize={14}>{item.createdAt}</Text>
-                    </Box>
-                    <Flex justify={'flex-end'} align={'center'} fontSize={16} color="primary" fontWeight={'bold'}>
-                      {item.amount < 0 ? item.amount : `+${item.amount}`}
+            {logs.length === 0 ? (
+              <Flex justify={'center'} align={'center'} h={200} color="description">
+                <Text>今天还没有学习币记录哦~</Text>
+              </Flex>
+            ) : (
+              <Flex align={'center'} direction={"column"} overflow={'auto'} h={280} width={'100%'} color="description">
+                {
+                  logs.map((item, i) => (
+                    <Flex key={i} marginBottom={4} bg="content.bg" flex={1} w={'100%'} p={4} borderRadius={8} h={76}>
+                      <Box flex="1">
+                        <Text fontWeight={'bold'} fontSize={16}>{item.name}</Text>
+                        <Text color={"description"} fontSize={14}>{new Date(item.completed_at).toLocaleString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</Text>
+                      </Box>
+                      <Flex justify={'flex-end'} align={'center'} fontSize={16} color="primary" fontWeight={'bold'}>
+                        {item.amount < 0 ? item.amount : `+${item.amount}`}
+                      </Flex>
                     </Flex>
-                  </Flex>
-                )
-              })
-            }
+                  ))
+                }
+              </Flex>
+
+            )}
           </Box>
           <Box bg="white" w={'1/2'} borderRadius={16} padding={6} boxSizing={'border-box'}>
             <Flex h={6} justify={'space-between'} align={'center'} marginBottom={6}>
