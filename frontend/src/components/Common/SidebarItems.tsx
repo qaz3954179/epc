@@ -7,13 +7,14 @@ import type { IconType } from "react-icons/lib"
 import type { UserPublic } from "@/client"
 
 const items = [
-    { icon: ErpcCoins, title: "学习币", path: "/" },
-    { icon: ErpcTasks, title: "今日待办", path: "/items" },
-    { icon: ErpcTasks, title: "任务管理", path: "/tasks" },
-    { icon: ErpcGifts, title: "奖品管理", path: "/prizes" },
-    { icon: ErpcPromotion, title: "推广", path: "/settings" },
-    { icon: ErpcSettings, title: "设置", path: "/settings" },
-    { icon: ErpcGrowth, title: "成长记录", path: "/settings" },
+    { icon: ErpcCoins, title: "学习币", path: "/", adminOnly: false },
+    { icon: ErpcTasks, title: "今日待办", path: "/items", adminOnly: false },
+    { icon: ErpcTasks, title: "任务管理", path: "/tasks", adminOnly: true },
+    { icon: ErpcGifts, title: "奖品管理", path: "/prizes", adminOnly: true },
+    { icon: ErpcAvatar, title: "用户管理", path: "/admin", adminOnly: true },
+    { icon: ErpcPromotion, title: "推广", path: "/settings", adminOnly: false },
+    { icon: ErpcSettings, title: "设置", path: "/settings", adminOnly: false },
+    { icon: ErpcGrowth, title: "成长记录", path: "/settings", adminOnly: false },
 ]
 
 interface SidebarItemsProps {
@@ -24,6 +25,7 @@ interface Item {
     icon: IconType
     title: string
     path: string
+    adminOnly: boolean
 }
 
 const SidebarItems = ({ onClose }: SidebarItemsProps) => {
@@ -31,8 +33,8 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
     const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
 
     const finalItems: Item[] = currentUser?.is_superuser
-        ? [...items, { icon: ErpcAvatar, title: "用户管理", path: "/admin" }]
-        : items
+        ? items
+        : items.filter((item) => !item.adminOnly)
 
     const listItems = finalItems.map(({ icon, title, path }) => (
         <RouterLink key={title} to={path} onClick={onClose} >

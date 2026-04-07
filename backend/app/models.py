@@ -1,8 +1,16 @@
 import uuid
 from datetime import datetime
 
+from enum import Enum
+
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
+
+
+class UserRole(str, Enum):
+    """用户角色"""
+    admin = "admin"  # 管理员
+    user = "user"    # 用户
 
 
 # Shared properties
@@ -11,6 +19,7 @@ class UserBase(SQLModel):
     is_active: bool = True
     is_superuser: bool = False
     full_name: str | None = Field(default=None, max_length=255)
+    role: UserRole = Field(default=UserRole.user, max_length=20)  # 角色：admin/user
     coins: int = Field(default=0)  # 学习币余额
 
 
