@@ -137,6 +137,7 @@ export type TodayTaskPublic = {
   category?: string | null
   task_type?: string | null
   target_count: number
+  coins_reward: number
   completed_count: number
   completed_today: boolean
 }

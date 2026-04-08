@@ -130,16 +130,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutGrowthImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/referral': {
-      preLoaderRoute: typeof LayoutReferralImport
-      parentRoute: typeof LayoutImport
-    }
     '/_layout/items': {
       preLoaderRoute: typeof LayoutItemsImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/prizes': {
       preLoaderRoute: typeof LayoutPrizesImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/referral': {
+      preLoaderRoute: typeof LayoutReferralImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/settings': {

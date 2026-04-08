@@ -57,7 +57,7 @@ const PrizeCard = ({ prize }: { prize: PrizePublic }) => {
       )}
       <Box p={4}>
         <Flex justify="space-between" align="start" mb={2}>
-          <Text fontWeight="bold" fontSize="lg" flex={1} noOfLines={2}>
+          <Text fontWeight="bold" fontSize="lg" flex={1} lineClamp={2}>
             {prize.name}
           </Text>
           {prize.stock > 0 ? (
@@ -72,7 +72,7 @@ const PrizeCard = ({ prize }: { prize: PrizePublic }) => {
         </Flex>
 
         {prize.description && (
-          <Text color="gray.600" fontSize="sm" mb={3} noOfLines={2}>
+          <Text color="gray.600" fontSize="sm" mb={3} lineClamp={2}>
             {prize.description}
           </Text>
         )}
