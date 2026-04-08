@@ -230,3 +230,85 @@ class CoinLogPublic(SQLModel):
 class CoinLogsPublic(SQLModel):
     data: list[CoinLogPublic]
     count: int
+
+
+# ─── Prize Redemption models ───────────────────────────────────────
+
+class PrizeRedemptionBase(SQLModel):
+    coins_spent: int = Field(ge=0)
+    redeemed_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class PrizeRedemption(PrizeRedemptionBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
+    prize_id: uuid.UUID = Field(
+        foreign_key="prize.id", nullable=False, ondelete="CASCADE"
+    )
+    prize_name: str = Field(max_length=255)  # 兑换时快照奖品名称
+    user: User | None = Relationship()
+    prize: Prize | None = Relationship()
+
+
+class PrizeRedemptionPublic(PrizeRedemptionBase):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    prize_id: uuid.UUID
+    prize_name: str
+
+
+class PrizeRedemptionsPublic(SQLModel):
+    data: list[PrizeRedemptionPublic]
+    count: int
+
+
+# ─── Growth Record models ──────────────────────────────────────────
+
+class DailyCompletionPoint(SQLModel):
+    """单日完成数据点"""
+    date: str  # YYYY-MM-DD
+    count: int
+
+
+class HeatmapData(SQLModel):
+    """习惯热力图数据"""
+    days: list[DailyCompletionPoint]
+    current_streak: int
+    longest_streak: int
+    total_completions: int
+
+
+class CategoryStats(SQLModel):
+    """分类统计"""
+    category: str
+    count: int
+    coins_earned: int
+
+
+class PeriodComparison(SQLModel):
+    """周期对比"""
+    current_count: int
+    previous_count: int
+    current_coins: int
+    previous_coins: int
+    change_rate: float  # 变化百分比
+
+
+class ProgressReport(SQLModel):
+    """进步报告"""
+    period: str  # "week" or "month"
+    comparison: PeriodComparison
+    category_stats: list[CategoryStats]
+    daily_trend: list[DailyCompletionPoint]
+    summary: str  # 自动生成的总结文字
+
+
+class RewardSummary(SQLModel):
+    """奖励汇总"""
+    total_coins_earned: int
+    total_coins_spent: int
+    current_balance: int
+    category_earnings: list[CategoryStats]
+    recent_redemptions: list[PrizeRedemptionPublic]

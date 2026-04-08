@@ -71,7 +71,7 @@ function Dashboard() {
               <Flex align={'center'} direction={"column"} overflow={'auto'} h={280} width={'100%'} color="description">
                 {
                   logs.map((item, i) => (
-                    <Flex key={i} marginBottom={4} bg="content.bg" flex={1} w={'100%'} p={4} borderRadius={8} h={76}>
+                    <Flex key={i} marginBottom={4} bg="content.bg" w={'100%'} p={4} borderRadius={8} h={76}>
                       <Box flex="1">
                         <Text fontWeight={'bold'} fontSize={16}>{item.name}</Text>
                         <Text color={"description"} fontSize={14}>{new Date(item.completed_at).toLocaleString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</Text>

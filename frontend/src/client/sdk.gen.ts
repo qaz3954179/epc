@@ -4,6 +4,16 @@ import type { CancelablePromise } from "./core/CancelablePromise"
 import { OpenAPI } from "./core/OpenAPI"
 import { request as __request } from "./core/request"
 import type {
+  GrowthGetHeatmapData,
+  GrowthGetHeatmapResponse,
+  GrowthGetProgressData,
+  GrowthGetProgressResponse,
+  GrowthGetRedemptionsData,
+  GrowthGetRedemptionsResponse,
+  GrowthGetRewardsData,
+  GrowthGetRewardsResponse,
+  GrowthRedeemPrizeData,
+  GrowthRedeemPrizeResponse,
   ItemsReadItemsData,
   ItemsReadItemsResponse,
   ItemsCreateItemData,
@@ -780,6 +790,48 @@ export class PrizesService {
       errors: {
         422: "Validation Error",
       },
+    })
+  }
+}
+
+export class GrowthService {
+  public static getHeatmap(data: GrowthGetHeatmapData = {}): CancelablePromise<GrowthGetHeatmapResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/growth/heatmap",
+      query: { days: data.days, user_id: data.userId },
+    })
+  }
+
+  public static getProgress(data: GrowthGetProgressData = {}): CancelablePromise<GrowthGetProgressResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/growth/progress",
+      query: { period: data.period, user_id: data.userId },
+    })
+  }
+
+  public static getRewards(data: GrowthGetRewardsData = {}): CancelablePromise<GrowthGetRewardsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/growth/rewards",
+      query: { user_id: data.userId },
+    })
+  }
+
+  public static redeemPrize(data: GrowthRedeemPrizeData): CancelablePromise<GrowthRedeemPrizeResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/growth/prizes/{prize_id}/redeem",
+      path: { prize_id: data.prizeId },
+    })
+  }
+
+  public static getRedemptions(data: GrowthGetRedemptionsData = {}): CancelablePromise<GrowthGetRedemptionsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/growth/redemptions",
+      query: { skip: data.skip, limit: data.limit, user_id: data.userId },
     })
   }
 }

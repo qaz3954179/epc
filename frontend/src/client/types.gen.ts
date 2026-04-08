@@ -377,3 +377,95 @@ export type PrizesParseTaobaoUrlData = {
 }
 
 export type PrizesParseTaobaoUrlResponse = TaobaoProductInfo
+
+// ─── Growth Record types ─────────────────────────────────────────
+
+export type DailyCompletionPoint = {
+  date: string
+  count: number
+}
+
+export type HeatmapData = {
+  days: Array<DailyCompletionPoint>
+  current_streak: number
+  longest_streak: number
+  total_completions: number
+}
+
+export type CategoryStats = {
+  category: string
+  count: number
+  coins_earned: number
+}
+
+export type PeriodComparison = {
+  current_count: number
+  previous_count: number
+  current_coins: number
+  previous_coins: number
+  change_rate: number
+}
+
+export type ProgressReport = {
+  period: string
+  comparison: PeriodComparison
+  category_stats: Array<CategoryStats>
+  daily_trend: Array<DailyCompletionPoint>
+  summary: string
+}
+
+export type PrizeRedemptionPublic = {
+  coins_spent: number
+  redeemed_at: string
+  id: string
+  user_id: string
+  prize_id: string
+  prize_name: string
+}
+
+export type PrizeRedemptionsPublic = {
+  data: Array<PrizeRedemptionPublic>
+  count: number
+}
+
+export type RewardSummary = {
+  total_coins_earned: number
+  total_coins_spent: number
+  current_balance: number
+  category_earnings: Array<CategoryStats>
+  recent_redemptions: Array<PrizeRedemptionPublic>
+}
+
+export type GrowthGetHeatmapData = {
+  days?: number
+  userId?: string
+}
+
+export type GrowthGetHeatmapResponse = HeatmapData
+
+export type GrowthGetProgressData = {
+  period?: string
+  userId?: string
+}
+
+export type GrowthGetProgressResponse = ProgressReport
+
+export type GrowthGetRewardsData = {
+  userId?: string
+}
+
+export type GrowthGetRewardsResponse = RewardSummary
+
+export type GrowthRedeemPrizeData = {
+  prizeId: string
+}
+
+export type GrowthRedeemPrizeResponse = PrizeRedemptionPublic
+
+export type GrowthGetRedemptionsData = {
+  skip?: number
+  limit?: number
+  userId?: string
+}
+
+export type GrowthGetRedemptionsResponse = PrizeRedemptionsPublic
