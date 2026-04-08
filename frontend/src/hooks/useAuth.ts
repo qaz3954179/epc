@@ -30,8 +30,8 @@ const useAuth = () => {
     mutationFn: (data: UserRegister) =>
       UsersService.registerUser({ requestBody: data }),
 
-    onSuccess: () => {
-      navigate({ to: "/login" })
+    onSuccess: (_result, variables) => {
+      navigate({ to: "/verify-email", search: { email: variables.email } })
     },
     onError: (err: ApiError) => {
       handleError(err)

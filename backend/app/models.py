@@ -59,12 +59,19 @@ class UpdatePassword(SQLModel):
     new_password: str = Field(min_length=8, max_length=40)
 
 
+class VerifyEmail(SQLModel):
+    email: EmailStr = Field(max_length=255)
+    code: str = Field(min_length=6, max_length=6)
+
+
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     referral_code: str = Field(default_factory=generate_referral_code, max_length=16, unique=True, index=True)
     referred_by_id: uuid.UUID | None = Field(default=None, foreign_key="user.id", nullable=True)
+    email_verification_code: str | None = Field(default=None, max_length=6)
+    email_verification_expires: datetime | None = Field(default=None)
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
 
 

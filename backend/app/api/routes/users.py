@@ -1,7 +1,8 @@
 import uuid
+from datetime import datetime, timedelta
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import col, delete, func, select
 
 from app import crud
@@ -23,8 +24,9 @@ from app.models import (
     UsersPublic,
     UserUpdate,
     UserUpdateMe,
+    VerifyEmail,
 )
-from app.utils import generate_new_account_email, send_email
+from app.utils import generate_new_account_email, generate_verification_code, generate_verification_code_email, send_email
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -143,7 +145,7 @@ def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
 def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     """
     Create new user without the need to be logged in.
-    Optionally accepts a referral_code to bind referral relationship.
+    User will be inactive until email is verified.
     """
     user = crud.get_user_by_email(session=session, email=user_in.email)
     if user:
@@ -154,6 +156,7 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
 
     # 处理推荐码
     referred_by_id = None
+    referrer = None
     if user_in.referral_code:
         referrer = crud.get_user_by_referral_code(
             session=session, referral_code=user_in.referral_code
@@ -161,17 +164,38 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
         if referrer:
             referred_by_id = referrer.id
 
-    user_create = UserCreate.model_validate(user_in)
+    # 生成验证码
+    verification_code = generate_verification_code()
+    verification_expires = datetime.utcnow() + timedelta(minutes=10)
+
+    user_create = UserCreate.model_validate(user_in, update={"is_active": False})
     user = crud.create_user(
         session=session, user_create=user_create, referred_by_id=referred_by_id
     )
+
+    # 保存验证码
+    user.email_verification_code = verification_code
+    user.email_verification_expires = verification_expires
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    # 发送验证码邮件
+    if settings.emails_enabled:
+        email_data = generate_verification_code_email(
+            email_to=user_in.email, code=verification_code
+        )
+        send_email(
+            email_to=user_in.email,
+            subject=email_data.subject,
+            html_content=email_data.html_content,
+        )
 
     # 推荐奖励：推荐人得 50 学习币
     if referred_by_id and referrer:
         referrer.coins += 50
         session.add(referrer)
         session.commit()
-        session.refresh(referrer)
 
     return user
 
@@ -245,3 +269,69 @@ def delete_user(
     session.delete(user)
     session.commit()
     return Message(message="User deleted successfully")
+
+
+@router.post("/verify-email", response_model=Message)
+def verify_email(session: SessionDep, verify_in: VerifyEmail) -> Any:
+    """
+    Verify user email with verification code.
+    """
+    user = crud.get_user_by_email(session=session, email=verify_in.email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.is_active:
+        raise HTTPException(status_code=400, detail="User already activated")
+    
+    if not user.email_verification_code:
+        raise HTTPException(status_code=400, detail="No verification code found")
+    
+    if user.email_verification_expires and user.email_verification_expires < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Verification code expired")
+    
+    if user.email_verification_code != verify_in.code:
+        raise HTTPException(status_code=400, detail="Invalid verification code")
+    
+    # 激活用户
+    user.is_active = True
+    user.email_verification_code = None
+    user.email_verification_expires = None
+    session.add(user)
+    session.commit()
+    
+    return Message(message="Email verified successfully")
+
+
+@router.post("/resend-verification", response_model=Message)
+def resend_verification_code(session: SessionDep, email: str = Query(...)) -> Any:
+    """
+    Resend verification code to user email.
+    """
+    user = crud.get_user_by_email(session=session, email=email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.is_active:
+        raise HTTPException(status_code=400, detail="User already activated")
+    
+    # 生成新验证码
+    verification_code = generate_verification_code()
+    verification_expires = datetime.utcnow() + timedelta(minutes=10)
+    
+    user.email_verification_code = verification_code
+    user.email_verification_expires = verification_expires
+    session.add(user)
+    session.commit()
+    
+    # 发送验证码邮件
+    if settings.emails_enabled:
+        email_data = generate_verification_code_email(
+            email_to=email, code=verification_code
+        )
+        send_email(
+            email_to=email,
+            subject=email_data.subject,
+            html_content=email_data.html_content,
+        )
+    
+    return Message(message="Verification code sent successfully")

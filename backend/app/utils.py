@@ -1,4 +1,5 @@
 import logging
+import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -121,3 +122,19 @@ def verify_password_reset_token(token: str) -> str | None:
         return str(decoded_token["sub"])
     except InvalidTokenError:
         return None
+
+
+def generate_verification_code() -> str:
+    return "".join([str(secrets.randbelow(10)) for _ in range(6)])
+
+
+def generate_verification_code_email(email_to: str, code: str) -> EmailData:
+    project_name = settings.PROJECT_NAME
+    subject = f"{project_name} - 邮箱验证码"
+    html_content = f"""
+    <p>您好，</p>
+    <p>您的邮箱验证码为：<strong style="font-size:24px">{code}</strong></p>
+    <p>验证码 10 分钟内有效，请勿泄露给他人。</p>
+    <p>{project_name}</p>
+    """
+    return EmailData(html_content=html_content, subject=subject)

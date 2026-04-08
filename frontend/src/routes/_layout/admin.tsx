@@ -61,11 +61,11 @@ function UsersTable() {
       <Table.Root size={{ base: "sm", md: "md" }}>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="sm">Full name</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Email</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Role</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Status</Table.ColumnHeader>
-            <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">姓名</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">邮箱</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">角色</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">状态</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">操作</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -75,7 +75,7 @@ function UsersTable() {
                 {user.full_name || "N/A"}
                 {currentUser?.id === user.id && (
                   <Badge ml="1" colorScheme="teal">
-                    You
+                    我
                   </Badge>
                 )}
               </Table.Cell>
@@ -83,9 +83,9 @@ function UsersTable() {
                 {user.email}
               </Table.Cell>
               <Table.Cell>
-                {user.is_superuser ? "Superuser" : "User"}
+                {user.is_superuser ? "管理员" : "普通用户"}
               </Table.Cell>
-              <Table.Cell>{user.is_active ? "Active" : "Inactive"}</Table.Cell>
+              <Table.Cell>{user.is_active ? "已激活" : "未激活"}</Table.Cell>
               <Table.Cell>
                 <UserActionsMenu
                   user={user}
@@ -117,7 +117,7 @@ function Admin() {
   return (
     <Container maxW="full">
       <Heading size="lg" pt={12}>
-        Users Management
+        用户管理
       </Heading>
 
       <AddUser />
