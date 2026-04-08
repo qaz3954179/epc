@@ -133,9 +133,13 @@ const AddTask = ({ defaultCategory, item, children }: AddTaskProps) => {
         <span onClick={() => setIsOpen(true)} style={{ cursor: "pointer" }}>{children}</span>
       ) : (
         <Button
-          bg="primary"
-          size="sm"
+          colorPalette="blue"
+          size="md"
+          borderRadius={12}
+          px={6}
           onClick={() => setIsOpen(true)}
+          _hover={{ transform: "translateY(-1px)", shadow: "md" }}
+          transition="all 0.2s"
         >
           <AiOutlinePlus /> 新建任务
         </Button>
@@ -284,21 +288,25 @@ const AddTask = ({ defaultCategory, item, children }: AddTaskProps) => {
             </VStack>
           </DialogBody>
 
-          <DialogFooter gap={2}>
+          <DialogFooter gap={3}>
             <DialogActionTrigger asChild>
               <Button
-                variant="subtle"
+                variant="outline"
                 colorPalette="gray"
                 disabled={isSubmitting}
+                borderRadius={10}
+                px={6}
               >
                 取消
               </Button>
             </DialogActionTrigger>
             <Button
-              variant="solid"
+              colorPalette="blue"
               type="submit"
               disabled={!isValid}
               loading={isSubmitting}
+              borderRadius={10}
+              px={6}
             >
               {isEditMode ? "保存" : "创建"}
             </Button>

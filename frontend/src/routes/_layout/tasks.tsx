@@ -5,6 +5,7 @@ import PendingItems from "@/components/Pending/PendingItems"
 import { InputGroup } from "@/components/ui/input-group"
 import {
   Badge,
+  Box,
   Container,
   Flex,
   Heading,
@@ -18,6 +19,7 @@ import {
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { AiOutlineSearch } from "react-icons/ai"
+import { FiInbox } from "react-icons/fi"
 import {
   PaginationItems,
   PaginationNextTrigger,
@@ -88,69 +90,81 @@ const SearchBox = ({
   onTaskTypeChange: (v: string) => void
 }) => {
   return (
-    <Flex bg="white" p={4} pb={8} borderRadius={16} gap={4} marginBottom={6} flexWrap="wrap">
-      <InputGroup flex="1" startElement={<AiOutlineSearch />} minW="200px">
-        <Input
-          placeholder="搜索任务名称、规则..."
-          borderRadius={16}
-          onChange={(e) => onSearchChange(e.target.value)}
-        />
-      </InputGroup>
-      <Select.Root
-        collection={categoryCollection}
-        flex={0}
-        flexBasis={180}
-        onValueChange={({ value }) => onCategoryChange(value[0] || "")}
-      >
-        <Select.Control>
-          <Select.Trigger borderRadius={16}>
-            <Select.ValueText placeholder="请选择任务分类" />
-          </Select.Trigger>
-          <Select.IndicatorGroup>
-            <Select.Indicator />
-          </Select.IndicatorGroup>
-        </Select.Control>
-        <Portal>
-          <Select.Positioner>
-            <Select.Content>
-              {categoryCollection.items.map((item) => (
-                <Select.Item item={item} key={item.value}>
-                  {item.label}
-                  <Select.ItemIndicator />
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Positioner>
-        </Portal>
-      </Select.Root>
-      <Select.Root
-        collection={taskTypeCollection}
-        flex={0}
-        flexBasis={160}
-        onValueChange={({ value }) => onTaskTypeChange(value[0] || "")}
-      >
-        <Select.Control>
-          <Select.Trigger borderRadius={16}>
-            <Select.ValueText placeholder="请选择任务类型" />
-          </Select.Trigger>
-          <Select.IndicatorGroup>
-            <Select.Indicator />
-          </Select.IndicatorGroup>
-        </Select.Control>
-        <Portal>
-          <Select.Positioner>
-            <Select.Content>
-              {taskTypeCollection.items.map((item) => (
-                <Select.Item item={item} key={item.value}>
-                  {item.label}
-                  <Select.ItemIndicator />
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Positioner>
-        </Portal>
-      </Select.Root>
-    </Flex>
+    <Box 
+      bg="white" 
+      p={6} 
+      borderRadius={20} 
+      shadow="sm"
+      marginBottom={6}
+    >
+      <Flex gap={4} flexWrap="wrap">
+        <InputGroup flex="1" startElement={<AiOutlineSearch />} minW="200px">
+          <Input
+            placeholder="搜索任务名称、规则..."
+            borderRadius={12}
+            size="lg"
+            _focus={{ borderColor: "blue.400", shadow: "0 0 0 1px var(--chakra-colors-blue-400)" }}
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
+        </InputGroup>
+        <Select.Root
+          collection={categoryCollection}
+          flex={0}
+          flexBasis={180}
+          size="lg"
+          onValueChange={({ value }) => onCategoryChange(value[0] || "")}
+        >
+          <Select.Control>
+            <Select.Trigger borderRadius={12}>
+              <Select.ValueText placeholder="任务分类" />
+            </Select.Trigger>
+            <Select.IndicatorGroup>
+              <Select.Indicator />
+            </Select.IndicatorGroup>
+          </Select.Control>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content borderRadius={12}>
+                {categoryCollection.items.map((item) => (
+                  <Select.Item item={item} key={item.value}>
+                    {item.label}
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
+        </Select.Root>
+        <Select.Root
+          collection={taskTypeCollection}
+          flex={0}
+          flexBasis={160}
+          size="lg"
+          onValueChange={({ value }) => onTaskTypeChange(value[0] || "")}
+        >
+          <Select.Control>
+            <Select.Trigger borderRadius={12}>
+              <Select.ValueText placeholder="任务类型" />
+            </Select.Trigger>
+            <Select.IndicatorGroup>
+              <Select.Indicator />
+            </Select.IndicatorGroup>
+          </Select.Control>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content borderRadius={12}>
+                {taskTypeCollection.items.map((item) => (
+                  <Select.Item item={item} key={item.value}>
+                    {item.label}
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
+        </Select.Root>
+      </Flex>
+    </Box>
   )
 }
 
@@ -202,76 +216,103 @@ const ItemsTable = ({
 
   if (filteredItems.length === 0) {
     return (
-      <Flex
+      <Box
         bg="white"
-        borderRadius={16}
-        p={10}
-        justifyContent="center"
-        alignItems="center"
+        borderRadius={20}
+        p={16}
+        shadow="sm"
       >
-        <Text color="gray.400">暂无任务数据</Text>
-      </Flex>
+        <Flex
+          direction="column"
+          alignItems="center"
+          gap={4}
+        >
+          <Box
+            fontSize="5xl"
+            color="gray.300"
+          >
+            <FiInbox />
+          </Box>
+          <Text fontSize="lg" color="gray.500" fontWeight="medium">
+            {searchText || filterCategory || filterTaskType ? "没有找到匹配的任务" : "还没有任务哦"}
+          </Text>
+          <Text fontSize="sm" color="gray.400">
+            {searchText || filterCategory || filterTaskType ? "试试调整筛选条件" : "点击右上角按钮创建第一个任务吧！"}
+          </Text>
+        </Flex>
+      </Box>
     )
   }
 
   return (
     <>
-      <Table.Root size={{ base: "sm", md: "md" }} borderRadius={16}>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>任务名称</Table.ColumnHeader>
-            <Table.ColumnHeader>分类</Table.ColumnHeader>
-            <Table.ColumnHeader>任务类型</Table.ColumnHeader>
-            <Table.ColumnHeader>周期完成次数</Table.ColumnHeader>
-            <Table.ColumnHeader>描述</Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {filteredItems.map((item) => (
-            <Table.Row
-              key={item.id}
-              opacity={isPlaceholderData ? 0.5 : 1}
-            >
-              <Table.Cell truncate maxW="200px" fontWeight="medium">
-                {item.title}
-              </Table.Cell>
-              <Table.Cell>
-                {item.category ? (
-                  <Badge colorPalette={CATEGORY_COLOR[item.category] || "gray"}>
-                    {CATEGORY_MAP[item.category] || item.category}
-                  </Badge>
-                ) : (
-                  <Text color="gray.400">-</Text>
-                )}
-              </Table.Cell>
-              <Table.Cell>
-                {item.task_type ? (
-                  <Badge variant="outline">
-                    {TASK_TYPE_MAP[item.task_type] || item.task_type}
-                  </Badge>
-                ) : (
-                  <Text color="gray.400">-</Text>
-                )}
-              </Table.Cell>
-              <Table.Cell>
-                <Text>{item.target_count ?? 1} 次</Text>
-              </Table.Cell>
-              <Table.Cell
-                color={!item.description ? "gray" : "inherit"}
-                truncate
-                maxW="200px"
-              >
-                {item.description || "-"}
-              </Table.Cell>
-              <Table.Cell>
-                <AddTask item={item}>
-                  <Flex>编辑</Flex>
-                </AddTask>
-              </Table.Cell>
+      <Box bg="white" borderRadius={20} shadow="sm" overflow="hidden">
+        <Table.Root size={{ base: "sm", md: "md" }}>
+          <Table.Header>
+            <Table.Row bg="gray.50">
+              <Table.ColumnHeader fontWeight="semibold" color="gray.600">任务名称</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight="semibold" color="gray.600">分类</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight="semibold" color="gray.600">任务类型</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight="semibold" color="gray.600">周期完成次数</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight="semibold" color="gray.600">描述</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight="semibold" color="gray.600">操作</Table.ColumnHeader>
             </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
+          </Table.Header>
+          <Table.Body>
+            {filteredItems.map((item) => (
+              <Table.Row
+                key={item.id}
+                opacity={isPlaceholderData ? 0.5 : 1}
+                _hover={{ bg: "blue.50", transition: "background 0.15s" }}
+              >
+                <Table.Cell truncate maxW="200px" fontWeight="medium" color="gray.800">
+                  {item.title}
+                </Table.Cell>
+                <Table.Cell>
+                  {item.category ? (
+                    <Badge colorPalette={CATEGORY_COLOR[item.category] || "gray"} borderRadius={8} px={2}>
+                      {CATEGORY_MAP[item.category] || item.category}
+                    </Badge>
+                  ) : (
+                    <Text color="gray.300">—</Text>
+                  )}
+                </Table.Cell>
+                <Table.Cell>
+                  {item.task_type ? (
+                    <Badge variant="outline" borderRadius={8} px={2}>
+                      {TASK_TYPE_MAP[item.task_type] || item.task_type}
+                    </Badge>
+                  ) : (
+                    <Text color="gray.300">—</Text>
+                  )}
+                </Table.Cell>
+                <Table.Cell>
+                  <Badge colorPalette="yellow" variant="subtle" borderRadius={8}>
+                    {item.target_count ?? 1} 次
+                  </Badge>
+                </Table.Cell>
+                <Table.Cell color={!item.description ? "gray.300" : "gray.600"} truncate maxW="200px">
+                  {item.description || "—"}
+                </Table.Cell>
+                <Table.Cell>
+                  <AddTask item={item}>
+                    <Box
+                      as="span"
+                      color="blue.500"
+                      fontWeight="medium"
+                      fontSize="sm"
+                      cursor="pointer"
+                      _hover={{ color: "blue.700" }}
+                    >
+                      编辑
+                    </Box>
+                  </AddTask>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      </Box>
       <Flex justifyContent="flex-end" mt={4}>
         <PaginationRoot
           count={count}
@@ -296,12 +337,17 @@ const Tasks = () => {
 
   return (
     <Container maxW="full">
-      <Heading size="lg">
-        <Flex justifyContent="space-between" alignItems="center">
-          任务管理
+      <Box mb={6}>
+        <Flex justifyContent="space-between" alignItems="center" mb={2}>
+          <Heading size="2xl" color="gray.800" fontWeight="bold">
+            任务管理
+          </Heading>
           <AddTask />
         </Flex>
-      </Heading>
+        <Text color="gray.500" fontSize="md">
+          创建和管理学习任务，完成任务赚取学习币 🎯
+        </Text>
+      </Box>
       <SearchBox
         onSearchChange={setSearchText}
         onCategoryChange={setFilterCategory}

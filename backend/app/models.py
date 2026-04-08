@@ -197,6 +197,12 @@ class TodayTasksPublic(SQLModel):
 
 
 # Prize models
+class PrizeType(str, Enum):
+    """奖品类型"""
+    physical = "physical"  # 实物
+    virtual = "virtual"    # 虚拟
+
+
 class PrizeBase(SQLModel):
     name: str = Field(min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=500)
@@ -205,6 +211,8 @@ class PrizeBase(SQLModel):
     price: float | None = Field(default=None, ge=0)
     coins_cost: int = Field(default=100, ge=0)  # 兑换所需学习币
     stock: int = Field(default=0, ge=0)  # 库存数量
+    prize_type: PrizeType = Field(default=PrizeType.physical, max_length=20)  # 奖品类型
+    is_active: bool = Field(default=True)  # 是否上架
 
 
 class PrizeCreate(PrizeBase):
@@ -219,12 +227,16 @@ class PrizeUpdate(PrizeBase):
 
 class Prize(PrizeBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    total_redeemed: int = Field(default=0, ge=0)  # 累计兑换次数
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class PrizePublic(PrizeBase):
     id: uuid.UUID
+    total_redeemed: int
     created_at: datetime
+    updated_at: datetime
 
 
 class PrizesPublic(SQLModel):
@@ -239,12 +251,90 @@ class TaobaoProductInfo(SQLModel):
     image_url: str | None
 
 
-# Coin log models
+# ─── Shipping Address models ───────────────────────────────────────
+
+class ShippingAddressBase(SQLModel):
+    recipient_name: str = Field(max_length=100)
+    recipient_phone: str = Field(max_length=20)
+    province: str = Field(max_length=50)
+    city: str = Field(max_length=50)
+    district: str | None = Field(default=None, max_length=50)
+    detail_address: str = Field(max_length=500)
+    postal_code: str | None = Field(default=None, max_length=10)
+    is_default: bool = Field(default=False)
+
+
+class ShippingAddressCreate(ShippingAddressBase):
+    pass
+
+
+class ShippingAddressUpdate(ShippingAddressBase):
+    recipient_name: str | None = Field(default=None, max_length=100)  # type: ignore
+    recipient_phone: str | None = Field(default=None, max_length=20)  # type: ignore
+    province: str | None = Field(default=None, max_length=50)  # type: ignore
+    city: str | None = Field(default=None, max_length=50)  # type: ignore
+    detail_address: str | None = Field(default=None, max_length=500)  # type: ignore
+
+
+class ShippingAddress(ShippingAddressBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    user: User | None = Relationship()
+
+
+class ShippingAddressPublic(ShippingAddressBase):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class ShippingAddressesPublic(SQLModel):
+    data: list[ShippingAddressPublic]
+    count: int
+
+
+# ─── Coin Log models ───────────────────────────────────────────────
+
+class TransactionType(str, Enum):
+    """交易类型"""
+    task_completion = "task_completion"      # 完成任务
+    prize_redemption = "prize_redemption"    # 兑换奖品
+    admin_adjustment = "admin_adjustment"    # 管理员调整
+    refund = "refund"                        # 退款
+    referral_bonus = "referral_bonus"        # 推荐奖励
+
+
+class CoinLogBase(SQLModel):
+    amount: int  # 正数为收入，负数为支出
+    balance_after: int  # 变动后余额
+    transaction_type: TransactionType = Field(max_length=30)
+    description: str = Field(max_length=500)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class CoinLog(CoinLogBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
+    related_id: uuid.UUID | None = Field(default=None)  # 关联的任务完成ID或兑换记录ID
+    user: User | None = Relationship()
+
+
 class CoinLogPublic(SQLModel):
     """学习币明细"""
-    name: str
-    completed_at: datetime
+    id: uuid.UUID
     amount: int
+    balance_after: int
+    transaction_type: TransactionType
+    description: str
+    created_at: datetime
+    related_id: uuid.UUID | None = None
 
 
 class CoinLogsPublic(SQLModel):
@@ -253,6 +343,15 @@ class CoinLogsPublic(SQLModel):
 
 
 # ─── Prize Redemption models ───────────────────────────────────────
+
+class RedemptionStatus(str, Enum):
+    """兑换状态"""
+    pending = "pending"        # 待处理
+    processing = "processing"  # 处理中
+    completed = "completed"    # 已完成
+    cancelled = "cancelled"    # 已取消
+    refunded = "refunded"      # 已退款
+
 
 class PrizeRedemptionBase(SQLModel):
     coins_spent: int = Field(ge=0)
@@ -265,11 +364,36 @@ class PrizeRedemption(PrizeRedemptionBase, table=True):
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
     prize_id: uuid.UUID = Field(
-        foreign_key="prize.id", nullable=False, ondelete="CASCADE"
+        foreign_key="prize.id", nullable=False, ondelete="RESTRICT"
     )
     prize_name: str = Field(max_length=255)  # 兑换时快照奖品名称
+    prize_type: str = Field(max_length=20)  # 奖品类型快照
+    status: RedemptionStatus = Field(default=RedemptionStatus.pending, max_length=20)
+    
+    # 收货信息（仅实物奖品需要）
+    shipping_address_id: uuid.UUID | None = Field(
+        default=None, foreign_key="shippingaddress.id", nullable=True
+    )
+    recipient_name: str | None = Field(default=None, max_length=100)
+    recipient_phone: str | None = Field(default=None, max_length=20)
+    recipient_address: str | None = Field(default=None, max_length=500)
+    
+    # 物流信息
+    tracking_number: str | None = Field(default=None, max_length=100)
+    shipping_company: str | None = Field(default=None, max_length=50)
+    shipped_at: datetime | None = Field(default=None)
+    
+    # 备注
+    admin_note: str | None = Field(default=None, max_length=500)
+    user_note: str | None = Field(default=None, max_length=500)
+    
+    # 时间戳
+    completed_at: datetime | None = Field(default=None)
+    cancelled_at: datetime | None = Field(default=None)
+    
     user: User | None = Relationship()
     prize: Prize | None = Relationship()
+    shipping_address: "ShippingAddress | None" = Relationship()
 
 
 class PrizeRedemptionPublic(PrizeRedemptionBase):
@@ -277,6 +401,16 @@ class PrizeRedemptionPublic(PrizeRedemptionBase):
     user_id: uuid.UUID
     prize_id: uuid.UUID
     prize_name: str
+    prize_type: str
+    status: RedemptionStatus
+    recipient_name: str | None = None
+    recipient_phone: str | None = None
+    recipient_address: str | None = None
+    tracking_number: str | None = None
+    shipping_company: str | None = None
+    shipped_at: datetime | None = None
+    completed_at: datetime | None = None
+    cancelled_at: datetime | None = None
 
 
 class PrizeRedemptionsPublic(SQLModel):
