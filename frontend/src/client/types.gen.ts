@@ -88,12 +88,15 @@ export type UserPublic = {
   full_name?: string | null
   coins?: number
   id: string
+  referral_code: string
+  referred_by_id?: string | null
 }
 
 export type UserRegister = {
   email: string
   password: string
   full_name?: string | null
+  referral_code?: string | null
 }
 
 export type UsersPublic = {

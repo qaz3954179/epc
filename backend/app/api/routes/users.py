@@ -143,6 +143,7 @@ def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
 def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     """
     Create new user without the need to be logged in.
+    Optionally accepts a referral_code to bind referral relationship.
     """
     user = crud.get_user_by_email(session=session, email=user_in.email)
     if user:
@@ -150,8 +151,20 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
             status_code=400,
             detail="The user with this email already exists in the system",
         )
+
+    # 处理推荐码
+    referred_by_id = None
+    if user_in.referral_code:
+        referrer = crud.get_user_by_referral_code(
+            session=session, referral_code=user_in.referral_code
+        )
+        if referrer:
+            referred_by_id = referrer.id
+
     user_create = UserCreate.model_validate(user_in)
-    user = crud.create_user(session=session, user_create=user_create)
+    user = crud.create_user(
+        session=session, user_create=user_create, referred_by_id=referred_by_id
+    )
     return user
 
 

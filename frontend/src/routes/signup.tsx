@@ -3,6 +3,7 @@ import {
   Link as RouterLink,
   createFileRoute,
   redirect,
+  useSearch,
 } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
 import { FiLock, FiUser } from "react-icons/fi"
@@ -18,6 +19,9 @@ import Logo from "/assets/images/logo.svg"
 
 export const Route = createFileRoute("/signup")({
   component: SignUp,
+  validateSearch: (search: Record<string, unknown>) => ({
+    ref: (search.ref as string) || "",
+  }),
   beforeLoad: async () => {
     if (isLoggedIn()) {
       throw redirect({
@@ -32,6 +36,7 @@ interface UserRegisterForm extends UserRegister {
 }
 
 function SignUp() {
+  const { ref: referralCode } = useSearch({ from: "/signup" })
   const { signUpMutation } = useAuth()
   const {
     register,
@@ -46,10 +51,15 @@ function SignUp() {
       full_name: "",
       password: "",
       confirm_password: "",
+      referral_code: referralCode || "",
     },
   })
 
   const onSubmit: SubmitHandler<UserRegisterForm> = (data) => {
+    // 确保推荐码随请求提交
+    if (referralCode && !data.referral_code) {
+      data.referral_code = referralCode
+    }
     signUpMutation.mutate(data)
   }
 

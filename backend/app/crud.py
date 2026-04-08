@@ -7,14 +7,22 @@ from app.core.security import get_password_hash, verify_password
 from app.models import Item, ItemCreate, User, UserCreate, UserUpdate
 
 
-def create_user(*, session: Session, user_create: UserCreate) -> User:
+def create_user(*, session: Session, user_create: UserCreate, referred_by_id: uuid.UUID | None = None) -> User:
     db_obj = User.model_validate(
-        user_create, update={"hashed_password": get_password_hash(user_create.password)}
+        user_create, update={
+            "hashed_password": get_password_hash(user_create.password),
+            **({"referred_by_id": referred_by_id} if referred_by_id else {}),
+        }
     )
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)
     return db_obj
+
+
+def get_user_by_referral_code(*, session: Session, referral_code: str) -> User | None:
+    statement = select(User).where(User.referral_code == referral_code)
+    return session.exec(statement).first()
 
 
 def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> Any:

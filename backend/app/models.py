@@ -1,10 +1,18 @@
 import uuid
+import string
+import secrets
 from datetime import datetime
 
 from enum import Enum
 
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
+
+
+def generate_referral_code(length: int = 8) -> str:
+    """生成随机推荐码：8位大写字母+数字"""
+    alphabet = string.ascii_uppercase + string.digits
+    return "".join(secrets.choice(alphabet) for _ in range(length))
 
 
 class UserRole(str, Enum):
@@ -32,6 +40,7 @@ class UserRegister(SQLModel):
     email: EmailStr = Field(max_length=255)
     password: str = Field(min_length=8, max_length=40)
     full_name: str | None = Field(default=None, max_length=255)
+    referral_code: str | None = Field(default=None, max_length=16)  # 推荐人的推荐码
 
 
 # Properties to receive via API on update, all are optional
@@ -54,12 +63,16 @@ class UpdatePassword(SQLModel):
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
+    referral_code: str = Field(default_factory=generate_referral_code, max_length=16, unique=True, index=True)
+    referred_by_id: uuid.UUID | None = Field(default=None, foreign_key="user.id", nullable=True)
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
     id: uuid.UUID
+    referral_code: str
+    referred_by_id: uuid.UUID | None = None
 
 
 class UsersPublic(SQLModel):
