@@ -12,7 +12,7 @@ const items = [
     { icon: ErpcTasks, title: "任务管理", path: "/tasks", adminOnly: true },
     { icon: ErpcGifts, title: "奖品管理", path: "/prizes", adminOnly: true },
     { icon: ErpcAvatar, title: "用户管理", path: "/admin", adminOnly: true },
-    { icon: ErpcPromotion, title: "推广", path: "/settings", adminOnly: false },
+    { icon: ErpcPromotion, title: "推广", path: "/referral", adminOnly: false },
     { icon: ErpcSettings, title: "设置", path: "/settings", adminOnly: false },
     { icon: ErpcGrowth, title: "成长记录", path: "/growth", adminOnly: false },
 ]

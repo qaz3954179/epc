@@ -74,6 +74,8 @@ import type {
   PrizesDeletePrizeResponse,
   PrizesParseTaobaoUrlData,
   PrizesParseTaobaoUrlResponse,
+  ReferralsGetStatsResponse,
+  ReferralsGetListResponse,
 } from "./types.gen"
 
 export class ItemsService {
@@ -832,6 +834,28 @@ export class GrowthService {
       method: "GET",
       url: "/api/v1/growth/redemptions",
       query: { skip: data.skip, limit: data.limit, user_id: data.userId },
+    })
+  }
+}
+
+export class ReferralsService {
+  /**
+   * 获取我的推荐统计
+   */
+  public static getStats(): CancelablePromise<ReferralsGetStatsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/referrals/me/stats",
+    })
+  }
+
+  /**
+   * 获取我推荐的用户列表
+   */
+  public static getList(): CancelablePromise<ReferralsGetListResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/referrals/me/list",
     })
   }
 }

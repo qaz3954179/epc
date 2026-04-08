@@ -472,3 +472,26 @@ export type GrowthGetRedemptionsData = {
 }
 
 export type GrowthGetRedemptionsResponse = PrizeRedemptionsPublic
+
+// ─── Referral types ──────────────────────────────────────────────
+
+export type ReferralStats = {
+  referral_code: string
+  total_referred: number
+  coins_per_referral: number
+  total_coins_earned: number
+}
+
+export type ReferralUser = {
+  id: string
+  full_name: string | null
+  email: string
+}
+
+export type ReferralListResponse = {
+  data: Array<ReferralUser>
+  count: number
+}
+
+export type ReferralsGetStatsResponse = ReferralStats
+export type ReferralsGetListResponse = ReferralListResponse

@@ -165,6 +165,14 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     user = crud.create_user(
         session=session, user_create=user_create, referred_by_id=referred_by_id
     )
+
+    # 推荐奖励：推荐人得 50 学习币
+    if referred_by_id and referrer:
+        referrer.coins += 50
+        session.add(referrer)
+        session.commit()
+        session.refresh(referrer)
+
     return user
 
 
