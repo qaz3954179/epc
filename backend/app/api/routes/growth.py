@@ -11,6 +11,7 @@ from datetime import date, datetime, time, timedelta
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
+from sqlalchemy import literal_column
 from sqlmodel import col, func, select
 
 from app.api.deps import CurrentUser, SessionDep
@@ -272,7 +273,7 @@ def get_progress(
             col(TaskCompletion.completed_at) >= datetime.combine(cur_start, time.min),
             col(TaskCompletion.completed_at) <= datetime.combine(cur_end, time.max),
         )
-        .group_by(func.coalesce(Item.category, "other"))
+        .group_by(literal_column("cat"))
     )
     cat_rows = session.exec(cat_stmt).all()
     category_stats = [
@@ -362,7 +363,7 @@ def get_rewards(
         .select_from(TaskCompletion)
         .join(Item, TaskCompletion.item_id == Item.id)
         .where(TaskCompletion.user_id == target_id)
-        .group_by(func.coalesce(Item.category, "other"))
+        .group_by(literal_column("cat"))
     )
     cat_rows = session.exec(cat_stmt).all()
     category_earnings = [
