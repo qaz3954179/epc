@@ -17,7 +17,6 @@ import { Route as ResetPasswordImport } from './routes/reset-password'
 import { Route as RecoverPasswordImport } from './routes/recover-password'
 import { Route as LoginImport } from './routes/login'
 import { Route as LayoutImport } from './routes/_layout'
-import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as RedemptionsIndexImport } from './routes/redemptions/index'
 import { Route as CoinLogsIndexImport } from './routes/coin-logs/index'
 import { Route as AddressesIndexImport } from './routes/addresses/index'
@@ -61,11 +60,6 @@ const LoginRoute = LoginImport.update({
 
 const LayoutRoute = LayoutImport.update({
   id: '/_layout',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ShopIndexRoute = ShopIndexImport.update({
-  path: '/shop/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -214,10 +208,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RedemptionsIndexImport
       parentRoute: typeof rootRoute
     }
-    '/shop/': {
-      preLoaderRoute: typeof ShopIndexImport
-      parentRoute: typeof rootRoute
-    }
   }
 }
 
@@ -244,7 +234,6 @@ export const routeTree = rootRoute.addChildren([
   AddressesIndexRoute,
   CoinLogsIndexRoute,
   RedemptionsIndexRoute,
-  ShopIndexRoute,
 ])
 
 /* prettier-ignore-end */
