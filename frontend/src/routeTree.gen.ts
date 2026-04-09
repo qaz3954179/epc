@@ -29,6 +29,7 @@ import { Route as LayoutReferralImport } from './routes/_layout/referral'
 import { Route as LayoutPrizesImport } from './routes/_layout/prizes'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutGrowthImport } from './routes/_layout/growth'
+import { Route as LayoutChildrenImport } from './routes/_layout/children'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
 
 // Create/Update Routes
@@ -123,6 +124,11 @@ const LayoutGrowthRoute = LayoutGrowthImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutChildrenRoute = LayoutChildrenImport.update({
+  path: '/children',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 const LayoutAdminRoute = LayoutAdminImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
@@ -158,6 +164,10 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/admin': {
       preLoaderRoute: typeof LayoutAdminImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/children': {
+      preLoaderRoute: typeof LayoutChildrenImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/growth': {
@@ -216,6 +226,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   LayoutRoute.addChildren([
     LayoutAdminRoute,
+    LayoutChildrenRoute,
     LayoutGrowthRoute,
     LayoutItemsRoute,
     LayoutPrizesRoute,

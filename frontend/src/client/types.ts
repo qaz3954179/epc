@@ -1,8 +1,18 @@
-export type PrizeType = 'physical' | 'virtual'
+export type PrizeType = "physical" | "virtual"
 
-export type RedemptionStatus = 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded'
+export type RedemptionStatus =
+  | "pending"
+  | "processing"
+  | "completed"
+  | "cancelled"
+  | "refunded"
 
-export type TransactionType = 'task_completion' | 'prize_redemption' | 'admin_adjustment' | 'refund' | 'referral_bonus'
+export type TransactionType =
+  | "task_completion"
+  | "prize_redemption"
+  | "admin_adjustment"
+  | "refund"
+  | "referral_bonus"
 
 export interface Prize {
   id: string

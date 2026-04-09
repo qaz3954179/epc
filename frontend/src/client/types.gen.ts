@@ -9,6 +9,107 @@ export type Body_login_login_access_token = {
   client_secret?: string | null
 }
 
+/**
+ * 分类统计
+ */
+export type CategoryStats = {
+  category: string
+  count: number
+  coins_earned: number
+}
+
+export type ChildCreate = {
+  real_name: string
+  nickname: string
+  /**
+   * 宝贝性别
+   */
+  gender: "boy" | "girl"
+  birth_month?: string | null
+  avatar_url?: string | null
+}
+
+/**
+ * 宝贝性别
+ */
+export type gender = "boy" | "girl"
+
+/**
+ * 宝贝性别
+ */
+export type ChildGender = "boy" | "girl"
+
+export type ChildPublic = {
+  real_name: string
+  nickname: string
+  /**
+   * 宝贝性别
+   */
+  gender: "boy" | "girl"
+  birth_month?: string | null
+  avatar_url?: string | null
+  id: string
+  user_id: string
+  created_at: string
+  updated_at: string
+}
+
+export type ChildrenPublic = {
+  data: Array<ChildPublic>
+  count: number
+}
+
+export type ChildUpdate = {
+  real_name?: string | null
+  nickname?: string | null
+  gender?: "boy" | "girl" | null
+  birth_month?: string | null
+  avatar_url?: string | null
+}
+
+/**
+ * 学习币明细
+ */
+export type CoinLogPublic = {
+  id: string
+  amount: number
+  balance_after: number
+  transaction_type: TransactionType
+  description: string
+  created_at: string
+  related_id?: string | null
+}
+
+export type CoinLogsPublic = {
+  data: Array<CoinLogPublic>
+  count: number
+}
+
+/**
+ * 完成兑换请求
+ */
+export type CompleteRedemptionRequest = {
+  admin_note?: string | null
+}
+
+/**
+ * 单日完成数据点
+ */
+export type DailyCompletionPoint = {
+  date: string
+  count: number
+}
+
+/**
+ * 习惯热力图数据
+ */
+export type HeatmapData = {
+  days: Array<DailyCompletionPoint>
+  current_streak: number
+  longest_streak: number
+  total_completions: number
+}
+
 export type HTTPValidationError = {
   detail?: Array<ValidationError>
 }
@@ -56,6 +157,17 @@ export type NewPassword = {
   new_password: string
 }
 
+/**
+ * 周期对比
+ */
+export type PeriodComparison = {
+  current_count: number
+  previous_count: number
+  current_coins: number
+  previous_coins: number
+  change_rate: number
+}
+
 export type PrivateUserCreate = {
   email: string
   password: string
@@ -63,10 +175,243 @@ export type PrivateUserCreate = {
   is_verified?: boolean
 }
 
+export type PrizeCreate = {
+  name: string
+  description?: string | null
+  image_url?: string | null
+  product_url?: string | null
+  price?: number | null
+  coins_cost?: number
+  stock?: number
+  /**
+   * 奖品类型
+   */
+  prize_type?: "physical" | "virtual"
+  is_active?: boolean
+}
+
+/**
+ * 奖品类型
+ */
+export type prize_type = "physical" | "virtual"
+
+export type PrizePublic = {
+  name: string
+  description?: string | null
+  image_url?: string | null
+  product_url?: string | null
+  price?: number | null
+  coins_cost?: number
+  stock?: number
+  /**
+   * 奖品类型
+   */
+  prize_type?: "physical" | "virtual"
+  is_active?: boolean
+  id: string
+  total_redeemed: number
+  created_at: string
+  updated_at: string
+}
+
+export type PrizeRedemptionPublic = {
+  coins_spent: number
+  redeemed_at?: string
+  id: string
+  user_id: string
+  prize_id: string
+  prize_name: string
+  prize_type: string
+  status: RedemptionStatus
+  recipient_name?: string | null
+  recipient_phone?: string | null
+  recipient_address?: string | null
+  tracking_number?: string | null
+  shipping_company?: string | null
+  shipped_at?: string | null
+  completed_at?: string | null
+  cancelled_at?: string | null
+}
+
+export type PrizeRedemptionsPublic = {
+  data: Array<PrizeRedemptionPublic>
+  count: number
+}
+
+export type PrizesPublic = {
+  data: Array<PrizePublic>
+  count: number
+}
+
+/**
+ * 奖品类型
+ */
+export type PrizeType = "physical" | "virtual"
+
+export type PrizeUpdate = {
+  name?: string | null
+  description?: string | null
+  image_url?: string | null
+  product_url?: string | null
+  price?: number | null
+  coins_cost?: number | null
+  stock?: number | null
+  /**
+   * 奖品类型
+   */
+  prize_type?: "physical" | "virtual"
+  is_active?: boolean
+}
+
+/**
+ * 进步报告
+ */
+export type ProgressReport = {
+  period: string
+  comparison: PeriodComparison
+  category_stats: Array<CategoryStats>
+  daily_trend: Array<DailyCompletionPoint>
+  summary: string
+}
+
+/**
+ * 兑换奖品请求
+ */
+export type RedeemPrizeRequest = {
+  prize_id: string
+  shipping_address_id?: string | null
+  user_note?: string | null
+}
+
+/**
+ * 兑换状态
+ */
+export type RedemptionStatus =
+  | "pending"
+  | "processing"
+  | "completed"
+  | "cancelled"
+  | "refunded"
+
+/**
+ * 退款请求
+ */
+export type RefundRedemptionRequest = {
+  admin_note?: string | null
+}
+
+/**
+ * 奖励汇总
+ */
+export type RewardSummary = {
+  total_coins_earned: number
+  total_coins_spent: number
+  current_balance: number
+  category_earnings: Array<CategoryStats>
+  recent_redemptions: Array<PrizeRedemptionPublic>
+}
+
+export type ShippingAddressCreate = {
+  recipient_name: string
+  recipient_phone: string
+  province: string
+  city: string
+  district?: string | null
+  detail_address: string
+  postal_code?: string | null
+  is_default?: boolean
+}
+
+export type ShippingAddressesPublic = {
+  data: Array<ShippingAddressPublic>
+  count: number
+}
+
+export type ShippingAddressPublic = {
+  recipient_name: string
+  recipient_phone: string
+  province: string
+  city: string
+  district?: string | null
+  detail_address: string
+  postal_code?: string | null
+  is_default?: boolean
+  id: string
+  user_id: string
+  created_at: string
+  updated_at: string
+}
+
+export type ShippingAddressUpdate = {
+  recipient_name?: string | null
+  recipient_phone?: string | null
+  province?: string | null
+  city?: string | null
+  district?: string | null
+  detail_address?: string | null
+  postal_code?: string | null
+  is_default?: boolean
+}
+
+/**
+ * 发货请求
+ */
+export type ShipRedemptionRequest = {
+  tracking_number: string
+  shipping_company: string
+  admin_note?: string | null
+}
+
+/**
+ * 淘宝商品信息
+ */
+export type TaobaoProductInfo = {
+  name: string
+  price: number | null
+  image_url: string | null
+}
+
+export type TaskCompletionPublic = {
+  completed_at?: string
+  id: string
+  item_id: string
+  user_id: string
+}
+
+/**
+ * Today's task with completion info
+ */
+export type TodayTaskPublic = {
+  id: string
+  title: string
+  description: string | null
+  category: string | null
+  task_type: string | null
+  target_count: number
+  coins_reward: number
+  completed_count: number
+  completed_today: boolean
+}
+
+export type TodayTasksPublic = {
+  data: Array<TodayTaskPublic>
+  count: number
+}
+
 export type Token = {
   access_token: string
   token_type?: string
 }
+
+/**
+ * 交易类型
+ */
+export type TransactionType =
+  | "task_completion"
+  | "prize_redemption"
+  | "admin_adjustment"
+  | "refund"
+  | "referral_bonus"
 
 export type UpdatePassword = {
   current_password: string
@@ -78,14 +423,28 @@ export type UserCreate = {
   is_active?: boolean
   is_superuser?: boolean
   full_name?: string | null
+  /**
+   * 用户角色
+   */
+  role?: "admin" | "user"
+  coins?: number
   password: string
 }
+
+/**
+ * 用户角色
+ */
+export type role = "admin" | "user"
 
 export type UserPublic = {
   email: string
   is_active?: boolean
   is_superuser?: boolean
   full_name?: string | null
+  /**
+   * 用户角色
+   */
+  role?: "admin" | "user"
   coins?: number
   id: string
   referral_code: string
@@ -99,6 +458,11 @@ export type UserRegister = {
   referral_code?: string | null
 }
 
+/**
+ * 用户角色
+ */
+export type UserRole = "admin" | "user"
+
 export type UsersPublic = {
   data: Array<UserPublic>
   count: number
@@ -109,6 +473,11 @@ export type UserUpdate = {
   is_active?: boolean
   is_superuser?: boolean
   full_name?: string | null
+  /**
+   * 用户角色
+   */
+  role?: "admin" | "user"
+  coins?: number
   password?: string | null
 }
 
@@ -123,56 +492,99 @@ export type ValidationError = {
   type: string
 }
 
-export type TaskCompletionPublic = {
-  completed_at: string
+export type VerifyEmail = {
+  email: string
+  code: string
+}
+
+export type ChildrenReadChildrenData = {
+  limit?: number
+  skip?: number
+}
+
+export type ChildrenReadChildrenResponse = ChildrenPublic
+
+export type ChildrenCreateChildData = {
+  requestBody: ChildCreate
+}
+
+export type ChildrenCreateChildResponse = ChildPublic
+
+export type ChildrenReadChildData = {
   id: string
-  item_id: string
-  user_id: string
 }
 
-export type TodayTaskPublic = {
+export type ChildrenReadChildResponse = ChildPublic
+
+export type ChildrenUpdateChildData = {
   id: string
-  title: string
-  description?: string | null
-  category?: string | null
-  task_type?: string | null
-  target_count: number
-  coins_reward: number
-  completed_count: number
-  completed_today: boolean
+  requestBody: ChildUpdate
 }
 
-export type TodayTasksPublic = {
-  data: Array<TodayTaskPublic>
-  count: number
+export type ChildrenUpdateChildResponse = ChildPublic
+
+export type ChildrenDeleteChildData = {
+  id: string
 }
 
-export type CoinLogPublic = {
-  name: string
-  completed_at: string
-  amount: number
+export type ChildrenDeleteChildResponse = Message
+
+export type CoinLogsReadMyCoinLogsData = {
+  limit?: number
+  skip?: number
+  transactionType?: TransactionType | null
 }
 
-export type CoinLogsPublic = {
-  data: Array<CoinLogPublic>
-  count: number
+export type CoinLogsReadMyCoinLogsResponse = CoinLogsPublic
+
+export type CoinLogsReadAllCoinLogsData = {
+  limit?: number
+  skip?: number
+  transactionType?: TransactionType | null
+  userId?: string | null
 }
 
-export type TaskCompletionsGetTodayCoinLogsResponse = CoinLogsPublic
+export type CoinLogsReadAllCoinLogsResponse = CoinLogsPublic
 
-export type TaskCompletionsGetTodayTasksResponse = TodayTasksPublic
-
-export type TaskCompletionsCompleteTaskData = {
-  itemId: string
+export type CoinLogsReadCoinLogData = {
+  id: string
 }
 
-export type TaskCompletionsCompleteTaskResponse = TaskCompletionPublic
+export type CoinLogsReadCoinLogResponse = CoinLogPublic
 
-export type TaskCompletionsGetHistoryData = {
-  itemId: string
+export type GrowthGetHeatmapData = {
+  days?: number
+  userId?: string | null
 }
 
-export type TaskCompletionsGetHistoryResponse = Array<TaskCompletionPublic>
+export type GrowthGetHeatmapResponse = HeatmapData
+
+export type GrowthGetProgressData = {
+  period?: string
+  userId?: string | null
+}
+
+export type GrowthGetProgressResponse = ProgressReport
+
+export type GrowthGetRewardsData = {
+  userId?: string | null
+}
+
+export type GrowthGetRewardsResponse = RewardSummary
+
+export type GrowthRedeemPrizeData = {
+  prizeId: string
+}
+
+export type GrowthRedeemPrizeResponse = PrizeRedemptionPublic
+
+export type GrowthGetRedemptionsData = {
+  limit?: number
+  skip?: number
+  userId?: string | null
+}
+
+export type GrowthGetRedemptionsResponse = PrizeRedemptionsPublic
 
 export type ItemsReadItemsData = {
   limit?: number
@@ -238,6 +650,156 @@ export type PrivateCreateUserData = {
 
 export type PrivateCreateUserResponse = UserPublic
 
+export type PrizeRedemptionsRedeemPrizeData = {
+  requestBody: RedeemPrizeRequest
+}
+
+export type PrizeRedemptionsRedeemPrizeResponse = PrizeRedemptionPublic
+
+export type PrizeRedemptionsReadMyRedemptionsData = {
+  limit?: number
+  skip?: number
+  status?: RedemptionStatus | null
+}
+
+export type PrizeRedemptionsReadMyRedemptionsResponse = PrizeRedemptionsPublic
+
+export type PrizeRedemptionsReadAllRedemptionsData = {
+  limit?: number
+  skip?: number
+  status?: RedemptionStatus | null
+}
+
+export type PrizeRedemptionsReadAllRedemptionsResponse = PrizeRedemptionsPublic
+
+export type PrizeRedemptionsReadRedemptionData = {
+  id: string
+}
+
+export type PrizeRedemptionsReadRedemptionResponse = PrizeRedemptionPublic
+
+export type PrizeRedemptionsCancelRedemptionData = {
+  id: string
+}
+
+export type PrizeRedemptionsCancelRedemptionResponse = PrizeRedemptionPublic
+
+export type PrizeRedemptionsShipRedemptionData = {
+  id: string
+  requestBody: ShipRedemptionRequest
+}
+
+export type PrizeRedemptionsShipRedemptionResponse = PrizeRedemptionPublic
+
+export type PrizeRedemptionsCompleteRedemptionData = {
+  id: string
+  requestBody: CompleteRedemptionRequest
+}
+
+export type PrizeRedemptionsCompleteRedemptionResponse = PrizeRedemptionPublic
+
+export type PrizeRedemptionsRefundRedemptionData = {
+  id: string
+  requestBody: RefundRedemptionRequest
+}
+
+export type PrizeRedemptionsRefundRedemptionResponse = PrizeRedemptionPublic
+
+export type PrizesReadPrizesData = {
+  limit?: number
+  skip?: number
+}
+
+export type PrizesReadPrizesResponse = PrizesPublic
+
+export type PrizesCreatePrizeData = {
+  requestBody: PrizeCreate
+}
+
+export type PrizesCreatePrizeResponse = PrizePublic
+
+export type PrizesReadPrizeData = {
+  id: string
+}
+
+export type PrizesReadPrizeResponse = PrizePublic
+
+export type PrizesUpdatePrizeData = {
+  id: string
+  requestBody: PrizeUpdate
+}
+
+export type PrizesUpdatePrizeResponse = PrizePublic
+
+export type PrizesDeletePrizeData = {
+  id: string
+}
+
+export type PrizesDeletePrizeResponse = Message
+
+export type PrizesParseTaobaoUrlData = {
+  url: string
+}
+
+export type PrizesParseTaobaoUrlResponse = TaobaoProductInfo
+
+export type ReferralsGetMyReferralStatsResponse = unknown
+
+export type ReferralsGetMyReferralsResponse = unknown
+
+export type ShippingAddressesReadShippingAddressesResponse =
+  ShippingAddressesPublic
+
+export type ShippingAddressesCreateShippingAddressData = {
+  requestBody: ShippingAddressCreate
+}
+
+export type ShippingAddressesCreateShippingAddressResponse =
+  ShippingAddressPublic
+
+export type ShippingAddressesReadShippingAddressData = {
+  id: string
+}
+
+export type ShippingAddressesReadShippingAddressResponse = ShippingAddressPublic
+
+export type ShippingAddressesUpdateShippingAddressData = {
+  id: string
+  requestBody: ShippingAddressUpdate
+}
+
+export type ShippingAddressesUpdateShippingAddressResponse =
+  ShippingAddressPublic
+
+export type ShippingAddressesDeleteShippingAddressData = {
+  id: string
+}
+
+export type ShippingAddressesDeleteShippingAddressResponse = Message
+
+export type ShippingAddressesSetDefaultAddressData = {
+  id: string
+}
+
+export type ShippingAddressesSetDefaultAddressResponse = ShippingAddressPublic
+
+export type TaskCompletionsGetTodayCoinLogsResponse = CoinLogsPublic
+
+export type TaskCompletionsGetTodayTasksResponse = TodayTasksPublic
+
+export type TaskCompletionsCompleteTaskData = {
+  itemId: string
+}
+
+export type TaskCompletionsCompleteTaskResponse = TaskCompletionPublic
+
+export type TaskCompletionsGetTaskCompletionsData = {
+  itemId: string
+}
+
+export type TaskCompletionsGetTaskCompletionsResponse =
+  Array<TaskCompletionPublic>
+
 export type UsersReadUsersData = {
   limit?: number
   skip?: number
@@ -292,6 +854,18 @@ export type UsersDeleteUserData = {
 
 export type UsersDeleteUserResponse = Message
 
+export type UsersVerifyEmailData = {
+  requestBody: VerifyEmail
+}
+
+export type UsersVerifyEmailResponse = Message
+
+export type UsersResendVerificationCodeData = {
+  email: string
+}
+
+export type UsersResendVerificationCodeResponse = Message
+
 export type UtilsTestEmailData = {
   emailTo: string
 }
@@ -299,200 +873,3 @@ export type UtilsTestEmailData = {
 export type UtilsTestEmailResponse = Message
 
 export type UtilsHealthCheckResponse = boolean
-
-// Prize types
-export type PrizeCreate = {
-  name: string
-  description?: string | null
-  image_url?: string | null
-  product_url?: string | null
-  price?: number | null
-  coins_cost?: number
-  stock?: number
-}
-
-export type PrizePublic = {
-  name: string
-  description?: string | null
-  image_url?: string | null
-  product_url?: string | null
-  price?: number | null
-  coins_cost: number
-  stock: number
-  id: string
-  created_at: string
-}
-
-export type PrizesPublic = {
-  data: Array<PrizePublic>
-  count: number
-}
-
-export type PrizeUpdate = {
-  name?: string | null
-  description?: string | null
-  image_url?: string | null
-  product_url?: string | null
-  price?: number | null
-  coins_cost?: number | null
-  stock?: number | null
-}
-
-export type TaobaoProductInfo = {
-  name: string
-  price?: number | null
-  image_url?: string | null
-}
-
-export type PrizesReadPrizesData = {
-  limit?: number
-  skip?: number
-}
-
-export type PrizesReadPrizesResponse = PrizesPublic
-
-export type PrizesReadPrizeData = {
-  id: string
-}
-
-export type PrizesReadPrizeResponse = PrizePublic
-
-export type PrizesCreatePrizeData = {
-  requestBody: PrizeCreate
-}
-
-export type PrizesCreatePrizeResponse = PrizePublic
-
-export type PrizesUpdatePrizeData = {
-  id: string
-  requestBody: PrizeUpdate
-}
-
-export type PrizesUpdatePrizeResponse = PrizePublic
-
-export type PrizesDeletePrizeData = {
-  id: string
-}
-
-export type PrizesDeletePrizeResponse = Message
-
-export type PrizesParseTaobaoUrlData = {
-  url: string
-}
-
-export type PrizesParseTaobaoUrlResponse = TaobaoProductInfo
-
-// ─── Growth Record types ─────────────────────────────────────────
-
-export type DailyCompletionPoint = {
-  date: string
-  count: number
-}
-
-export type HeatmapData = {
-  days: Array<DailyCompletionPoint>
-  current_streak: number
-  longest_streak: number
-  total_completions: number
-}
-
-export type CategoryStats = {
-  category: string
-  count: number
-  coins_earned: number
-}
-
-export type PeriodComparison = {
-  current_count: number
-  previous_count: number
-  current_coins: number
-  previous_coins: number
-  change_rate: number
-}
-
-export type ProgressReport = {
-  period: string
-  comparison: PeriodComparison
-  category_stats: Array<CategoryStats>
-  daily_trend: Array<DailyCompletionPoint>
-  summary: string
-}
-
-export type PrizeRedemptionPublic = {
-  coins_spent: number
-  redeemed_at: string
-  id: string
-  user_id: string
-  prize_id: string
-  prize_name: string
-}
-
-export type PrizeRedemptionsPublic = {
-  data: Array<PrizeRedemptionPublic>
-  count: number
-}
-
-export type RewardSummary = {
-  total_coins_earned: number
-  total_coins_spent: number
-  current_balance: number
-  category_earnings: Array<CategoryStats>
-  recent_redemptions: Array<PrizeRedemptionPublic>
-}
-
-export type GrowthGetHeatmapData = {
-  days?: number
-  userId?: string
-}
-
-export type GrowthGetHeatmapResponse = HeatmapData
-
-export type GrowthGetProgressData = {
-  period?: string
-  userId?: string
-}
-
-export type GrowthGetProgressResponse = ProgressReport
-
-export type GrowthGetRewardsData = {
-  userId?: string
-}
-
-export type GrowthGetRewardsResponse = RewardSummary
-
-export type GrowthRedeemPrizeData = {
-  prizeId: string
-}
-
-export type GrowthRedeemPrizeResponse = PrizeRedemptionPublic
-
-export type GrowthGetRedemptionsData = {
-  skip?: number
-  limit?: number
-  userId?: string
-}
-
-export type GrowthGetRedemptionsResponse = PrizeRedemptionsPublic
-
-// ─── Referral types ──────────────────────────────────────────────
-
-export type ReferralStats = {
-  referral_code: string
-  total_referred: number
-  coins_per_referral: number
-  total_coins_earned: number
-}
-
-export type ReferralUser = {
-  id: string
-  full_name: string | null
-  email: string
-}
-
-export type ReferralListResponse = {
-  data: Array<ReferralUser>
-  count: number
-}
-
-export type ReferralsGetStatsResponse = ReferralStats
-export type ReferralsGetListResponse = ReferralListResponse

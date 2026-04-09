@@ -4,16 +4,32 @@ import type { CancelablePromise } from "./core/CancelablePromise"
 import { OpenAPI } from "./core/OpenAPI"
 import { request as __request } from "./core/request"
 import type {
+  ChildrenReadChildrenData,
+  ChildrenReadChildrenResponse,
+  ChildrenCreateChildData,
+  ChildrenCreateChildResponse,
+  ChildrenReadChildData,
+  ChildrenReadChildResponse,
+  ChildrenUpdateChildData,
+  ChildrenUpdateChildResponse,
+  ChildrenDeleteChildData,
+  ChildrenDeleteChildResponse,
+  CoinLogsReadMyCoinLogsData,
+  CoinLogsReadMyCoinLogsResponse,
+  CoinLogsReadAllCoinLogsData,
+  CoinLogsReadAllCoinLogsResponse,
+  CoinLogsReadCoinLogData,
+  CoinLogsReadCoinLogResponse,
   GrowthGetHeatmapData,
   GrowthGetHeatmapResponse,
   GrowthGetProgressData,
   GrowthGetProgressResponse,
-  GrowthGetRedemptionsData,
-  GrowthGetRedemptionsResponse,
   GrowthGetRewardsData,
   GrowthGetRewardsResponse,
   GrowthRedeemPrizeData,
   GrowthRedeemPrizeResponse,
+  GrowthGetRedemptionsData,
+  GrowthGetRedemptionsResponse,
   ItemsReadItemsData,
   ItemsReadItemsResponse,
   ItemsCreateItemData,
@@ -35,6 +51,53 @@ import type {
   LoginRecoverPasswordHtmlContentResponse,
   PrivateCreateUserData,
   PrivateCreateUserResponse,
+  PrizeRedemptionsRedeemPrizeData,
+  PrizeRedemptionsRedeemPrizeResponse,
+  PrizeRedemptionsReadMyRedemptionsData,
+  PrizeRedemptionsReadMyRedemptionsResponse,
+  PrizeRedemptionsReadAllRedemptionsData,
+  PrizeRedemptionsReadAllRedemptionsResponse,
+  PrizeRedemptionsReadRedemptionData,
+  PrizeRedemptionsReadRedemptionResponse,
+  PrizeRedemptionsCancelRedemptionData,
+  PrizeRedemptionsCancelRedemptionResponse,
+  PrizeRedemptionsShipRedemptionData,
+  PrizeRedemptionsShipRedemptionResponse,
+  PrizeRedemptionsCompleteRedemptionData,
+  PrizeRedemptionsCompleteRedemptionResponse,
+  PrizeRedemptionsRefundRedemptionData,
+  PrizeRedemptionsRefundRedemptionResponse,
+  PrizesReadPrizesData,
+  PrizesReadPrizesResponse,
+  PrizesCreatePrizeData,
+  PrizesCreatePrizeResponse,
+  PrizesReadPrizeData,
+  PrizesReadPrizeResponse,
+  PrizesUpdatePrizeData,
+  PrizesUpdatePrizeResponse,
+  PrizesDeletePrizeData,
+  PrizesDeletePrizeResponse,
+  PrizesParseTaobaoUrlData,
+  PrizesParseTaobaoUrlResponse,
+  ReferralsGetMyReferralStatsResponse,
+  ReferralsGetMyReferralsResponse,
+  ShippingAddressesReadShippingAddressesResponse,
+  ShippingAddressesCreateShippingAddressData,
+  ShippingAddressesCreateShippingAddressResponse,
+  ShippingAddressesReadShippingAddressData,
+  ShippingAddressesReadShippingAddressResponse,
+  ShippingAddressesUpdateShippingAddressData,
+  ShippingAddressesUpdateShippingAddressResponse,
+  ShippingAddressesDeleteShippingAddressData,
+  ShippingAddressesDeleteShippingAddressResponse,
+  ShippingAddressesSetDefaultAddressData,
+  ShippingAddressesSetDefaultAddressResponse,
+  TaskCompletionsGetTodayCoinLogsResponse,
+  TaskCompletionsGetTodayTasksResponse,
+  TaskCompletionsCompleteTaskData,
+  TaskCompletionsCompleteTaskResponse,
+  TaskCompletionsGetTaskCompletionsData,
+  TaskCompletionsGetTaskCompletionsResponse,
   UsersReadUsersData,
   UsersReadUsersResponse,
   UsersCreateUserData,
@@ -53,30 +116,342 @@ import type {
   UsersUpdateUserResponse,
   UsersDeleteUserData,
   UsersDeleteUserResponse,
+  UsersVerifyEmailData,
+  UsersVerifyEmailResponse,
+  UsersResendVerificationCodeData,
+  UsersResendVerificationCodeResponse,
   UtilsTestEmailData,
   UtilsTestEmailResponse,
   UtilsHealthCheckResponse,
-  TaskCompletionsGetTodayCoinLogsResponse,
-  TaskCompletionsGetTodayTasksResponse,
-  TaskCompletionsCompleteTaskData,
-  TaskCompletionsCompleteTaskResponse,
-  TaskCompletionsGetHistoryData,
-  TaskCompletionsGetHistoryResponse,
-  PrizesReadPrizesData,
-  PrizesReadPrizesResponse,
-  PrizesReadPrizeData,
-  PrizesReadPrizeResponse,
-  PrizesCreatePrizeData,
-  PrizesCreatePrizeResponse,
-  PrizesUpdatePrizeData,
-  PrizesUpdatePrizeResponse,
-  PrizesDeletePrizeData,
-  PrizesDeletePrizeResponse,
-  PrizesParseTaobaoUrlData,
-  PrizesParseTaobaoUrlResponse,
-  ReferralsGetStatsResponse,
-  ReferralsGetListResponse,
 } from "./types.gen"
+
+export class ChildrenService {
+  /**
+   * Read Children
+   * 获取当前用户的宝贝列表
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns ChildrenPublic Successful Response
+   * @throws ApiError
+   */
+  public static readChildren(
+    data: ChildrenReadChildrenData = {},
+  ): CancelablePromise<ChildrenReadChildrenResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/children/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Create Child
+   * 添加宝贝
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns ChildPublic Successful Response
+   * @throws ApiError
+   */
+  public static createChild(
+    data: ChildrenCreateChildData,
+  ): CancelablePromise<ChildrenCreateChildResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/children/",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Child
+   * 获取单个宝贝信息
+   * @param data The data for the request.
+   * @param data.id
+   * @returns ChildPublic Successful Response
+   * @throws ApiError
+   */
+  public static readChild(
+    data: ChildrenReadChildData,
+  ): CancelablePromise<ChildrenReadChildResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/children/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Child
+   * 更新宝贝信息
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns ChildPublic Successful Response
+   * @throws ApiError
+   */
+  public static updateChild(
+    data: ChildrenUpdateChildData,
+  ): CancelablePromise<ChildrenUpdateChildResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/children/{id}",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Child
+   * 删除宝贝
+   * @param data The data for the request.
+   * @param data.id
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deleteChild(
+    data: ChildrenDeleteChildData,
+  ): CancelablePromise<ChildrenDeleteChildResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/children/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class CoinLogsService {
+  /**
+   * Read My Coin Logs
+   * 查询我的学习币明细
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @param data.transactionType
+   * @returns CoinLogsPublic Successful Response
+   * @throws ApiError
+   */
+  public static readMyCoinLogs(
+    data: CoinLogsReadMyCoinLogsData = {},
+  ): CancelablePromise<CoinLogsReadMyCoinLogsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/coin-logs/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+        transaction_type: data.transactionType,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read All Coin Logs
+   * 查询所有学习币明细（仅管理员）
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @param data.userId
+   * @param data.transactionType
+   * @returns CoinLogsPublic Successful Response
+   * @throws ApiError
+   */
+  public static readAllCoinLogs(
+    data: CoinLogsReadAllCoinLogsData = {},
+  ): CancelablePromise<CoinLogsReadAllCoinLogsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/coin-logs/all",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+        user_id: data.userId,
+        transaction_type: data.transactionType,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Coin Log
+   * 查询单条学习币明细
+   * @param data The data for the request.
+   * @param data.id
+   * @returns CoinLogPublic Successful Response
+   * @throws ApiError
+   */
+  public static readCoinLog(
+    data: CoinLogsReadCoinLogData,
+  ): CancelablePromise<CoinLogsReadCoinLogResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/coin-logs/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class GrowthService {
+  /**
+   * Get Heatmap
+   * 获取习惯热力图数据。
+   * 管理员可通过 user_id 查看其他用户；普通用户只能看自己。
+   * @param data The data for the request.
+   * @param data.days
+   * @param data.userId
+   * @returns HeatmapData Successful Response
+   * @throws ApiError
+   */
+  public static getHeatmap(
+    data: GrowthGetHeatmapData = {},
+  ): CancelablePromise<GrowthGetHeatmapResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/growth/heatmap",
+      query: {
+        days: data.days,
+        user_id: data.userId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Progress
+   * 获取进步报告（周/月对比）。
+   * @param data The data for the request.
+   * @param data.period
+   * @param data.userId
+   * @returns ProgressReport Successful Response
+   * @throws ApiError
+   */
+  public static getProgress(
+    data: GrowthGetProgressData = {},
+  ): CancelablePromise<GrowthGetProgressResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/growth/progress",
+      query: {
+        period: data.period,
+        user_id: data.userId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Rewards
+   * 获取奖励汇总：总收入、总支出、分类收入、最近兑换记录。
+   * @param data The data for the request.
+   * @param data.userId
+   * @returns RewardSummary Successful Response
+   * @throws ApiError
+   */
+  public static getRewards(
+    data: GrowthGetRewardsData = {},
+  ): CancelablePromise<GrowthGetRewardsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/growth/rewards",
+      query: {
+        user_id: data.userId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Redeem Prize
+   * 兑换奖品：扣除学习币，减库存，创建兑换记录。
+   * @param data The data for the request.
+   * @param data.prizeId
+   * @returns PrizeRedemptionPublic Successful Response
+   * @throws ApiError
+   */
+  public static redeemPrize(
+    data: GrowthRedeemPrizeData,
+  ): CancelablePromise<GrowthRedeemPrizeResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/growth/prizes/{prize_id}/redeem",
+      path: {
+        prize_id: data.prizeId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Redemptions
+   * 获取兑换记录列表。
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @param data.userId
+   * @returns PrizeRedemptionsPublic Successful Response
+   * @throws ApiError
+   */
+  public static getRedemptions(
+    data: GrowthGetRedemptionsData = {},
+  ): CancelablePromise<GrowthGetRedemptionsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/growth/redemptions",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+        user_id: data.userId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
 
 export class ItemsService {
   /**
@@ -328,6 +703,587 @@ export class PrivateService {
   }
 }
 
+export class PrizeRedemptionsService {
+  /**
+   * Redeem Prize
+   * 兑换奖品
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns PrizeRedemptionPublic Successful Response
+   * @throws ApiError
+   */
+  public static redeemPrize(
+    data: PrizeRedemptionsRedeemPrizeData,
+  ): CancelablePromise<PrizeRedemptionsRedeemPrizeResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/prize-redemptions/",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read My Redemptions
+   * 查询我的兑换记录
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @param data.status
+   * @returns PrizeRedemptionsPublic Successful Response
+   * @throws ApiError
+   */
+  public static readMyRedemptions(
+    data: PrizeRedemptionsReadMyRedemptionsData = {},
+  ): CancelablePromise<PrizeRedemptionsReadMyRedemptionsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/prize-redemptions/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+        status: data.status,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read All Redemptions
+   * 查询所有兑换记录（仅管理员）
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @param data.status
+   * @returns PrizeRedemptionsPublic Successful Response
+   * @throws ApiError
+   */
+  public static readAllRedemptions(
+    data: PrizeRedemptionsReadAllRedemptionsData = {},
+  ): CancelablePromise<PrizeRedemptionsReadAllRedemptionsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/prize-redemptions/all",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+        status: data.status,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Redemption
+   * 查询单个兑换记录详情
+   * @param data The data for the request.
+   * @param data.id
+   * @returns PrizeRedemptionPublic Successful Response
+   * @throws ApiError
+   */
+  public static readRedemption(
+    data: PrizeRedemptionsReadRedemptionData,
+  ): CancelablePromise<PrizeRedemptionsReadRedemptionResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/prize-redemptions/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Cancel Redemption
+   * 取消兑换（仅待处理状态可取消）
+   * @param data The data for the request.
+   * @param data.id
+   * @returns PrizeRedemptionPublic Successful Response
+   * @throws ApiError
+   */
+  public static cancelRedemption(
+    data: PrizeRedemptionsCancelRedemptionData,
+  ): CancelablePromise<PrizeRedemptionsCancelRedemptionResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/prize-redemptions/{id}/cancel",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Ship Redemption
+   * 发货（仅管理员）
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns PrizeRedemptionPublic Successful Response
+   * @throws ApiError
+   */
+  public static shipRedemption(
+    data: PrizeRedemptionsShipRedemptionData,
+  ): CancelablePromise<PrizeRedemptionsShipRedemptionResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/prize-redemptions/{id}/ship",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Complete Redemption
+   * 完成兑换（仅管理员）
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns PrizeRedemptionPublic Successful Response
+   * @throws ApiError
+   */
+  public static completeRedemption(
+    data: PrizeRedemptionsCompleteRedemptionData,
+  ): CancelablePromise<PrizeRedemptionsCompleteRedemptionResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/prize-redemptions/{id}/complete",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Refund Redemption
+   * 退款（仅管理员）
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns PrizeRedemptionPublic Successful Response
+   * @throws ApiError
+   */
+  public static refundRedemption(
+    data: PrizeRedemptionsRefundRedemptionData,
+  ): CancelablePromise<PrizeRedemptionsRefundRedemptionResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/prize-redemptions/{id}/refund",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class PrizesService {
+  /**
+   * Read Prizes
+   * 获取奖品列表
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns PrizesPublic Successful Response
+   * @throws ApiError
+   */
+  public static readPrizes(
+    data: PrizesReadPrizesData = {},
+  ): CancelablePromise<PrizesReadPrizesResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/prizes/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Create Prize
+   * 创建奖品（仅管理员）
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns PrizePublic Successful Response
+   * @throws ApiError
+   */
+  public static createPrize(
+    data: PrizesCreatePrizeData,
+  ): CancelablePromise<PrizesCreatePrizeResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/prizes/",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Prize
+   * 获取单个奖品
+   * @param data The data for the request.
+   * @param data.id
+   * @returns PrizePublic Successful Response
+   * @throws ApiError
+   */
+  public static readPrize(
+    data: PrizesReadPrizeData,
+  ): CancelablePromise<PrizesReadPrizeResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/prizes/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Prize
+   * 更新奖品（仅管理员）
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns PrizePublic Successful Response
+   * @throws ApiError
+   */
+  public static updatePrize(
+    data: PrizesUpdatePrizeData,
+  ): CancelablePromise<PrizesUpdatePrizeResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/prizes/{id}",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Prize
+   * 删除奖品（仅管理员）
+   * @param data The data for the request.
+   * @param data.id
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deletePrize(
+    data: PrizesDeletePrizeData,
+  ): CancelablePromise<PrizesDeletePrizeResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/prizes/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Parse Taobao Url
+   * 解析淘宝/天猫商品链接，自动提取商品信息
+   * @param data The data for the request.
+   * @param data.url
+   * @returns TaobaoProductInfo Successful Response
+   * @throws ApiError
+   */
+  public static parseTaobaoUrl(
+    data: PrizesParseTaobaoUrlData,
+  ): CancelablePromise<PrizesParseTaobaoUrlResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/prizes/parse-taobao-url",
+      query: {
+        url: data.url,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class ReferralsService {
+  /**
+   * Get My Referral Stats
+   * 获取我的推荐统计：推荐码、邀请人数
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static getMyReferralStats(): CancelablePromise<ReferralsGetMyReferralStatsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/referrals/me/stats",
+    })
+  }
+
+  /**
+   * Get My Referrals
+   * 获取我推荐的用户列表
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static getMyReferrals(): CancelablePromise<ReferralsGetMyReferralsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/referrals/me/list",
+    })
+  }
+}
+
+export class ShippingAddressesService {
+  /**
+   * Read Shipping Addresses
+   * 获取我的收货地址列表
+   * @returns ShippingAddressesPublic Successful Response
+   * @throws ApiError
+   */
+  public static readShippingAddresses(): CancelablePromise<ShippingAddressesReadShippingAddressesResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/shipping-addresses/",
+    })
+  }
+
+  /**
+   * Create Shipping Address
+   * 创建收货地址
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns ShippingAddressPublic Successful Response
+   * @throws ApiError
+   */
+  public static createShippingAddress(
+    data: ShippingAddressesCreateShippingAddressData,
+  ): CancelablePromise<ShippingAddressesCreateShippingAddressResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/shipping-addresses/",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Shipping Address
+   * 获取单个收货地址
+   * @param data The data for the request.
+   * @param data.id
+   * @returns ShippingAddressPublic Successful Response
+   * @throws ApiError
+   */
+  public static readShippingAddress(
+    data: ShippingAddressesReadShippingAddressData,
+  ): CancelablePromise<ShippingAddressesReadShippingAddressResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/shipping-addresses/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Shipping Address
+   * 更新收货地址
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns ShippingAddressPublic Successful Response
+   * @throws ApiError
+   */
+  public static updateShippingAddress(
+    data: ShippingAddressesUpdateShippingAddressData,
+  ): CancelablePromise<ShippingAddressesUpdateShippingAddressResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/shipping-addresses/{id}",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Shipping Address
+   * 删除收货地址
+   * @param data The data for the request.
+   * @param data.id
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deleteShippingAddress(
+    data: ShippingAddressesDeleteShippingAddressData,
+  ): CancelablePromise<ShippingAddressesDeleteShippingAddressResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/shipping-addresses/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Set Default Address
+   * 设置默认收货地址
+   * @param data The data for the request.
+   * @param data.id
+   * @returns ShippingAddressPublic Successful Response
+   * @throws ApiError
+   */
+  public static setDefaultAddress(
+    data: ShippingAddressesSetDefaultAddressData,
+  ): CancelablePromise<ShippingAddressesSetDefaultAddressResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/shipping-addresses/{id}/set-default",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class TaskCompletionsService {
+  /**
+   * Get Today Coin Logs
+   * Get today's coin transaction logs for the current user.
+   * @returns CoinLogsPublic Successful Response
+   * @throws ApiError
+   */
+  public static getTodayCoinLogs(): CancelablePromise<TaskCompletionsGetTodayCoinLogsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/task-completions/coin-logs/today",
+    })
+  }
+
+  /**
+   * Get Today Tasks
+   * Get today's tasks with completion counts for the current user.
+   * Daily tasks always show; weekly tasks show every day of the week.
+   * @returns TodayTasksPublic Successful Response
+   * @throws ApiError
+   */
+  public static getTodayTasks(): CancelablePromise<TaskCompletionsGetTodayTasksResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/task-completions/today",
+    })
+  }
+
+  /**
+   * Complete Task
+   * Record a task completion. Respects the target_count limit per day.
+   * @param data The data for the request.
+   * @param data.itemId
+   * @returns TaskCompletionPublic Successful Response
+   * @throws ApiError
+   */
+  public static completeTask(
+    data: TaskCompletionsCompleteTaskData,
+  ): CancelablePromise<TaskCompletionsCompleteTaskResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/task-completions/{item_id}/complete",
+      path: {
+        item_id: data.itemId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Task Completions
+   * Get today's completion records for a specific task.
+   * @param data The data for the request.
+   * @param data.itemId
+   * @returns TaskCompletionPublic Successful Response
+   * @throws ApiError
+   */
+  public static getTaskCompletions(
+    data: TaskCompletionsGetTaskCompletionsData,
+  ): CancelablePromise<TaskCompletionsGetTaskCompletionsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/task-completions/{item_id}/history",
+      path: {
+        item_id: data.itemId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
 export class UsersService {
   /**
    * Read Users
@@ -449,6 +1405,7 @@ export class UsersService {
   /**
    * Register User
    * Create new user without the need to be logged in.
+   * User will be inactive until email is verified.
    * @param data The data for the request.
    * @param data.requestBody
    * @returns UserPublic Successful Response
@@ -539,6 +1496,51 @@ export class UsersService {
       },
     })
   }
+
+  /**
+   * Verify Email
+   * Verify user email with verification code.
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static verifyEmail(
+    data: UsersVerifyEmailData,
+  ): CancelablePromise<UsersVerifyEmailResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/users/verify-email",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Resend Verification Code
+   * Resend verification code to user email.
+   * @param data The data for the request.
+   * @param data.email
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static resendVerificationCode(
+    data: UsersResendVerificationCodeData,
+  ): CancelablePromise<UsersResendVerificationCodeResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/users/resend-verification",
+      query: {
+        email: data.email,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
 }
 
 export class UtilsService {
@@ -574,288 +1576,6 @@ export class UtilsService {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/v1/utils/health-check/",
-    })
-  }
-}
-
-export class TaskCompletionsService {
-  /**
-   * Get Today Coin Logs
-   * Get today's coin transaction logs for the current user.
-   * @returns CoinLogsPublic Successful Response
-   * @throws ApiError
-   */
-  public static getTodayCoinLogs(): CancelablePromise<TaskCompletionsGetTodayCoinLogsResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/task-completions/coin-logs/today",
-    })
-  }
-
-  /**
-   * Get Today Tasks
-   * Get today's tasks with completion counts for the current user.
-   * @returns TodayTasksPublic Successful Response
-   * @throws ApiError
-   */
-  public static getTodayTasks(): CancelablePromise<TaskCompletionsGetTodayTasksResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/task-completions/today",
-    })
-  }
-
-  /**
-   * Complete Task
-   * Record a task completion. Respects the target_count limit per day.
-   * @param data The data for the request.
-   * @param data.itemId
-   * @returns TaskCompletionPublic Successful Response
-   * @throws ApiError
-   */
-  public static completeTask(
-    data: TaskCompletionsCompleteTaskData,
-  ): CancelablePromise<TaskCompletionsCompleteTaskResponse> {
-    return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/v1/task-completions/{item_id}/complete",
-      path: {
-        item_id: data.itemId,
-      },
-      errors: {
-        422: "Validation Error",
-      },
-    })
-  }
-
-  /**
-   * Get Task Completions
-   * Get today's completion records for a specific task.
-   * @param data The data for the request.
-   * @param data.itemId
-   * @returns TaskCompletionPublic Successful Response
-   * @throws ApiError
-   */
-  public static getHistory(
-    data: TaskCompletionsGetHistoryData,
-  ): CancelablePromise<TaskCompletionsGetHistoryResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/task-completions/{item_id}/history",
-      path: {
-        item_id: data.itemId,
-      },
-      errors: {
-        422: "Validation Error",
-      },
-    })
-  }
-}
-
-export class PrizesService {
-  /**
-   * Read Prizes
-   * 获取奖品列表
-   * @param data The data for the request.
-   * @param data.skip
-   * @param data.limit
-   * @returns PrizesPublic Successful Response
-   * @throws ApiError
-   */
-  public static readPrizes(
-    data: PrizesReadPrizesData = {},
-  ): CancelablePromise<PrizesReadPrizesResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/prizes/",
-      query: {
-        skip: data.skip,
-        limit: data.limit,
-      },
-      errors: {
-        422: "Validation Error",
-      },
-    })
-  }
-
-  /**
-   * Read Prize
-   * 获取单个奖品
-   * @param data The data for the request.
-   * @param data.id
-   * @returns PrizePublic Successful Response
-   * @throws ApiError
-   */
-  public static readPrize(
-    data: PrizesReadPrizeData,
-  ): CancelablePromise<PrizesReadPrizeResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/prizes/{id}",
-      path: {
-        id: data.id,
-      },
-      errors: {
-        422: "Validation Error",
-      },
-    })
-  }
-
-  /**
-   * Create Prize
-   * 创建奖品（仅管理员）
-   * @param data The data for the request.
-   * @param data.requestBody
-   * @returns PrizePublic Successful Response
-   * @throws ApiError
-   */
-  public static createPrize(
-    data: PrizesCreatePrizeData,
-  ): CancelablePromise<PrizesCreatePrizeResponse> {
-    return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/v1/prizes/",
-      body: data.requestBody,
-      mediaType: "application/json",
-      errors: {
-        422: "Validation Error",
-      },
-    })
-  }
-
-  /**
-   * Update Prize
-   * 更新奖品（仅管理员）
-   * @param data The data for the request.
-   * @param data.id
-   * @param data.requestBody
-   * @returns PrizePublic Successful Response
-   * @throws ApiError
-   */
-  public static updatePrize(
-    data: PrizesUpdatePrizeData,
-  ): CancelablePromise<PrizesUpdatePrizeResponse> {
-    return __request(OpenAPI, {
-      method: "PUT",
-      url: "/api/v1/prizes/{id}",
-      path: {
-        id: data.id,
-      },
-      body: data.requestBody,
-      mediaType: "application/json",
-      errors: {
-        422: "Validation Error",
-      },
-    })
-  }
-
-  /**
-   * Delete Prize
-   * 删除奖品（仅管理员）
-   * @param data The data for the request.
-   * @param data.id
-   * @returns Message Successful Response
-   * @throws ApiError
-   */
-  public static deletePrize(
-    data: PrizesDeletePrizeData,
-  ): CancelablePromise<PrizesDeletePrizeResponse> {
-    return __request(OpenAPI, {
-      method: "DELETE",
-      url: "/api/v1/prizes/{id}",
-      path: {
-        id: data.id,
-      },
-      errors: {
-        422: "Validation Error",
-      },
-    })
-  }
-
-  /**
-   * Parse Taobao URL
-   * 解析淘宝/天猫商品链接，自动提取商品信息
-   * @param data The data for the request.
-   * @param data.url
-   * @returns TaobaoProductInfo Successful Response
-   * @throws ApiError
-   */
-  public static parseTaobaoUrl(
-    data: PrizesParseTaobaoUrlData,
-  ): CancelablePromise<PrizesParseTaobaoUrlResponse> {
-    return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/v1/prizes/parse-taobao-url",
-      query: {
-        url: data.url,
-      },
-      errors: {
-        422: "Validation Error",
-      },
-    })
-  }
-}
-
-export class GrowthService {
-  public static getHeatmap(data: GrowthGetHeatmapData = {}): CancelablePromise<GrowthGetHeatmapResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/growth/heatmap",
-      query: { days: data.days, user_id: data.userId },
-    })
-  }
-
-  public static getProgress(data: GrowthGetProgressData = {}): CancelablePromise<GrowthGetProgressResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/growth/progress",
-      query: { period: data.period, user_id: data.userId },
-    })
-  }
-
-  public static getRewards(data: GrowthGetRewardsData = {}): CancelablePromise<GrowthGetRewardsResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/growth/rewards",
-      query: { user_id: data.userId },
-    })
-  }
-
-  public static redeemPrize(data: GrowthRedeemPrizeData): CancelablePromise<GrowthRedeemPrizeResponse> {
-    return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/v1/growth/prizes/{prize_id}/redeem",
-      path: { prize_id: data.prizeId },
-    })
-  }
-
-  public static getRedemptions(data: GrowthGetRedemptionsData = {}): CancelablePromise<GrowthGetRedemptionsResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/growth/redemptions",
-      query: { skip: data.skip, limit: data.limit, user_id: data.userId },
-    })
-  }
-}
-
-export class ReferralsService {
-  /**
-   * 获取我的推荐统计
-   */
-  public static getStats(): CancelablePromise<ReferralsGetStatsResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/referrals/me/stats",
-    })
-  }
-
-  /**
-   * 获取我推荐的用户列表
-   */
-  public static getList(): CancelablePromise<ReferralsGetListResponse> {
-    return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/v1/referrals/me/list",
     })
   }
 }

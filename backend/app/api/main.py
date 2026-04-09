@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.routes import (
+    children,
     coin_logs,
     growth,
     items,
@@ -28,6 +29,7 @@ api_router.include_router(shipping_addresses.router)
 api_router.include_router(coin_logs.router)
 api_router.include_router(growth.router)
 api_router.include_router(referrals.router)
+api_router.include_router(children.router)
 
 
 if settings.ENVIRONMENT == "local":

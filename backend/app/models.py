@@ -467,3 +467,51 @@ class RewardSummary(SQLModel):
     current_balance: int
     category_earnings: list[CategoryStats]
     recent_redemptions: list[PrizeRedemptionPublic]
+
+
+# ─── Child (我的宝贝) models ───────────────────────────────────────
+
+class ChildGender(str, Enum):
+    """宝贝性别"""
+    boy = "boy"      # 男孩
+    girl = "girl"    # 女孩
+
+
+class ChildBase(SQLModel):
+    real_name: str = Field(max_length=100)  # 真实姓名（登录使用）
+    nickname: str = Field(min_length=1, max_length=100)  # 昵称（必填）
+    gender: ChildGender = Field(max_length=10)  # 性别
+    birth_month: str | None = Field(default=None, max_length=7)  # 出生年月 YYYY-MM
+    avatar_url: str | None = Field(default=None, max_length=2000)  # 头像（非必填）
+
+
+class ChildCreate(ChildBase):
+    pass
+
+
+class ChildUpdate(ChildBase):
+    real_name: str | None = Field(default=None, max_length=100)  # type: ignore
+    nickname: str | None = Field(default=None, min_length=1, max_length=100)  # type: ignore
+    gender: ChildGender | None = Field(default=None, max_length=10)  # type: ignore
+
+
+class Child(ChildBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    user: User | None = Relationship()
+
+
+class ChildPublic(ChildBase):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class ChildrenPublic(SQLModel):
+    data: list[ChildPublic]
+    count: int

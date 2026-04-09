@@ -9,6 +9,7 @@ const items = [
   { title: "今日待办", path: "/items",    adminOnly: false, emoji: "✅" },
   { title: "任务管理", path: "/tasks",    adminOnly: true,  emoji: "📋" },
   { title: "奖品商城", path: "/prizes",   adminOnly: false, emoji: "🎁" },
+  { title: "我的宝贝", path: "/children", adminOnly: false, emoji: "👶" },
   { title: "用户管理", path: "/admin",    adminOnly: true,  emoji: "👥" },
   { title: "推广",     path: "/referral", adminOnly: false, emoji: "📣" },
   { title: "成长记录", path: "/growth",   adminOnly: false, emoji: "📈" },
