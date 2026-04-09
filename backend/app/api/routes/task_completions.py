@@ -7,6 +7,7 @@ from sqlmodel import col, func, select
 
 from app.api.deps import CurrentUser, SessionDep
 from app.models import (
+    CoinLog,
     CoinLogPublic,
     CoinLogsPublic,
     Item,
@@ -38,24 +39,27 @@ def get_today_coin_logs(
     start, end = _today_range()
 
     stmt = (
-        select(TaskCompletion, Item)
-        .join(Item, TaskCompletion.item_id == Item.id)
+        select(CoinLog)
         .where(
-            TaskCompletion.user_id == current_user.id,
-            col(TaskCompletion.completed_at) >= start,
-            col(TaskCompletion.completed_at) <= end,
+            CoinLog.user_id == current_user.id,
+            col(CoinLog.created_at) >= start,
+            col(CoinLog.created_at) <= end,
         )
-        .order_by(col(TaskCompletion.completed_at).desc())
+        .order_by(col(CoinLog.created_at).desc())
     )
     results = session.exec(stmt).all()
 
     logs = [
         CoinLogPublic(
-            name=item.title,
-            completed_at=completion.completed_at,
-            amount=item.coins_reward,
+            id=log.id,
+            amount=log.amount,
+            balance_after=log.balance_after,
+            transaction_type=log.transaction_type,
+            description=log.description,
+            created_at=log.created_at,
+            related_id=log.related_id,
         )
-        for completion, item in results
+        for log in results
     ]
 
     return CoinLogsPublic(data=logs, count=len(logs))

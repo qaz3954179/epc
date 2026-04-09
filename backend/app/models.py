@@ -2,6 +2,7 @@ import uuid
 import string
 import secrets
 from datetime import datetime
+from typing import Optional
 
 from enum import Enum
 
@@ -393,7 +394,7 @@ class PrizeRedemption(PrizeRedemptionBase, table=True):
     
     user: User | None = Relationship()
     prize: Prize | None = Relationship()
-    shipping_address: "ShippingAddress | None" = Relationship()
+    shipping_address: Optional["ShippingAddress"] = Relationship()
 
 
 class PrizeRedemptionPublic(PrizeRedemptionBase):

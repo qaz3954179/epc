@@ -17,6 +17,10 @@ import { Route as ResetPasswordImport } from './routes/reset-password'
 import { Route as RecoverPasswordImport } from './routes/recover-password'
 import { Route as LoginImport } from './routes/login'
 import { Route as LayoutImport } from './routes/_layout'
+import { Route as RedemptionsIndexImport } from './routes/redemptions/index'
+import { Route as PrizesIndexImport } from './routes/prizes/index'
+import { Route as CoinLogsIndexImport } from './routes/coin-logs/index'
+import { Route as AddressesIndexImport } from './routes/addresses/index'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as CoinsLogsImport } from './routes/coins/logs'
 import { Route as LayoutTasksImport } from './routes/_layout/tasks'
@@ -56,6 +60,26 @@ const LoginRoute = LoginImport.update({
 
 const LayoutRoute = LayoutImport.update({
   id: '/_layout',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const RedemptionsIndexRoute = RedemptionsIndexImport.update({
+  path: '/redemptions/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PrizesIndexRoute = PrizesIndexImport.update({
+  path: '/prizes/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CoinLogsIndexRoute = CoinLogsIndexImport.update({
+  path: '/coin-logs/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AddressesIndexRoute = AddressesIndexImport.update({
+  path: '/addresses/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -168,6 +192,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexImport
       parentRoute: typeof LayoutImport
     }
+    '/addresses/': {
+      preLoaderRoute: typeof AddressesIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/coin-logs/': {
+      preLoaderRoute: typeof CoinLogsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/prizes/': {
+      preLoaderRoute: typeof PrizesIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/redemptions/': {
+      preLoaderRoute: typeof RedemptionsIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -190,6 +230,10 @@ export const routeTree = rootRoute.addChildren([
   SignupRoute,
   VerifyEmailRoute,
   CoinsLogsRoute,
+  AddressesIndexRoute,
+  CoinLogsIndexRoute,
+  PrizesIndexRoute,
+  RedemptionsIndexRoute,
 ])
 
 /* prettier-ignore-end */
