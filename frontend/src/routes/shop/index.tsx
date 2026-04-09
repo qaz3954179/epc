@@ -23,7 +23,7 @@ import { FaGift, FaCoins } from 'react-icons/fa'
 import { prizeService, redemptionService, addressService, userService } from '@/client/services'
 import type { Prize, ShippingAddress } from '@/client/types'
 
-export const Route = createFileRoute('/prizes/')({
+export const Route = createFileRoute('/shop/')({
   component: PrizeListPage,
 })
 

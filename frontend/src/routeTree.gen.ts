@@ -17,11 +17,12 @@ import { Route as ResetPasswordImport } from './routes/reset-password'
 import { Route as RecoverPasswordImport } from './routes/recover-password'
 import { Route as LoginImport } from './routes/login'
 import { Route as LayoutImport } from './routes/_layout'
+import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as RedemptionsIndexImport } from './routes/redemptions/index'
-import { Route as PrizesIndexImport } from './routes/prizes/index'
 import { Route as CoinLogsIndexImport } from './routes/coin-logs/index'
 import { Route as AddressesIndexImport } from './routes/addresses/index'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
+import { Route as LandingParentImport } from './routes/landing/parent'
 import { Route as CoinsLogsImport } from './routes/coins/logs'
 import { Route as LayoutTasksImport } from './routes/_layout/tasks'
 import { Route as LayoutSettingsImport } from './routes/_layout/settings'
@@ -63,13 +64,13 @@ const LayoutRoute = LayoutImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const RedemptionsIndexRoute = RedemptionsIndexImport.update({
-  path: '/redemptions/',
+const ShopIndexRoute = ShopIndexImport.update({
+  path: '/shop/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const PrizesIndexRoute = PrizesIndexImport.update({
-  path: '/prizes/',
+const RedemptionsIndexRoute = RedemptionsIndexImport.update({
+  path: '/redemptions/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -86,6 +87,11 @@ const AddressesIndexRoute = AddressesIndexImport.update({
 const LayoutIndexRoute = LayoutIndexImport.update({
   path: '/',
   getParentRoute: () => LayoutRoute,
+} as any)
+
+const LandingParentRoute = LandingParentImport.update({
+  path: '/landing/parent',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const CoinsLogsRoute = CoinsLogsImport.update({
@@ -188,6 +194,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoinsLogsImport
       parentRoute: typeof rootRoute
     }
+    '/landing/parent': {
+      preLoaderRoute: typeof LandingParentImport
+      parentRoute: typeof rootRoute
+    }
     '/_layout/': {
       preLoaderRoute: typeof LayoutIndexImport
       parentRoute: typeof LayoutImport
@@ -200,12 +210,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoinLogsIndexImport
       parentRoute: typeof rootRoute
     }
-    '/prizes/': {
-      preLoaderRoute: typeof PrizesIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/redemptions/': {
       preLoaderRoute: typeof RedemptionsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/shop/': {
+      preLoaderRoute: typeof ShopIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -230,10 +240,11 @@ export const routeTree = rootRoute.addChildren([
   SignupRoute,
   VerifyEmailRoute,
   CoinsLogsRoute,
+  LandingParentRoute,
   AddressesIndexRoute,
   CoinLogsIndexRoute,
-  PrizesIndexRoute,
   RedemptionsIndexRoute,
+  ShopIndexRoute,
 ])
 
 /* prettier-ignore-end */
