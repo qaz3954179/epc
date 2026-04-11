@@ -6,7 +6,7 @@ import {
   useSearch,
 } from "@tanstack/react-router"
 import { type SubmitHandler, useForm } from "react-hook-form"
-import { FiLock, FiUser } from "react-icons/fi"
+import { FiLock, FiMail, FiUser } from "react-icons/fi"
 
 import type { UserRegister } from "@/client"
 import { Button } from "@/components/ui/button"
@@ -56,7 +56,6 @@ function SignUp() {
   })
 
   const onSubmit: SubmitHandler<UserRegisterForm> = (data) => {
-    // 确保推荐码随请求提交
     if (referralCode && !data.referral_code) {
       data.referral_code = referralCode
     }
@@ -78,12 +77,18 @@ function SignUp() {
         >
           <Image
             src={Logo}
-            alt="FastAPI logo"
+            alt="Education Rewards Plan of Children"
             height="auto"
             maxW="2xs"
             alignSelf="center"
-            mb={4}
+            mb={2}
           />
+          <Text textAlign="center" fontSize="xl" fontWeight="bold" color="gray.700" mb={2}>
+            👨‍👩‍👧 家长注册
+          </Text>
+          <Text textAlign="center" fontSize="sm" color="gray.500" mb={4}>
+            注册后可以为宝贝创建账户、管理任务和奖品
+          </Text>
           <Field
             invalid={!!errors.full_name}
             errorText={errors.full_name?.message}
@@ -91,25 +96,25 @@ function SignUp() {
             <InputGroup w="100%" startElement={<FiUser />}>
               <Input
                 id="full_name"
-                minLength={3}
+                minLength={2}
                 {...register("full_name", {
-                  required: "Full Name is required",
+                  required: "姓名必填",
                 })}
-                placeholder="Full Name"
+                placeholder="您的姓名"
                 type="text"
               />
             </InputGroup>
           </Field>
 
           <Field invalid={!!errors.email} errorText={errors.email?.message}>
-            <InputGroup w="100%" startElement={<FiUser />}>
+            <InputGroup w="100%" startElement={<FiMail />}>
               <Input
                 id="email"
                 {...register("email", {
-                  required: "Email is required",
+                  required: "邮箱必填",
                   pattern: emailPattern,
                 })}
-                placeholder="Email"
+                placeholder="邮箱地址"
                 type="email"
               />
             </InputGroup>
@@ -118,23 +123,23 @@ function SignUp() {
             type="password"
             startElement={<FiLock />}
             {...register("password", passwordRules())}
-            placeholder="Password"
+            placeholder="设置密码"
             errors={errors}
           />
           <PasswordInput
             type="confirm_password"
             startElement={<FiLock />}
             {...register("confirm_password", confirmPasswordRules(getValues))}
-            placeholder="Confirm Password"
+            placeholder="确认密码"
             errors={errors}
           />
-          <Button variant="solid" type="submit" loading={isSubmitting}>
-            Sign Up
+          <Button variant="solid" type="submit" loading={isSubmitting} bg="primary" rounded={8}>
+            注册
           </Button>
           <Text>
-            Already have an account?{" "}
+            已有账号?{" "}
             <RouterLink to="/login" className="main-link">
-              Log In
+              去登录
             </RouterLink>
           </Text>
         </Container>

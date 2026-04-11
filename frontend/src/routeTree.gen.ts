@@ -21,6 +21,7 @@ import { Route as RedemptionsIndexImport } from './routes/redemptions/index'
 import { Route as CoinLogsIndexImport } from './routes/coin-logs/index'
 import { Route as AddressesIndexImport } from './routes/addresses/index'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
+import { Route as OauthCallbackImport } from './routes/oauth/callback'
 import { Route as LandingParentImport } from './routes/landing/parent'
 import { Route as CoinsLogsImport } from './routes/coins/logs'
 import { Route as LayoutTasksImport } from './routes/_layout/tasks'
@@ -31,6 +32,7 @@ import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutGrowthImport } from './routes/_layout/growth'
 import { Route as LayoutChildrenImport } from './routes/_layout/children'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
+import { Route as LayoutParentMonitorImport } from './routes/_layout/parent/monitor'
 
 // Create/Update Routes
 
@@ -84,6 +86,11 @@ const LayoutIndexRoute = LayoutIndexImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const OauthCallbackRoute = OauthCallbackImport.update({
+  path: '/oauth/callback',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const LandingParentRoute = LandingParentImport.update({
   path: '/landing/parent',
   getParentRoute: () => rootRoute,
@@ -131,6 +138,11 @@ const LayoutChildrenRoute = LayoutChildrenImport.update({
 
 const LayoutAdminRoute = LayoutAdminImport.update({
   path: '/admin',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutParentMonitorRoute = LayoutParentMonitorImport.update({
+  path: '/parent/monitor',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -202,6 +214,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingParentImport
       parentRoute: typeof rootRoute
     }
+    '/oauth/callback': {
+      preLoaderRoute: typeof OauthCallbackImport
+      parentRoute: typeof rootRoute
+    }
     '/_layout/': {
       preLoaderRoute: typeof LayoutIndexImport
       parentRoute: typeof LayoutImport
@@ -217,6 +233,10 @@ declare module '@tanstack/react-router' {
     '/redemptions/': {
       preLoaderRoute: typeof RedemptionsIndexImport
       parentRoute: typeof rootRoute
+    }
+    '/_layout/parent/monitor': {
+      preLoaderRoute: typeof LayoutParentMonitorImport
+      parentRoute: typeof LayoutImport
     }
   }
 }
@@ -234,6 +254,7 @@ export const routeTree = rootRoute.addChildren([
     LayoutSettingsRoute,
     LayoutTasksRoute,
     LayoutIndexRoute,
+    LayoutParentMonitorRoute,
   ]),
   LoginRoute,
   RecoverPasswordRoute,
@@ -242,6 +263,7 @@ export const routeTree = rootRoute.addChildren([
   VerifyEmailRoute,
   CoinsLogsRoute,
   LandingParentRoute,
+  OauthCallbackRoute,
   AddressesIndexRoute,
   CoinLogsIndexRoute,
   RedemptionsIndexRoute,

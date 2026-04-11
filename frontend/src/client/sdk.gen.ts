@@ -49,6 +49,25 @@ import type {
   LoginResetPasswordResponse,
   LoginRecoverPasswordHtmlContentData,
   LoginRecoverPasswordHtmlContentResponse,
+  ParentGetMyChildrenResponse,
+  ParentCreateChildAccountData,
+  ParentCreateChildAccountResponse,
+  ParentGetChildDetailData,
+  ParentGetChildDetailResponse,
+  ParentUpdateChildAccountData,
+  ParentUpdateChildAccountResponse,
+  ParentDeleteChildAccountData,
+  ParentDeleteChildAccountResponse,
+  ParentGetChildDashboardData,
+  ParentGetChildDashboardResponse,
+  ParentGetChildTaskCompletionsData,
+  ParentGetChildTaskCompletionsResponse,
+  ParentGetChildCoinLogsData,
+  ParentGetChildCoinLogsResponse,
+  ParentGetChildRedemptionsData,
+  ParentGetChildRedemptionsResponse,
+  ParentGetChildGrowthData,
+  ParentGetChildGrowthResponse,
   PrivateCreateUserData,
   PrivateCreateUserResponse,
   PrizeRedemptionsRedeemPrizeData,
@@ -457,6 +476,9 @@ export class ItemsService {
   /**
    * Read Items
    * Retrieve items.
+   * child 角色看自己 parent 创建的任务（通过 parent_id 关联）。
+   * parent 看自己创建的任务。
+   * admin 看所有。
    * @param data The data for the request.
    * @param data.skip
    * @param data.limit
@@ -481,7 +503,7 @@ export class ItemsService {
 
   /**
    * Create Item
-   * Create new item.
+   * Create new item. 只允许 parent 和 admin。
    * @param data The data for the request.
    * @param data.requestBody
    * @returns ItemPublic Successful Response
@@ -526,7 +548,7 @@ export class ItemsService {
 
   /**
    * Update Item
-   * Update an item.
+   * Update an item. 只允许 parent 和 admin。
    * @param data The data for the request.
    * @param data.id
    * @param data.requestBody
@@ -552,7 +574,7 @@ export class ItemsService {
 
   /**
    * Delete Item
-   * Delete an item.
+   * Delete an item. 只允许 parent 和 admin。
    * @param data The data for the request.
    * @param data.id
    * @returns Message Successful Response
@@ -577,7 +599,8 @@ export class ItemsService {
 export class LoginService {
   /**
    * Login Access Token
-   * OAuth2 compatible token login, get an access token for future requests
+   * OAuth2 compatible token login, get an access token for future requests.
+   * 支持邮箱登录（家长/管理员）和用户名登录（宝贝）。
    * @param data The data for the request.
    * @param data.formData
    * @returns Token Successful Response
@@ -679,6 +702,248 @@ export class LoginService {
   }
 }
 
+export class ParentService {
+  /**
+   * Get My Children
+   * 获取家长名下所有宝贝列表
+   * @returns ChildAccountPublic Successful Response
+   * @throws ApiError
+   */
+  public static getMyChildren(): CancelablePromise<ParentGetMyChildrenResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/parent/children",
+    })
+  }
+
+  /**
+   * Create Child Account
+   * 家长创建宝贝账户
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns ChildAccountPublic Successful Response
+   * @throws ApiError
+   */
+  public static createChildAccount(
+    data: ParentCreateChildAccountData,
+  ): CancelablePromise<ParentCreateChildAccountResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/parent/children",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Child Detail
+   * 获取宝贝详情
+   * @param data The data for the request.
+   * @param data.childId
+   * @returns ChildAccountPublic Successful Response
+   * @throws ApiError
+   */
+  public static getChildDetail(
+    data: ParentGetChildDetailData,
+  ): CancelablePromise<ParentGetChildDetailResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/parent/children/{child_id}",
+      path: {
+        child_id: data.childId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Child Account
+   * 更新宝贝账户信息
+   * @param data The data for the request.
+   * @param data.childId
+   * @param data.requestBody
+   * @returns ChildAccountPublic Successful Response
+   * @throws ApiError
+   */
+  public static updateChildAccount(
+    data: ParentUpdateChildAccountData,
+  ): CancelablePromise<ParentUpdateChildAccountResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/parent/children/{child_id}",
+      path: {
+        child_id: data.childId,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Child Account
+   * 删除宝贝账户
+   * @param data The data for the request.
+   * @param data.childId
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deleteChildAccount(
+    data: ParentDeleteChildAccountData,
+  ): CancelablePromise<ParentDeleteChildAccountResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/parent/children/{child_id}",
+      path: {
+        child_id: data.childId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Child Dashboard
+   * 宝贝概览：余额、今日任务等
+   * @param data The data for the request.
+   * @param data.childId
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static getChildDashboard(
+    data: ParentGetChildDashboardData,
+  ): CancelablePromise<ParentGetChildDashboardResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/parent/children/{child_id}/dashboard",
+      path: {
+        child_id: data.childId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Child Task Completions
+   * 宝贝的任务完成记录
+   * @param data The data for the request.
+   * @param data.childId
+   * @param data.skip
+   * @param data.limit
+   * @returns TaskCompletionPublic Successful Response
+   * @throws ApiError
+   */
+  public static getChildTaskCompletions(
+    data: ParentGetChildTaskCompletionsData,
+  ): CancelablePromise<ParentGetChildTaskCompletionsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/parent/children/{child_id}/task-completions",
+      path: {
+        child_id: data.childId,
+      },
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Child Coin Logs
+   * 宝贝的学习币明细
+   * @param data The data for the request.
+   * @param data.childId
+   * @param data.skip
+   * @param data.limit
+   * @returns CoinLogsPublic Successful Response
+   * @throws ApiError
+   */
+  public static getChildCoinLogs(
+    data: ParentGetChildCoinLogsData,
+  ): CancelablePromise<ParentGetChildCoinLogsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/parent/children/{child_id}/coin-logs",
+      path: {
+        child_id: data.childId,
+      },
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Child Redemptions
+   * 宝贝的兑换记录
+   * @param data The data for the request.
+   * @param data.childId
+   * @param data.skip
+   * @param data.limit
+   * @returns PrizeRedemptionsPublic Successful Response
+   * @throws ApiError
+   */
+  public static getChildRedemptions(
+    data: ParentGetChildRedemptionsData,
+  ): CancelablePromise<ParentGetChildRedemptionsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/parent/children/{child_id}/redemptions",
+      path: {
+        child_id: data.childId,
+      },
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Get Child Growth
+   * 宝贝的成长数据（可复用 growth.py 的逻辑）
+   * @param data The data for the request.
+   * @param data.childId
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static getChildGrowth(
+    data: ParentGetChildGrowthData,
+  ): CancelablePromise<ParentGetChildGrowthResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/parent/children/{child_id}/growth",
+      path: {
+        child_id: data.childId,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
 export class PrivateService {
   /**
    * Create User
@@ -706,7 +971,7 @@ export class PrivateService {
 export class PrizeRedemptionsService {
   /**
    * Redeem Prize
-   * 兑换奖品
+   * 兑换奖品（仅宝贝可兑换）
    * @param data The data for the request.
    * @param data.requestBody
    * @returns PrizeRedemptionPublic Successful Response
@@ -933,7 +1198,7 @@ export class PrizesService {
 
   /**
    * Create Prize
-   * 创建奖品（仅管理员）
+   * 创建奖品（家长和管理员）
    * @param data The data for the request.
    * @param data.requestBody
    * @returns PrizePublic Successful Response
@@ -978,7 +1243,7 @@ export class PrizesService {
 
   /**
    * Update Prize
-   * 更新奖品（仅管理员）
+   * 更新奖品（家长和管理员）
    * @param data The data for the request.
    * @param data.id
    * @param data.requestBody
@@ -1004,7 +1269,7 @@ export class PrizesService {
 
   /**
    * Delete Prize
-   * 删除奖品（仅管理员）
+   * 删除奖品（家长和管理员）
    * @param data The data for the request.
    * @param data.id
    * @returns Message Successful Response
@@ -1227,6 +1492,7 @@ export class TaskCompletionsService {
    * Get Today Tasks
    * Get today's tasks with completion counts for the current user.
    * Daily tasks always show; weekly tasks show every day of the week.
+   * child 角色看自己 parent 创建的任务。
    * @returns TodayTasksPublic Successful Response
    * @throws ApiError
    */
@@ -1287,10 +1553,11 @@ export class TaskCompletionsService {
 export class UsersService {
   /**
    * Read Users
-   * Retrieve users.
+   * Retrieve users. 支持按 role 筛选。
    * @param data The data for the request.
    * @param data.skip
    * @param data.limit
+   * @param data.role
    * @returns UsersPublic Successful Response
    * @throws ApiError
    */
@@ -1303,6 +1570,7 @@ export class UsersService {
       query: {
         skip: data.skip,
         limit: data.limit,
+        role: data.role,
       },
       errors: {
         422: "Validation Error",
@@ -1404,8 +1672,8 @@ export class UsersService {
 
   /**
    * Register User
-   * Create new user without the need to be logged in.
-   * User will be inactive until email is verified.
+   * 注册家长账户（role=parent）。
+   * 注册后需要邮箱验证才能激活。
    * @param data The data for the request.
    * @param data.requestBody
    * @returns UserPublic Successful Response

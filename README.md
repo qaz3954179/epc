@@ -237,3 +237,10 @@ Check the file [release-notes.md](./release-notes.md).
 ## License
 
 The Full Stack FastAPI Template is licensed under the terms of the MIT license.
+
+## TODO
+
+- 兑换奖品丰富: 视频（英语动画片，和视频商合作）时长控制、实物（网购）、现金（微信、支付宝）
+- 登录方式支持多种
+- 友情赞助
+- 小程序开发

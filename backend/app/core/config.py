@@ -96,6 +96,13 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
 
+    # Casdoor OAuth
+    CASDOOR_ENDPOINT: str = "http://localhost:8000"
+    CASDOOR_CLIENT_ID: str = ""
+    CASDOOR_CLIENT_SECRET: str = ""
+    CASDOOR_ORG_NAME: str = "built-in"
+    CASDOOR_APP_NAME: str = "epc"
+
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = (

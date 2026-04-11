@@ -4,16 +4,40 @@ import { Link as RouterLink, useRouterState } from "@tanstack/react-router"
 
 import type { UserPublic } from "@/client"
 
-const items = [
-  { title: "学习币",   path: "/",         adminOnly: false, emoji: "🪙" },
-  { title: "今日待办", path: "/items",    adminOnly: false, emoji: "✅" },
-  { title: "任务管理", path: "/tasks",    adminOnly: true,  emoji: "📋" },
-  { title: "奖品商城", path: "/prizes",   adminOnly: false, emoji: "🎁" },
-  { title: "我的宝贝", path: "/children", adminOnly: false, emoji: "👶" },
-  { title: "用户管理", path: "/admin",    adminOnly: true,  emoji: "👥" },
-  { title: "推广",     path: "/referral", adminOnly: false, emoji: "📣" },
-  { title: "成长记录", path: "/growth",   adminOnly: false, emoji: "📈" },
-  { title: "设置",     path: "/settings", adminOnly: false, emoji: "⚙️" },
+type UserRole = "admin" | "parent" | "child"
+
+interface MenuItem {
+  title: string
+  path: string
+  emoji: string
+  /** 哪些角色可见，undefined = 所有角色可见 */
+  roles?: UserRole[]
+}
+
+const items: MenuItem[] = [
+  // 宝贝专属
+  { title: "学习币",   path: "/",         emoji: "🪙",  roles: ["child"] },
+  { title: "今日待办", path: "/items",    emoji: "✅",  roles: ["child"] },
+  { title: "奖品商城", path: "/prizes",   emoji: "🎁",  roles: ["child"] },
+  { title: "成长记录", path: "/growth",   emoji: "📈",  roles: ["child"] },
+  // 家长专属
+  { title: "学习币",       path: "/",               emoji: "🪙",  roles: ["parent"] },
+  { title: "监控面板",     path: "/parent/monitor",  emoji: "📊",  roles: ["parent"] },
+  { title: "我的宝贝",     path: "/children",        emoji: "👶",  roles: ["parent"] },
+  { title: "任务管理",     path: "/tasks",           emoji: "📋",  roles: ["parent"] },
+  { title: "奖品管理",     path: "/prizes",          emoji: "🎁",  roles: ["parent"] },
+  { title: "推广",         path: "/referral",        emoji: "📣",  roles: ["parent"] },
+  // 管理员专属
+  { title: "学习币",   path: "/",         emoji: "🪙",  roles: ["admin"] },
+  { title: "今日待办", path: "/items",    emoji: "✅",  roles: ["admin"] },
+  { title: "任务管理", path: "/tasks",    emoji: "📋",  roles: ["admin"] },
+  { title: "奖品管理", path: "/prizes",   emoji: "🎁",  roles: ["admin"] },
+  { title: "我的宝贝", path: "/children", emoji: "👶",  roles: ["admin"] },
+  { title: "用户管理", path: "/admin",    emoji: "👥",  roles: ["admin"] },
+  { title: "推广",     path: "/referral", emoji: "📣",  roles: ["admin"] },
+  { title: "成长记录", path: "/growth",   emoji: "📈",  roles: ["admin"] },
+  // 所有角色
+  { title: "设置",     path: "/settings", emoji: "⚙️" },
 ]
 
 interface SidebarItemsProps {
@@ -25,9 +49,12 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
   const currentUser = queryClient.getQueryData<UserPublic>(["currentUser"])
   const location = useRouterState({ select: (s) => s.location })
 
-  const finalItems = currentUser?.is_superuser
-    ? items
-    : items.filter((item) => !item.adminOnly)
+  const userRole: UserRole = (currentUser?.role as UserRole) || "parent"
+
+  const finalItems = items.filter((item) => {
+    if (!item.roles) return true
+    return item.roles.includes(userRole)
+  })
 
   return (
     <Box pt={4}>
@@ -37,7 +64,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
       {finalItems.map(({ title, path, emoji }) => {
         const isActive = location.pathname === path
         return (
-          <RouterLink key={title} to={path} onClick={onClose}>
+          <RouterLink key={`${title}-${path}`} to={path} onClick={onClose}>
             <Flex
               align="center"
               gap={3}

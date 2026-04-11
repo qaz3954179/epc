@@ -21,6 +21,7 @@ from app.models import (
     UserCreate,
     UserPublic,
     UserRegister,
+    UserRole,
     UsersPublic,
     UserUpdate,
     UserUpdateMe,
@@ -36,15 +37,19 @@ router = APIRouter(prefix="/users", tags=["users"])
     dependencies=[Depends(get_current_active_superuser)],
     response_model=UsersPublic,
 )
-def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+def read_users(session: SessionDep, skip: int = 0, limit: int = 100, role: UserRole | None = None) -> Any:
     """
-    Retrieve users.
+    Retrieve users. 支持按 role 筛选。
     """
-
+    statement = select(User)
     count_statement = select(func.count()).select_from(User)
-    count = session.exec(count_statement).one()
+    
+    if role:
+        statement = statement.where(User.role == role)
+        count_statement = count_statement.where(User.role == role)
 
-    statement = select(User).offset(skip).limit(limit)
+    count = session.exec(count_statement).one()
+    statement = statement.offset(skip).limit(limit)
     users = session.exec(statement).all()
 
     return UsersPublic(data=users, count=count)
@@ -144,8 +149,8 @@ def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
 @router.post("/signup", response_model=UserPublic)
 def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     """
-    Create new user without the need to be logged in.
-    User will be inactive until email is verified.
+    注册家长账户（role=parent）。
+    注册后需要邮箱验证才能激活。
     """
     user = crud.get_user_by_email(session=session, email=user_in.email)
     if user:
@@ -168,7 +173,7 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     verification_code = generate_verification_code()
     verification_expires = datetime.utcnow() + timedelta(minutes=10)
 
-    user_create = UserCreate.model_validate(user_in, update={"is_active": False})
+    user_create = UserCreate.model_validate(user_in, update={"is_active": False, "role": UserRole.parent})
     user = crud.create_user(
         session=session, user_create=user_create, referred_by_id=referred_by_id
     )

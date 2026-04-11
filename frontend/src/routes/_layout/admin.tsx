@@ -6,6 +6,7 @@ import { z } from "zod"
 import { type UserPublic, UsersService } from "@/client"
 import AddUser from "@/components/Admin/AddUser"
 import { UserActionsMenu } from "@/components/Common/UserActionsMenu"
+import RouteGuard from "@/components/Common/RouteGuard"
 import PendingUsers from "@/components/Pending/PendingUsers"
 import {
   PaginationItems,
@@ -83,7 +84,7 @@ function UsersTable() {
                 {user.email}
               </Table.Cell>
               <Table.Cell>
-                {user.is_superuser ? "管理员" : "普通用户"}
+                {user.role === "admin" ? "管理员" : user.role === "parent" ? "家长" : user.role === "child" ? "宝贝" : user.role || "未知"}
               </Table.Cell>
               <Table.Cell>{user.is_active ? "已激活" : "未激活"}</Table.Cell>
               <Table.Cell>
@@ -115,6 +116,7 @@ function UsersTable() {
 
 function Admin() {
   return (
+    <RouteGuard allowedRoles={["admin"]}>
     <Container maxW="full">
       <Heading size="lg" pt={12}>
         用户管理
@@ -123,5 +125,6 @@ function Admin() {
       <AddUser />
       <UsersTable />
     </Container>
+    </RouteGuard>
   )
 }

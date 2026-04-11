@@ -5,6 +5,7 @@ import { useState } from "react"
 
 import { ReferralsService } from "@/client"
 import { Button } from "@/components/ui/button"
+import RouteGuard from "@/components/Common/RouteGuard"
 import PendingItems from "@/components/Pending/PendingItems"
 
 const Referral = () => {
@@ -37,6 +38,7 @@ const Referral = () => {
   }
 
   return (
+    <RouteGuard allowedRoles={["admin", "parent"]}>
     <Container maxW="full" pb={8}>
       <Heading size="lg" mb={6}>
         推广
@@ -157,6 +159,7 @@ const Referral = () => {
         )}
       </Box>
     </Container>
+    </RouteGuard>
   )
 }
 

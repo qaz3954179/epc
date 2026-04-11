@@ -160,8 +160,50 @@ services:
 
       # Enable redirection for HTTP and HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
+
+  # ─── Casdoor (OAuth / SSO) ────────────────────────────────────────
+  casdoor-db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${CASDOOR_DB_PASSWORD:-casdoor_pass}
+      MYSQL_DATABASE: casdoor
+    volumes:
+      - casdoor-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+
+  casdoor:
+    image: casbin/casdoor:latest
+    restart: always
+    networks:
+      - traefik-public
+      - default
+    depends_on:
+      casdoor-db:
+        condition: service_healthy
+    environment:
+      RUNNING_IN_DOCKER: "true"
+    volumes:
+      - ./casdoor/conf:/conf
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.services.${STACK_NAME?Variable not set}-casdoor.loadbalancer.server.port=8000
+      - traefik.http.routers.${STACK_NAME?Variable not set}-casdoor-http.rule=Host(`auth.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-casdoor-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME?Variable not set}-casdoor-http.middlewares=https-redirect
+      - traefik.http.routers.${STACK_NAME?Variable not set}-casdoor-https.rule=Host(`auth.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-casdoor-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME?Variable not set}-casdoor-https.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-casdoor-https.tls.certresolver=le
 volumes:
   app-db-data:
+  casdoor-db-data:
 
 networks:
   traefik-public:

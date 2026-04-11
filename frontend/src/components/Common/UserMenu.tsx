@@ -24,7 +24,7 @@ const UserMenu = () => {
           <MenuTrigger asChild p={2}>
             <Button data-testid="user-menu" variant="ghost" maxW="sm" truncate>
               <ErpcAvatar size={16} />
-              <Text>{user?.full_name || "User"}</Text>
+              <Text>{user?.nickname || user?.full_name || user?.username || "用户"}</Text>
             </Button>
           </MenuTrigger>
 

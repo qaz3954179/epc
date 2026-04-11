@@ -311,30 +311,29 @@ const UserRedemptions = () => {
 // ─── Main Page Component ─────────────────────────────────────────
 const Prizes = () => {
   const { user } = useAuth()
-  const isAdmin = user?.is_superuser ?? false
-  console.log('---isAdmin---', isAdmin, user)
+  const isManager = user?.role === "admin" || user?.role === "parent"
   const userCoins = user?.coins ?? 0
 
   if (!user) return null
 
-  const adminTabs = [
+  const managerTabs = [
     { value: "prize-list", title: "奖品列表", emoji: "🎁" },
     { value: "redemptions", title: "兑换记录", emoji: "📋" },
   ]
 
-  const userTabs = [
+  const childTabs = [
     { value: "store", title: "奖品商城", emoji: "🛒" },
     { value: "my-redemptions", title: "我的兑换", emoji: "📋" },
   ]
 
-  const tabs = isAdmin ? adminTabs : userTabs
+  const tabs = isManager ? managerTabs : childTabs
 
   return (
     <Container maxW="full">
       {/* Header */}
       <Flex justify="space-between" align="center" mb={6}>
-        <Heading size="lg">{isAdmin ? "🎁 奖品管理" : "🎁 奖品商城"}</Heading>
-        {!isAdmin && (
+        <Heading size="lg">{isManager ? "🎁 奖品管理" : "🎁 奖品商城"}</Heading>
+        {!isManager && (
           <Badge colorPalette="orange" fontSize="lg" px={4} py={2} borderRadius={12}>
             🪙 {userCoins} 学习币
           </Badge>
@@ -363,7 +362,7 @@ const Prizes = () => {
             ))}
           </Tabs.List>
 
-          {isAdmin ? (
+          {isManager ? (
             <>
               <Tabs.Content value="prize-list" p={6}>
                 <AdminPrizeList />

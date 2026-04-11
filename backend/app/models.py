@@ -18,18 +18,29 @@ def generate_referral_code(length: int = 8) -> str:
 
 class UserRole(str, Enum):
     """用户角色"""
-    admin = "admin"  # 管理员
-    user = "user"    # 用户
+    admin = "admin"    # 管理员
+    parent = "parent"  # 家长
+    child = "child"    # 宝贝
 
 
 # Shared properties
 class UserBase(SQLModel):
-    email: EmailStr = Field(unique=True, index=True, max_length=255)
+    email: EmailStr | None = Field(default=None, max_length=255)  # 宝贝不需要邮箱
+    username: str | None = Field(default=None, max_length=100)  # 宝贝登录用
     is_active: bool = True
     is_superuser: bool = False
     full_name: str | None = Field(default=None, max_length=255)
-    role: UserRole = Field(default=UserRole.user, max_length=20)  # 角色：admin/user
-    coins: int = Field(default=0)  # 学习币余额
+    role: UserRole = Field(default=UserRole.parent, max_length=20)
+    coins: int = Field(default=0)
+    # 宝贝扩展字段（合并到 User 表）
+    nickname: str | None = Field(default=None, max_length=100)
+    gender: str | None = Field(default=None, max_length=10)  # boy / girl
+    birth_month: str | None = Field(default=None, max_length=7)  # YYYY-MM
+    avatar_url: str | None = Field(default=None, max_length=2000)
+    parent_id: uuid.UUID | None = Field(default=None, foreign_key="user.id", nullable=True)
+    # OAuth 三方登录字段
+    oauth_provider: str | None = Field(default=None, max_length=50)   # e.g. "wechat", "qq", "google"
+    oauth_id: str | None = Field(default=None, max_length=255)        # 三方平台用户唯一 ID
 
 
 # Properties to receive via API on creation
@@ -41,7 +52,7 @@ class UserRegister(SQLModel):
     email: EmailStr = Field(max_length=255)
     password: str = Field(min_length=8, max_length=40)
     full_name: str | None = Field(default=None, max_length=255)
-    referral_code: str | None = Field(default=None, max_length=16)  # 推荐人的推荐码
+    referral_code: str | None = Field(default=None, max_length=16)
 
 
 # Properties to receive via API on update, all are optional
@@ -65,18 +76,35 @@ class VerifyEmail(SQLModel):
     code: str = Field(min_length=6, max_length=6)
 
 
-# Database model, database table inferred from class name
+# Database model
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    hashed_password: str
+    hashed_password: str = Field(default="")  # OAuth 用户无密码，默认空字符串
     referral_code: str = Field(default_factory=generate_referral_code, max_length=16, unique=True, index=True)
     referred_by_id: uuid.UUID | None = Field(default=None, foreign_key="user.id", nullable=True)
     email_verification_code: str | None = Field(default=None, max_length=6)
     email_verification_expires: datetime | None = Field(default=None)
-    items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    items: list["Item"] = Relationship(
+        back_populates="owner",
+        cascade_delete=True,
+        sa_relationship_kwargs={"foreign_keys": "[Item.owner_id]"},
+    )
+    children: list["User"] = Relationship(
+        back_populates="parent",
+        sa_relationship_kwargs={
+            "foreign_keys": "[User.parent_id]",
+        },
+    )
+    parent: Optional["User"] = Relationship(
+        back_populates="children",
+        sa_relationship_kwargs={
+            "foreign_keys": "[User.parent_id]",
+            "remote_side": "[User.id]",
+        },
+    )
 
 
-# Properties to return via API, id is always required
+# Properties to return via API
 class UserPublic(UserBase):
     id: uuid.UUID
     referral_code: str
@@ -88,39 +116,77 @@ class UsersPublic(SQLModel):
     count: int
 
 
-# Shared properties
+# ─── Child Account schemas ─────────────────────────────────────────
+
+class ChildAccountCreate(SQLModel):
+    """家长创建宝贝账户"""
+    username: str = Field(min_length=2, max_length=100)
+    password: str = Field(min_length=6, max_length=40)
+    full_name: str | None = Field(default=None, max_length=255)
+    nickname: str = Field(min_length=1, max_length=100)
+    gender: str = Field(max_length=10)  # boy / girl
+    birth_month: str | None = Field(default=None, max_length=7)
+    avatar_url: str | None = Field(default=None, max_length=2000)
+
+
+class ChildAccountUpdate(SQLModel):
+    """更新宝贝账户"""
+    username: str | None = Field(default=None, min_length=2, max_length=100)
+    password: str | None = Field(default=None, min_length=6, max_length=40)
+    full_name: str | None = Field(default=None, max_length=255)
+    nickname: str | None = Field(default=None, min_length=1, max_length=100)
+    gender: str | None = Field(default=None, max_length=10)
+    birth_month: str | None = Field(default=None, max_length=7)
+    avatar_url: str | None = Field(default=None, max_length=2000)
+
+
+class ChildAccountPublic(SQLModel):
+    """宝贝账户公开信息"""
+    id: uuid.UUID
+    username: str | None
+    full_name: str | None
+    nickname: str | None
+    gender: str | None
+    birth_month: str | None
+    avatar_url: str | None
+    coins: int
+    is_active: bool
+    created_at: datetime | None = None
+
+
+# ─── Item models ────────────────────────────────────────────────────
+
 class ItemBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
     description: str | None = Field(default=None, max_length=255)
-    category: str | None = Field(default=None, max_length=50)  # daily, exam, game, pe
-    task_type: str | None = Field(default=None, max_length=50)  # daily, weekly
-    target_count: int = Field(default=1)  # 周期内完成次数
-    coins_reward: int = Field(default=10)  # 每次完成获得的学习币
+    category: str | None = Field(default=None, max_length=50)
+    task_type: str | None = Field(default=None, max_length=50)
+    target_count: int = Field(default=1)
+    coins_reward: int = Field(default=10)
 
 
-# Properties to receive on item creation
 class ItemCreate(ItemBase):
     pass
 
 
-# Properties to receive on item update
 class ItemUpdate(ItemBase):
     title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
 
 
-# Database model, database table inferred from class name
 class Item(ItemBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
-    owner: User | None = Relationship(back_populates="items")
+    owner: User | None = Relationship(
+        back_populates="items",
+        sa_relationship_kwargs={"foreign_keys": "[Item.owner_id]"},
+    )
     completions: list["TaskCompletion"] = Relationship(
         back_populates="item", cascade_delete=True
     )
 
 
-# Properties to return via API, id is always required
 class ItemPublic(ItemBase):
     id: uuid.UUID
     owner_id: uuid.UUID
@@ -145,6 +211,7 @@ class Token(SQLModel):
 # Contents of JWT token
 class TokenPayload(SQLModel):
     sub: str | None = None
+    role: str | None = None
 
 
 class NewPassword(SQLModel):
@@ -200,8 +267,8 @@ class TodayTasksPublic(SQLModel):
 # Prize models
 class PrizeType(str, Enum):
     """奖品类型"""
-    physical = "physical"  # 实物
-    virtual = "virtual"    # 虚拟
+    physical = "physical"
+    virtual = "virtual"
 
 
 class PrizeBase(SQLModel):
@@ -210,10 +277,10 @@ class PrizeBase(SQLModel):
     image_url: str | None = Field(default=None, max_length=2000)
     product_url: str | None = Field(default=None, max_length=2000)
     price: float | None = Field(default=None, ge=0)
-    coins_cost: int = Field(default=100, ge=0)  # 兑换所需学习币
-    stock: int = Field(default=0, ge=0)  # 库存数量
-    prize_type: PrizeType = Field(default=PrizeType.physical, max_length=20)  # 奖品类型
-    is_active: bool = Field(default=True)  # 是否上架
+    coins_cost: int = Field(default=100, ge=0)
+    stock: int = Field(default=0, ge=0)
+    prize_type: PrizeType = Field(default=PrizeType.physical, max_length=20)
+    is_active: bool = Field(default=True)
 
 
 class PrizeCreate(PrizeBase):
@@ -228,7 +295,7 @@ class PrizeUpdate(PrizeBase):
 
 class Prize(PrizeBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    total_redeemed: int = Field(default=0, ge=0)  # 累计兑换次数
+    total_redeemed: int = Field(default=0, ge=0)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -303,16 +370,16 @@ class ShippingAddressesPublic(SQLModel):
 
 class TransactionType(str, Enum):
     """交易类型"""
-    task_completion = "task_completion"      # 完成任务
-    prize_redemption = "prize_redemption"    # 兑换奖品
-    admin_adjustment = "admin_adjustment"    # 管理员调整
-    refund = "refund"                        # 退款
-    referral_bonus = "referral_bonus"        # 推荐奖励
+    task_completion = "task_completion"
+    prize_redemption = "prize_redemption"
+    admin_adjustment = "admin_adjustment"
+    refund = "refund"
+    referral_bonus = "referral_bonus"
 
 
 class CoinLogBase(SQLModel):
-    amount: int  # 正数为收入，负数为支出
-    balance_after: int  # 变动后余额
+    amount: int
+    balance_after: int
     transaction_type: TransactionType = Field(max_length=30)
     description: str = Field(max_length=500)
     created_at: datetime = Field(default_factory=datetime.utcnow)
@@ -323,7 +390,7 @@ class CoinLog(CoinLogBase, table=True):
     user_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
-    related_id: uuid.UUID | None = Field(default=None)  # 关联的任务完成ID或兑换记录ID
+    related_id: uuid.UUID | None = Field(default=None)
     user: User | None = Relationship()
 
 
@@ -347,11 +414,11 @@ class CoinLogsPublic(SQLModel):
 
 class RedemptionStatus(str, Enum):
     """兑换状态"""
-    pending = "pending"        # 待处理
-    processing = "processing"  # 处理中
-    completed = "completed"    # 已完成
-    cancelled = "cancelled"    # 已取消
-    refunded = "refunded"      # 已退款
+    pending = "pending"
+    processing = "processing"
+    completed = "completed"
+    cancelled = "cancelled"
+    refunded = "refunded"
 
 
 class PrizeRedemptionBase(SQLModel):
@@ -367,31 +434,22 @@ class PrizeRedemption(PrizeRedemptionBase, table=True):
     prize_id: uuid.UUID = Field(
         foreign_key="prize.id", nullable=False, ondelete="RESTRICT"
     )
-    prize_name: str = Field(max_length=255)  # 兑换时快照奖品名称
-    prize_type: str = Field(max_length=20)  # 奖品类型快照
+    prize_name: str = Field(max_length=255)
+    prize_type: str = Field(max_length=20)
     status: RedemptionStatus = Field(default=RedemptionStatus.pending, max_length=20)
-    
-    # 收货信息（仅实物奖品需要）
     shipping_address_id: uuid.UUID | None = Field(
         default=None, foreign_key="shippingaddress.id", nullable=True
     )
     recipient_name: str | None = Field(default=None, max_length=100)
     recipient_phone: str | None = Field(default=None, max_length=20)
     recipient_address: str | None = Field(default=None, max_length=500)
-    
-    # 物流信息
     tracking_number: str | None = Field(default=None, max_length=100)
     shipping_company: str | None = Field(default=None, max_length=50)
     shipped_at: datetime | None = Field(default=None)
-    
-    # 备注
     admin_note: str | None = Field(default=None, max_length=500)
     user_note: str | None = Field(default=None, max_length=500)
-    
-    # 时间戳
     completed_at: datetime | None = Field(default=None)
     cancelled_at: datetime | None = Field(default=None)
-    
     user: User | None = Relationship()
     prize: Prize | None = Relationship()
     shipping_address: Optional["ShippingAddress"] = Relationship()
@@ -423,7 +481,7 @@ class PrizeRedemptionsPublic(SQLModel):
 
 class DailyCompletionPoint(SQLModel):
     """单日完成数据点"""
-    date: str  # YYYY-MM-DD
+    date: str
     count: int
 
 
@@ -448,16 +506,16 @@ class PeriodComparison(SQLModel):
     previous_count: int
     current_coins: int
     previous_coins: int
-    change_rate: float  # 变化百分比
+    change_rate: float
 
 
 class ProgressReport(SQLModel):
     """进步报告"""
-    period: str  # "week" or "month"
+    period: str
     comparison: PeriodComparison
     category_stats: list[CategoryStats]
     daily_trend: list[DailyCompletionPoint]
-    summary: str  # 自动生成的总结文字
+    summary: str
 
 
 class RewardSummary(SQLModel):
@@ -469,20 +527,20 @@ class RewardSummary(SQLModel):
     recent_redemptions: list[PrizeRedemptionPublic]
 
 
-# ─── Child (我的宝贝) models ───────────────────────────────────────
+# ─── Child (旧模型，保留兼容但标记废弃) ────────────────────────────
 
 class ChildGender(str, Enum):
-    """宝贝性别"""
-    boy = "boy"      # 男孩
-    girl = "girl"    # 女孩
+    """宝贝性别 (deprecated, use User.gender instead)"""
+    boy = "boy"
+    girl = "girl"
 
 
 class ChildBase(SQLModel):
-    real_name: str = Field(max_length=100)  # 真实姓名（登录使用）
-    nickname: str = Field(min_length=1, max_length=100)  # 昵称（必填）
-    gender: ChildGender = Field(max_length=10)  # 性别
-    birth_month: str | None = Field(default=None, max_length=7)  # 出生年月 YYYY-MM
-    avatar_url: str | None = Field(default=None, max_length=2000)  # 头像（非必填）
+    real_name: str = Field(max_length=100)
+    nickname: str = Field(min_length=1, max_length=100)
+    gender: ChildGender = Field(max_length=10)
+    birth_month: str | None = Field(default=None, max_length=7)
+    avatar_url: str | None = Field(default=None, max_length=2000)
 
 
 class ChildCreate(ChildBase):

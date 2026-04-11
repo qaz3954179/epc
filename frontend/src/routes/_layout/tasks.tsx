@@ -2,6 +2,7 @@ import { ItemsService } from "@/client"
 import type { ItemPublic } from "@/client"
 import AddTask from "@/components/Tasks/AddTask"
 import PendingItems from "@/components/Pending/PendingItems"
+import RouteGuard from "@/components/Common/RouteGuard"
 import { InputGroup } from "@/components/ui/input-group"
 import {
   Badge,
@@ -336,6 +337,7 @@ const Tasks = () => {
   const [filterTaskType, setFilterTaskType] = useState("")
 
   return (
+    <RouteGuard allowedRoles={["admin", "parent"]}>
     <Container maxW="full">
       <Box mb={6}>
         <Flex justifyContent="space-between" alignItems="center" mb={2}>
@@ -359,6 +361,7 @@ const Tasks = () => {
         filterTaskType={filterTaskType}
       />
     </Container>
+    </RouteGuard>
   )
 }
 

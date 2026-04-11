@@ -18,6 +18,7 @@ from app.models import (
     TransactionType,
     User,
     PrizeType,
+    UserRole,
 )
 
 router = APIRouter(prefix="/prize-redemptions", tags=["prize-redemptions"])
@@ -54,7 +55,11 @@ def redeem_prize(
     current_user: CurrentUser,
     request: RedeemPrizeRequest,
 ) -> Any:
-    """兑换奖品"""
+    """兑换奖品（仅宝贝可兑换）"""
+    # 只允许 child 角色兑换
+    if current_user.role != UserRole.child and not current_user.is_superuser:
+        raise HTTPException(status_code=403, detail="只有宝贝可以兑换奖品")
+    
     # 1. 获取奖品信息
     prize = session.get(Prize, request.prize_id)
     if not prize:
@@ -101,7 +106,7 @@ def redeem_prize(
             user_id=current_user.id,
             prize_id=prize.id,
             prize_name=prize.name,
-            prize_type=prize.prize_type.value,
+            prize_type=(prize.prize_type.value if prize.prize_type else PrizeType.physical.value),
             coins_spent=prize.coins_cost,
             status=RedemptionStatus.pending,
             user_note=request.user_note,

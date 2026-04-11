@@ -5,7 +5,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from sqlmodel import col, func, select
 
-from app.api.deps import CurrentUser, SessionDep
+from app.api.deps import CurrentUser, CurrentChild, SessionDep
 from app.models import (
     CoinLog,
     CoinLogPublic,
@@ -17,6 +17,7 @@ from app.models import (
     TodayTaskPublic,
     TodayTasksPublic,
     User,
+    UserRole,
 )
 
 router = APIRouter(prefix="/task-completions", tags=["task-completions"])
@@ -73,11 +74,18 @@ def get_today_tasks(
     """
     Get today's tasks with completion counts for the current user.
     Daily tasks always show; weekly tasks show every day of the week.
+    child 角色看自己 parent 创建的任务。
     """
     start, end = _today_range()
 
-    # Get all items belonging to the user
-    items_stmt = select(Item).where(Item.owner_id == current_user.id)
+    # 确定任务所有者：child 看 parent 的任务，parent 看自己的
+    if current_user.role == UserRole.child and current_user.parent_id:
+        owner_id = current_user.parent_id
+    else:
+        owner_id = current_user.id
+
+    # Get all items belonging to the owner
+    items_stmt = select(Item).where(Item.owner_id == owner_id)
     items = session.exec(items_stmt).all()
 
     result: list[TodayTaskPublic] = []
@@ -121,11 +129,18 @@ def complete_task(
     """
     Record a task completion. Respects the target_count limit per day.
     """
+    # 只允许 child 角色完成任务
+    if current_user.role != UserRole.child and not current_user.is_superuser:
+        raise HTTPException(status_code=403, detail="只有宝贝可以完成任务")
+
     item = session.get(Item, item_id)
     if not item:
         raise HTTPException(status_code=404, detail="任务不存在")
-    if not current_user.is_superuser and item.owner_id != current_user.id:
-        raise HTTPException(status_code=403, detail="无权操作此任务")
+    # child 可以完成自己 parent 创建的任务
+    if not current_user.is_superuser:
+        allowed_owner = current_user.parent_id if current_user.role == UserRole.child else current_user.id
+        if item.owner_id != allowed_owner:
+            raise HTTPException(status_code=403, detail="无权操作此任务")
 
     # Check today's completion count
     start, end = _today_range()

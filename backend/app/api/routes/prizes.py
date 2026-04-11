@@ -15,6 +15,7 @@ from app.models import (
     PrizesPublic,
     PrizeUpdate,
     TaobaoProductInfo,
+    UserRole,
 )
 
 router = APIRouter(prefix="/prizes", tags=["prizes"])
@@ -45,8 +46,8 @@ def read_prize(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) ->
 def create_prize(
     *, session: SessionDep, current_user: CurrentUser, prize_in: PrizeCreate
 ) -> Any:
-    """创建奖品（仅管理员）"""
-    if not current_user.is_superuser:
+    """创建奖品（家长和管理员）"""
+    if current_user.role not in (UserRole.parent, UserRole.admin) and not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="权限不足")
     prize = Prize.model_validate(prize_in)
     session.add(prize)
@@ -63,8 +64,8 @@ def update_prize(
     id: uuid.UUID,
     prize_in: PrizeUpdate,
 ) -> Any:
-    """更新奖品（仅管理员）"""
-    if not current_user.is_superuser:
+    """更新奖品（家长和管理员）"""
+    if current_user.role not in (UserRole.parent, UserRole.admin) and not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="权限不足")
     prize = session.get(Prize, id)
     if not prize:
@@ -81,8 +82,8 @@ def update_prize(
 def delete_prize(
     session: SessionDep, current_user: CurrentUser, id: uuid.UUID
 ) -> Message:
-    """删除奖品（仅管理员）"""
-    if not current_user.is_superuser:
+    """删除奖品（家长和管理员）"""
+    if current_user.role not in (UserRole.parent, UserRole.admin) and not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="权限不足")
     prize = session.get(Prize, id)
     if not prize:
@@ -136,7 +137,7 @@ def _extract_taobao_meta(html: str) -> TaobaoProductInfo:
 @router.post("/parse-taobao-url", response_model=TaobaoProductInfo)
 async def parse_taobao_url(*, current_user: CurrentUser, url: str) -> Any:
     """解析淘宝/天猫商品链接，自动提取商品信息"""
-    if not current_user.is_superuser:
+    if current_user.role not in (UserRole.parent, UserRole.admin) and not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="权限不足")
 
     if not re.match(r"https?://(item\.taobao|detail\.tmall|m\.tb|a\.m\.taobao)", url):

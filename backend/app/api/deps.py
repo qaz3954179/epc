@@ -11,7 +11,7 @@ from sqlmodel import Session
 from app.core import security
 from app.core.config import settings
 from app.core.db import engine
-from app.models import TokenPayload, User
+from app.models import TokenPayload, User, UserRole
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
@@ -55,3 +55,29 @@ def get_current_active_superuser(current_user: CurrentUser) -> User:
             status_code=403, detail="The user doesn't have enough privileges"
         )
     return current_user
+
+
+def get_current_parent(current_user: CurrentUser) -> User:
+    """校验当前用户是家长角色"""
+    if current_user.role != UserRole.parent and not current_user.is_superuser:
+        raise HTTPException(status_code=403, detail="仅家长可执行此操作")
+    return current_user
+
+
+def get_current_child(current_user: CurrentUser) -> User:
+    """校验当前用户是宝贝角色"""
+    if current_user.role != UserRole.child:
+        raise HTTPException(status_code=403, detail="仅宝贝可执行此操作")
+    return current_user
+
+
+def get_current_parent_or_admin(current_user: CurrentUser) -> User:
+    """校验当前用户是家长或管理员"""
+    if current_user.role not in (UserRole.parent, UserRole.admin) and not current_user.is_superuser:
+        raise HTTPException(status_code=403, detail="仅家长或管理员可执行此操作")
+    return current_user
+
+
+CurrentParent = Annotated[User, Depends(get_current_parent)]
+CurrentChild = Annotated[User, Depends(get_current_child)]
+CurrentParentOrAdmin = Annotated[User, Depends(get_current_parent_or_admin)]
