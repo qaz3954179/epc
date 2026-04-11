@@ -14,3 +14,14 @@
 4. 在 Casdoor 里配置你想要的社交 Provider（微信/QQ/Google 等）
 
 要我帮你写 Casdoor 的 init_data.json 自动初始化配置吗？
+
+
+搞定。`casdoor/conf/init_data.json` 已创建，包含：
+
+- `built-in` 组织 + `admin` 管理员（密码 `123`，首次登录后改掉）
+- `epc` 应用，已配置好 JWT token 格式、授权类型、回调 URI（`localhost:5173/oauth/callback`）
+- 3 个社交登录 Provider 占位符：微信、QQ、Google（`clientId` / `clientSecret` 需要你填入真实值）
+
+启动后 Casdoor 会自动导入这些配置。详细的配置步骤和架构说明写在了 `CASDOOR_SETUP.md` 里。
+
+下一步就是 `docker compose up casdoor-db casdoor -d`，然后去后台把 Provider 的真实凭证填上。
