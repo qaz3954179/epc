@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useQuery } from "@tanstack/react-query"
 import { ErpcCoins, ErpcListAll, ErpcWithdraw } from "erpc-icons/erpc"
 import bannerImg from '../../../public/assets/images/banner_4x.png'
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/_layout/")({
 
 function Dashboard() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const coins = user?.coins ?? 0
 
   const { data: coinLogs } = useQuery({
@@ -27,7 +28,7 @@ function Dashboard() {
         <Flex bgImg={`url(${bannerImg})`} direction={'column'} justify={'center'} align={'flex-start'} px={12} h={300} bgSize={'cover'} marginBottom={6} rounded={6}>
           <Text marginBottom={4} fontSize={36} fontWeight={"bolder"} color={'white'}>神奇玩具城</Text>
           <Text fontSize={20} marginBottom={6} color={'white'}>用学习币兑换你喜欢的玩具</Text>
-          <Button bg={"primary"}>立即兑换</Button>
+          <Button bg={"primary"} onClick={() => navigate({to: '/prizes'})}>立即兑换</Button>
         </Flex>
         <Box
           h={192}
