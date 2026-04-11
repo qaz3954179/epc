@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.api.routes import (
     children,
     coin_logs,
+    exams,
     growth,
     items,
     login,
@@ -34,6 +35,7 @@ api_router.include_router(growth.router)
 api_router.include_router(referrals.router)
 api_router.include_router(children.router)
 api_router.include_router(parent.router)
+api_router.include_router(exams.router)
 
 
 if settings.ENVIRONMENT == "local":

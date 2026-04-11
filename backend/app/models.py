@@ -2,12 +2,12 @@ import uuid
 import string
 import secrets
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 
 from enum import Enum
 
 from pydantic import EmailStr
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Column, Field, Relationship, SQLModel, JSON
 
 
 def generate_referral_code(length: int = 8) -> str:
@@ -573,3 +573,283 @@ class ChildPublic(ChildBase):
 class ChildrenPublic(SQLModel):
     data: list[ChildPublic]
     count: int
+
+
+# ─── Exam System models ────────────────────────────────────────────
+
+class ExamSubject(str, Enum):
+    """考试科目"""
+    math = "math"
+    english = "english"
+    chinese = "chinese"
+    science = "science"
+    other = "other"
+
+
+class ExamDifficulty(str, Enum):
+    """考试难度"""
+    easy = "easy"
+    medium = "medium"
+    hard = "hard"
+
+
+class ExamSourceType(str, Enum):
+    """题目来源"""
+    manual = "manual"  # 手动录入
+    ai = "ai"          # AI 生成
+
+
+class ExamGameMode(str, Enum):
+    """考试模式"""
+    classic = "classic"        # 标准模式
+    countdown = "countdown"    # 倒计时挑战
+    challenge = "challenge"    # 闯关模式
+    speed_run = "speed_run"    # 极速模式
+
+
+class QuestionType(str, Enum):
+    """题目类型"""
+    choice = "choice"          # 选择题
+    fill_blank = "fill_blank"  # 填空题
+    true_false = "true_false"  # 判断题
+    spelling = "spelling"      # 拼写题
+
+
+class BookingStatus(str, Enum):
+    """预约状态"""
+    booked = "booked"
+    started = "started"
+    completed = "completed"
+    cancelled = "cancelled"
+    expired = "expired"
+
+
+class SessionStatus(str, Enum):
+    """考试会话状态"""
+    in_progress = "in_progress"
+    completed = "completed"
+    timeout = "timeout"
+
+
+# ─── ExamTemplate ──────────────────────────────────────────────────
+
+class ExamTemplateBase(SQLModel):
+    title: str = Field(max_length=255)
+    subject: ExamSubject = Field(max_length=20)
+    source_type: ExamSourceType = Field(default=ExamSourceType.manual, max_length=20)
+    difficulty: ExamDifficulty = Field(default=ExamDifficulty.medium, max_length=20)
+    question_count: int = Field(default=10, ge=1)
+    time_limit_seconds: int | None = Field(default=None, ge=0)
+    coins_reward_rules: dict[str, Any] = Field(default={}, sa_column=Column(JSON))
+    game_mode: ExamGameMode = Field(default=ExamGameMode.classic, max_length=20)
+    is_active: bool = Field(default=True)
+
+
+class ExamTemplateCreate(ExamTemplateBase):
+    pass
+
+
+class ExamTemplateUpdate(SQLModel):
+    title: str | None = Field(default=None, max_length=255)
+    subject: ExamSubject | None = None
+    difficulty: ExamDifficulty | None = None
+    question_count: int | None = Field(default=None, ge=1)
+    time_limit_seconds: int | None = Field(default=None, ge=0)
+    coins_reward_rules: dict[str, Any] | None = None
+    game_mode: ExamGameMode | None = None
+    is_active: bool | None = None
+
+
+class ExamTemplate(ExamTemplateBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_by: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    creator: User | None = Relationship()
+    questions: list["Question"] = Relationship(back_populates="template", cascade_delete=True)
+
+
+class ExamTemplatePublic(ExamTemplateBase):
+    id: uuid.UUID
+    created_by: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class ExamTemplatesPublic(SQLModel):
+    data: list[ExamTemplatePublic]
+    count: int
+
+
+# ─── Question ──────────────────────────────────────────────────────
+
+class QuestionBase(SQLModel):
+    question_type: QuestionType = Field(max_length=20)
+    content: dict[str, Any] = Field(sa_column=Column(JSON))
+    answer: str = Field(max_length=500)
+    explanation: str | None = Field(default=None, max_length=1000)
+    difficulty: ExamDifficulty = Field(default=ExamDifficulty.medium, max_length=20)
+    points: int = Field(default=10, ge=1)
+
+
+class QuestionCreate(QuestionBase):
+    template_id: uuid.UUID
+
+
+class QuestionUpdate(SQLModel):
+    question_type: QuestionType | None = None
+    content: dict[str, Any] | None = None
+    answer: str | None = Field(default=None, max_length=500)
+    explanation: str | None = Field(default=None, max_length=1000)
+    difficulty: ExamDifficulty | None = None
+    points: int | None = Field(default=None, ge=1)
+
+
+class Question(QuestionBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    template_id: uuid.UUID = Field(foreign_key="examtemplate.id", nullable=False, ondelete="CASCADE")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    template: ExamTemplate | None = Relationship(back_populates="questions")
+
+
+class QuestionPublic(QuestionBase):
+    id: uuid.UUID
+    template_id: uuid.UUID
+    created_at: datetime
+
+
+class QuestionsPublic(SQLModel):
+    data: list[QuestionPublic]
+    count: int
+
+
+# ─── ExamBooking ───────────────────────────────────────────────────
+
+class ExamBookingBase(SQLModel):
+    scheduled_at: datetime
+    booking_type: str = Field(default="self_book", max_length=20)
+
+
+class ExamBookingCreate(SQLModel):
+    template_id: uuid.UUID
+    child_id: uuid.UUID | None = None  # 家长可以为孩子预约
+    scheduled_at: datetime
+    booking_type: str = Field(default="self_book", max_length=20)
+
+
+class ExamBooking(ExamBookingBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    template_id: uuid.UUID = Field(foreign_key="examtemplate.id", nullable=False, ondelete="CASCADE")
+    child_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    status: BookingStatus = Field(default=BookingStatus.booked, max_length=20)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    template: ExamTemplate | None = Relationship()
+    child: User | None = Relationship()
+
+
+class ExamBookingPublic(ExamBookingBase):
+    id: uuid.UUID
+    template_id: uuid.UUID
+    child_id: uuid.UUID
+    status: BookingStatus
+    created_at: datetime
+    template: ExamTemplatePublic | None = None
+
+
+class ExamBookingsPublic(SQLModel):
+    data: list[ExamBookingPublic]
+    count: int
+
+
+# ─── ExamSession ───────────────────────────────────────────────────
+
+class ExamSessionBase(SQLModel):
+    started_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class ExamSession(ExamSessionBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    booking_id: uuid.UUID | None = Field(default=None, foreign_key="exambooking.id", nullable=True, ondelete="SET NULL")
+    child_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    template_id: uuid.UUID = Field(foreign_key="examtemplate.id", nullable=False, ondelete="CASCADE")
+    finished_at: datetime | None = None
+    score: int = Field(default=0)
+    total_points: int = Field(default=0)
+    coins_earned: int = Field(default=0)
+    combo_max: int = Field(default=0)
+    accuracy_rate: float = Field(default=0.0)
+    status: SessionStatus = Field(default=SessionStatus.in_progress, max_length=20)
+    template: ExamTemplate | None = Relationship()
+    child: User | None = Relationship()
+    answers: list["ExamAnswer"] = Relationship(back_populates="session", cascade_delete=True)
+
+
+class ExamSessionPublic(ExamSessionBase):
+    id: uuid.UUID
+    booking_id: uuid.UUID | None
+    child_id: uuid.UUID
+    template_id: uuid.UUID
+    finished_at: datetime | None
+    score: int
+    total_points: int
+    coins_earned: int
+    combo_max: int
+    accuracy_rate: float
+    status: SessionStatus
+
+
+class ExamSessionsPublic(SQLModel):
+    data: list[ExamSessionPublic]
+    count: int
+
+
+# ─── ExamAnswer ────────────────────────────────────────────────────
+
+class ExamAnswerBase(SQLModel):
+    child_answer: str = Field(max_length=500)
+    is_correct: bool
+    time_spent_ms: int = Field(default=0, ge=0)
+    combo_count: int = Field(default=0, ge=0)
+    answered_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class ExamAnswerCreate(SQLModel):
+    question_id: uuid.UUID
+    child_answer: str = Field(max_length=500)
+    time_spent_ms: int = Field(default=0, ge=0)
+
+
+class ExamAnswer(ExamAnswerBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    session_id: uuid.UUID = Field(foreign_key="examsession.id", nullable=False, ondelete="CASCADE")
+    question_id: uuid.UUID = Field(foreign_key="question.id", nullable=False, ondelete="CASCADE")
+    session: ExamSession | None = Relationship(back_populates="answers")
+    question: Question | None = Relationship()
+
+
+class ExamAnswerPublic(ExamAnswerBase):
+    id: uuid.UUID
+    session_id: uuid.UUID
+    question_id: uuid.UUID
+
+
+class ExamAnswersPublic(SQLModel):
+    data: list[ExamAnswerPublic]
+    count: int
+
+
+# ─── Exam Report ───────────────────────────────────────────────────
+
+class ExamReport(SQLModel):
+    """考试报告"""
+    session_id: uuid.UUID
+    template_title: str
+    subject: str
+    score: int
+    total_points: int
+    accuracy_rate: float
+    combo_max: int
+    coins_earned: int
+    time_spent_seconds: int
+    answers: list[dict[str, Any]]
+    summary: str
