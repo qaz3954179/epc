@@ -3,1007 +3,993 @@
 /**
  * 用户角色
  */
-export type app__models__UserRole__1 = "admin" | "parent" | "child"
+export type app__models__UserRole__1 = 'admin' | 'parent' | 'child';
 
 /**
  * 用户角色
  */
-export type app__models__UserRole__2 = "admin" | "parent" | "child"
+export type app__models__UserRole__2 = 'admin' | 'parent' | 'child';
 
 export type Body_login_login_access_token = {
-  grant_type?: string | null
-  username: string
-  password: string
-  scope?: string
-  client_id?: string | null
-  client_secret?: string | null
-}
+    grant_type?: (string | null);
+    username: string;
+    password: string;
+    scope?: string;
+    client_id?: (string | null);
+    client_secret?: (string | null);
+};
 
 /**
  * 分类统计
  */
 export type CategoryStats = {
-  category: string
-  count: number
-  coins_earned: number
-}
+    category: string;
+    count: number;
+    coins_earned: number;
+};
 
 /**
  * 家长创建宝贝账户
  */
 export type ChildAccountCreate = {
-  username: string
-  password: string
-  full_name?: string | null
-  nickname: string
-  gender: string
-  birth_month?: string | null
-  avatar_url?: string | null
-}
+    username: string;
+    password: string;
+    full_name?: (string | null);
+    nickname: string;
+    gender: string;
+    birth_month?: (string | null);
+    avatar_url?: (string | null);
+};
 
 /**
  * 宝贝账户公开信息
  */
 export type ChildAccountPublic = {
-  id: string
-  username: string | null
-  full_name: string | null
-  nickname: string | null
-  gender: string | null
-  birth_month: string | null
-  avatar_url: string | null
-  coins: number
-  is_active: boolean
-  created_at?: string | null
-}
+    id: string;
+    username: (string | null);
+    full_name: (string | null);
+    nickname: (string | null);
+    gender: (string | null);
+    birth_month: (string | null);
+    avatar_url: (string | null);
+    coins: number;
+    is_active: boolean;
+    created_at?: (string | null);
+};
 
 /**
  * 更新宝贝账户
  */
 export type ChildAccountUpdate = {
-  username?: string | null
-  password?: string | null
-  full_name?: string | null
-  nickname?: string | null
-  gender?: string | null
-  birth_month?: string | null
-  avatar_url?: string | null
-}
+    username?: (string | null);
+    password?: (string | null);
+    full_name?: (string | null);
+    nickname?: (string | null);
+    gender?: (string | null);
+    birth_month?: (string | null);
+    avatar_url?: (string | null);
+};
 
 export type ChildCreate = {
-  real_name: string
-  nickname: string
-  /**
-   * 宝贝性别 (deprecated, use User.gender instead)
-   */
-  gender: "boy" | "girl"
-  birth_month?: string | null
-  avatar_url?: string | null
-}
+    real_name: string;
+    nickname: string;
+    /**
+     * 宝贝性别 (deprecated, use User.gender instead)
+     */
+    gender: 'boy' | 'girl';
+    birth_month?: (string | null);
+    avatar_url?: (string | null);
+};
 
 /**
  * 宝贝性别 (deprecated, use User.gender instead)
  */
-export type gender = "boy" | "girl"
+export type gender = 'boy' | 'girl';
 
 /**
  * 宝贝性别 (deprecated, use User.gender instead)
  */
-export type ChildGender = "boy" | "girl"
+export type ChildGender = 'boy' | 'girl';
 
 export type ChildPublic = {
-  real_name: string
-  nickname: string
-  /**
-   * 宝贝性别 (deprecated, use User.gender instead)
-   */
-  gender: "boy" | "girl"
-  birth_month?: string | null
-  avatar_url?: string | null
-  id: string
-  user_id: string
-  created_at: string
-  updated_at: string
-}
+    real_name: string;
+    nickname: string;
+    /**
+     * 宝贝性别 (deprecated, use User.gender instead)
+     */
+    gender: 'boy' | 'girl';
+    birth_month?: (string | null);
+    avatar_url?: (string | null);
+    id: string;
+    user_id: string;
+    created_at: string;
+    updated_at: string;
+};
 
 export type ChildrenPublic = {
-  data: Array<ChildPublic>
-  count: number
-}
+    data: Array<ChildPublic>;
+    count: number;
+};
 
 export type ChildUpdate = {
-  real_name?: string | null
-  nickname?: string | null
-  gender?: "boy" | "girl" | null
-  birth_month?: string | null
-  avatar_url?: string | null
-}
+    real_name?: (string | null);
+    nickname?: (string | null);
+    gender?: ('boy' | 'girl' | null);
+    birth_month?: (string | null);
+    avatar_url?: (string | null);
+};
 
 /**
  * 学习币明细
  */
 export type CoinLogPublic = {
-  id: string
-  amount: number
-  balance_after: number
-  transaction_type: TransactionType
-  description: string
-  created_at: string
-  related_id?: string | null
-}
+    id: string;
+    amount: number;
+    balance_after: number;
+    transaction_type: TransactionType;
+    description: string;
+    created_at: string;
+    related_id?: (string | null);
+};
 
 export type CoinLogsPublic = {
-  data: Array<CoinLogPublic>
-  count: number
-}
+    data: Array<CoinLogPublic>;
+    count: number;
+};
 
 /**
  * 完成兑换请求
  */
 export type CompleteRedemptionRequest = {
-  admin_note?: string | null
-}
+    admin_note?: (string | null);
+};
 
 /**
  * 单日完成数据点
  */
 export type DailyCompletionPoint = {
-  date: string
-  count: number
-}
+    date: string;
+    count: number;
+};
 
 /**
  * 习惯热力图数据
  */
 export type HeatmapData = {
-  days: Array<DailyCompletionPoint>
-  current_streak: number
-  longest_streak: number
-  total_completions: number
-}
+    days: Array<DailyCompletionPoint>;
+    current_streak: number;
+    longest_streak: number;
+    total_completions: number;
+};
 
 export type HTTPValidationError = {
-  detail?: Array<ValidationError>
-}
+    detail?: Array<ValidationError>;
+};
 
 export type ItemCreate = {
-  title: string
-  description?: string | null
-  category?: string | null
-  task_type?: string | null
-  target_count?: number
-  coins_reward?: number
-}
+    title: string;
+    description?: (string | null);
+    category?: (string | null);
+    task_type?: (string | null);
+    target_count?: number;
+    coins_reward?: number;
+};
 
 export type ItemPublic = {
-  title: string
-  description?: string | null
-  category?: string | null
-  task_type?: string | null
-  target_count?: number
-  coins_reward?: number
-  id: string
-  owner_id: string
-}
+    title: string;
+    description?: (string | null);
+    category?: (string | null);
+    task_type?: (string | null);
+    target_count?: number;
+    coins_reward?: number;
+    id: string;
+    owner_id: string;
+};
 
 export type ItemsPublic = {
-  data: Array<ItemPublic>
-  count: number
-}
+    data: Array<ItemPublic>;
+    count: number;
+};
 
 export type ItemUpdate = {
-  title?: string | null
-  description?: string | null
-  category?: string | null
-  task_type?: string | null
-  target_count?: number
-  coins_reward?: number
-}
+    title?: (string | null);
+    description?: (string | null);
+    category?: (string | null);
+    task_type?: (string | null);
+    target_count?: number;
+    coins_reward?: number;
+};
 
 export type Message = {
-  message: string
-}
+    message: string;
+};
 
 export type NewPassword = {
-  token: string
-  new_password: string
-}
+    token: string;
+    new_password: string;
+};
 
 /**
  * 周期对比
  */
 export type PeriodComparison = {
-  current_count: number
-  previous_count: number
-  current_coins: number
-  previous_coins: number
-  change_rate: number
-}
+    current_count: number;
+    previous_count: number;
+    current_coins: number;
+    previous_coins: number;
+    change_rate: number;
+};
 
 export type PrivateUserCreate = {
-  email: string
-  password: string
-  full_name: string
-  is_verified?: boolean
-}
+    email: string;
+    password: string;
+    full_name: string;
+    is_verified?: boolean;
+};
 
 export type PrizeCreate = {
-  name: string
-  description?: string | null
-  image_url?: string | null
-  product_url?: string | null
-  price?: number | null
-  coins_cost?: number
-  stock?: number
-  /**
-   * 奖品类型
-   */
-  prize_type?: "physical" | "virtual"
-  is_active?: boolean
-}
+    name: string;
+    description?: (string | null);
+    image_url?: (string | null);
+    product_url?: (string | null);
+    price?: (number | null);
+    coins_cost?: number;
+    stock?: number;
+    /**
+     * 奖品类型
+     */
+    prize_type?: 'physical' | 'virtual';
+    is_active?: boolean;
+};
 
 /**
  * 奖品类型
  */
-export type prize_type = "physical" | "virtual"
+export type prize_type = 'physical' | 'virtual';
 
 export type PrizePublic = {
-  name: string
-  description?: string | null
-  image_url?: string | null
-  product_url?: string | null
-  price?: number | null
-  coins_cost?: number
-  stock?: number
-  /**
-   * 奖品类型
-   */
-  prize_type?: "physical" | "virtual"
-  is_active?: boolean
-  id: string
-  total_redeemed: number
-  created_at: string
-  updated_at: string
-}
+    name: string;
+    description?: (string | null);
+    image_url?: (string | null);
+    product_url?: (string | null);
+    price?: (number | null);
+    coins_cost?: number;
+    stock?: number;
+    /**
+     * 奖品类型
+     */
+    prize_type?: 'physical' | 'virtual';
+    is_active?: boolean;
+    id: string;
+    total_redeemed: number;
+    created_at: string;
+    updated_at: string;
+};
 
 export type PrizeRedemptionPublic = {
-  coins_spent: number
-  redeemed_at?: string
-  id: string
-  user_id: string
-  prize_id: string
-  prize_name: string
-  prize_type: string
-  status: RedemptionStatus
-  recipient_name?: string | null
-  recipient_phone?: string | null
-  recipient_address?: string | null
-  tracking_number?: string | null
-  shipping_company?: string | null
-  shipped_at?: string | null
-  completed_at?: string | null
-  cancelled_at?: string | null
-}
+    coins_spent: number;
+    redeemed_at?: string;
+    id: string;
+    user_id: string;
+    prize_id: string;
+    prize_name: string;
+    prize_type: string;
+    status: RedemptionStatus;
+    recipient_name?: (string | null);
+    recipient_phone?: (string | null);
+    recipient_address?: (string | null);
+    tracking_number?: (string | null);
+    shipping_company?: (string | null);
+    shipped_at?: (string | null);
+    completed_at?: (string | null);
+    cancelled_at?: (string | null);
+};
 
 export type PrizeRedemptionsPublic = {
-  data: Array<PrizeRedemptionPublic>
-  count: number
-}
+    data: Array<PrizeRedemptionPublic>;
+    count: number;
+};
 
 export type PrizesPublic = {
-  data: Array<PrizePublic>
-  count: number
-}
+    data: Array<PrizePublic>;
+    count: number;
+};
 
 /**
  * 奖品类型
  */
-export type PrizeType = "physical" | "virtual"
+export type PrizeType = 'physical' | 'virtual';
 
 export type PrizeUpdate = {
-  name?: string | null
-  description?: string | null
-  image_url?: string | null
-  product_url?: string | null
-  price?: number | null
-  coins_cost?: number | null
-  stock?: number | null
-  /**
-   * 奖品类型
-   */
-  prize_type?: "physical" | "virtual"
-  is_active?: boolean
-}
+    name?: (string | null);
+    description?: (string | null);
+    image_url?: (string | null);
+    product_url?: (string | null);
+    price?: (number | null);
+    coins_cost?: (number | null);
+    stock?: (number | null);
+    /**
+     * 奖品类型
+     */
+    prize_type?: 'physical' | 'virtual';
+    is_active?: boolean;
+};
 
 /**
  * 进步报告
  */
 export type ProgressReport = {
-  period: string
-  comparison: PeriodComparison
-  category_stats: Array<CategoryStats>
-  daily_trend: Array<DailyCompletionPoint>
-  summary: string
-}
+    period: string;
+    comparison: PeriodComparison;
+    category_stats: Array<CategoryStats>;
+    daily_trend: Array<DailyCompletionPoint>;
+    summary: string;
+};
 
 /**
  * 兑换奖品请求
  */
 export type RedeemPrizeRequest = {
-  prize_id: string
-  shipping_address_id?: string | null
-  user_note?: string | null
-}
+    prize_id: string;
+    shipping_address_id?: (string | null);
+    user_note?: (string | null);
+};
 
 /**
  * 兑换状态
  */
-export type RedemptionStatus =
-  | "pending"
-  | "processing"
-  | "completed"
-  | "cancelled"
-  | "refunded"
+export type RedemptionStatus = 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded';
 
 /**
  * 退款请求
  */
 export type RefundRedemptionRequest = {
-  admin_note?: string | null
-}
+    admin_note?: (string | null);
+};
 
 /**
  * 奖励汇总
  */
 export type RewardSummary = {
-  total_coins_earned: number
-  total_coins_spent: number
-  current_balance: number
-  category_earnings: Array<CategoryStats>
-  recent_redemptions: Array<PrizeRedemptionPublic>
-}
+    total_coins_earned: number;
+    total_coins_spent: number;
+    current_balance: number;
+    category_earnings: Array<CategoryStats>;
+    recent_redemptions: Array<PrizeRedemptionPublic>;
+};
 
 export type ShippingAddressCreate = {
-  recipient_name: string
-  recipient_phone: string
-  province: string
-  city: string
-  district?: string | null
-  detail_address: string
-  postal_code?: string | null
-  is_default?: boolean
-}
+    recipient_name: string;
+    recipient_phone: string;
+    province: string;
+    city: string;
+    district?: (string | null);
+    detail_address: string;
+    postal_code?: (string | null);
+    is_default?: boolean;
+};
 
 export type ShippingAddressesPublic = {
-  data: Array<ShippingAddressPublic>
-  count: number
-}
+    data: Array<ShippingAddressPublic>;
+    count: number;
+};
 
 export type ShippingAddressPublic = {
-  recipient_name: string
-  recipient_phone: string
-  province: string
-  city: string
-  district?: string | null
-  detail_address: string
-  postal_code?: string | null
-  is_default?: boolean
-  id: string
-  user_id: string
-  created_at: string
-  updated_at: string
-}
+    recipient_name: string;
+    recipient_phone: string;
+    province: string;
+    city: string;
+    district?: (string | null);
+    detail_address: string;
+    postal_code?: (string | null);
+    is_default?: boolean;
+    id: string;
+    user_id: string;
+    created_at: string;
+    updated_at: string;
+};
 
 export type ShippingAddressUpdate = {
-  recipient_name?: string | null
-  recipient_phone?: string | null
-  province?: string | null
-  city?: string | null
-  district?: string | null
-  detail_address?: string | null
-  postal_code?: string | null
-  is_default?: boolean
-}
+    recipient_name?: (string | null);
+    recipient_phone?: (string | null);
+    province?: (string | null);
+    city?: (string | null);
+    district?: (string | null);
+    detail_address?: (string | null);
+    postal_code?: (string | null);
+    is_default?: boolean;
+};
 
 /**
  * 发货请求
  */
 export type ShipRedemptionRequest = {
-  tracking_number: string
-  shipping_company: string
-  admin_note?: string | null
-}
+    tracking_number: string;
+    shipping_company: string;
+    admin_note?: (string | null);
+};
 
 /**
  * 淘宝商品信息
  */
 export type TaobaoProductInfo = {
-  name: string
-  price: number | null
-  image_url: string | null
-}
+    name: string;
+    price: (number | null);
+    image_url: (string | null);
+};
 
 export type TaskCompletionPublic = {
-  completed_at?: string
-  id: string
-  item_id: string
-  user_id: string
-}
+    completed_at?: string;
+    id: string;
+    item_id: string;
+    user_id: string;
+};
 
 /**
  * Today's task with completion info
  */
 export type TodayTaskPublic = {
-  id: string
-  title: string
-  description: string | null
-  category: string | null
-  task_type: string | null
-  target_count: number
-  coins_reward: number
-  completed_count: number
-  completed_today: boolean
-}
+    id: string;
+    title: string;
+    description: (string | null);
+    category: (string | null);
+    task_type: (string | null);
+    target_count: number;
+    coins_reward: number;
+    completed_count: number;
+    completed_today: boolean;
+};
 
 export type TodayTasksPublic = {
-  data: Array<TodayTaskPublic>
-  count: number
-}
+    data: Array<TodayTaskPublic>;
+    count: number;
+};
 
 export type Token = {
-  access_token: string
-  token_type?: string
-}
+    access_token: string;
+    token_type?: string;
+};
 
 /**
  * 交易类型
  */
-export type TransactionType =
-  | "task_completion"
-  | "prize_redemption"
-  | "admin_adjustment"
-  | "refund"
-  | "referral_bonus"
+export type TransactionType = 'task_completion' | 'prize_redemption' | 'admin_adjustment' | 'refund' | 'referral_bonus';
 
 export type UpdatePassword = {
-  current_password: string
-  new_password: string
-}
+    current_password: string;
+    new_password: string;
+};
 
 export type UserCreate = {
-  email?: string | null
-  username?: string | null
-  is_active?: boolean
-  is_superuser?: boolean
-  full_name?: string | null
-  /**
-   * 用户角色
-   */
-  role?: "admin" | "parent" | "child"
-  coins?: number
-  nickname?: string | null
-  gender?: string | null
-  birth_month?: string | null
-  avatar_url?: string | null
-  parent_id?: string | null
-  password: string
-}
+    email?: (string | null);
+    username?: (string | null);
+    is_active?: boolean;
+    is_superuser?: boolean;
+    full_name?: (string | null);
+    /**
+     * 用户角色
+     */
+    role?: 'admin' | 'parent' | 'child';
+    coins?: number;
+    nickname?: (string | null);
+    gender?: (string | null);
+    birth_month?: (string | null);
+    avatar_url?: (string | null);
+    parent_id?: (string | null);
+    password: string;
+};
 
 /**
  * 用户角色
  */
-export type role = "admin" | "parent" | "child"
+export type role = 'admin' | 'parent' | 'child';
 
 export type UserPublic = {
-  email?: string | null
-  username?: string | null
-  is_active?: boolean
-  is_superuser?: boolean
-  full_name?: string | null
-  /**
-   * 用户角色
-   */
-  role?: "admin" | "parent" | "child"
-  coins?: number
-  nickname?: string | null
-  gender?: string | null
-  birth_month?: string | null
-  avatar_url?: string | null
-  parent_id?: string | null
-  id: string
-  referral_code: string
-  referred_by_id?: string | null
-}
+    email?: (string | null);
+    username?: (string | null);
+    is_active?: boolean;
+    is_superuser?: boolean;
+    full_name?: (string | null);
+    /**
+     * 用户角色
+     */
+    role?: 'admin' | 'parent' | 'child';
+    coins?: number;
+    nickname?: (string | null);
+    gender?: (string | null);
+    birth_month?: (string | null);
+    avatar_url?: (string | null);
+    parent_id?: (string | null);
+    id: string;
+    referral_code: string;
+    referred_by_id?: (string | null);
+};
 
 export type UserRegister = {
-  email: string
-  password: string
-  full_name?: string | null
-  referral_code?: string | null
-}
+    email: string;
+    password: string;
+    full_name?: (string | null);
+    referral_code?: (string | null);
+};
 
 /**
  * 用户角色
  */
-export type UserRole_Output = "admin" | "parent" | "child"
+export type UserRole_Output = 'admin' | 'parent' | 'child';
 
 export type UsersPublic = {
-  data: Array<UserPublic>
-  count: number
-}
+    data: Array<UserPublic>;
+    count: number;
+};
 
 export type UserUpdate = {
-  email?: string | null
-  username?: string | null
-  is_active?: boolean
-  is_superuser?: boolean
-  full_name?: string | null
-  /**
-   * 用户角色
-   */
-  role?: "admin" | "parent" | "child"
-  coins?: number
-  nickname?: string | null
-  gender?: string | null
-  birth_month?: string | null
-  avatar_url?: string | null
-  parent_id?: string | null
-  password?: string | null
-}
+    email?: (string | null);
+    username?: (string | null);
+    is_active?: boolean;
+    is_superuser?: boolean;
+    full_name?: (string | null);
+    /**
+     * 用户角色
+     */
+    role?: 'admin' | 'parent' | 'child';
+    coins?: number;
+    nickname?: (string | null);
+    gender?: (string | null);
+    birth_month?: (string | null);
+    avatar_url?: (string | null);
+    parent_id?: (string | null);
+    password?: (string | null);
+};
 
 export type UserUpdateMe = {
-  full_name?: string | null
-  email?: string | null
-}
+    full_name?: (string | null);
+    email?: (string | null);
+};
 
 export type ValidationError = {
-  loc: Array<string | number>
-  msg: string
-  type: string
-}
+    loc: Array<(string | number)>;
+    msg: string;
+    type: string;
+};
 
 export type VerifyEmail = {
-  email: string
-  code: string
-}
+    email: string;
+    code: string;
+};
 
 export type ChildrenReadChildrenData = {
-  limit?: number
-  skip?: number
-}
+    limit?: number;
+    skip?: number;
+};
 
-export type ChildrenReadChildrenResponse = ChildrenPublic
+export type ChildrenReadChildrenResponse = (ChildrenPublic);
 
 export type ChildrenCreateChildData = {
-  requestBody: ChildCreate
-}
+    requestBody: ChildCreate;
+};
 
-export type ChildrenCreateChildResponse = ChildPublic
+export type ChildrenCreateChildResponse = (ChildPublic);
 
 export type ChildrenReadChildData = {
-  id: string
-}
+    id: string;
+};
 
-export type ChildrenReadChildResponse = ChildPublic
+export type ChildrenReadChildResponse = (ChildPublic);
 
 export type ChildrenUpdateChildData = {
-  id: string
-  requestBody: ChildUpdate
-}
+    id: string;
+    requestBody: ChildUpdate;
+};
 
-export type ChildrenUpdateChildResponse = ChildPublic
+export type ChildrenUpdateChildResponse = (ChildPublic);
 
 export type ChildrenDeleteChildData = {
-  id: string
-}
+    id: string;
+};
 
-export type ChildrenDeleteChildResponse = Message
+export type ChildrenDeleteChildResponse = (Message);
 
 export type CoinLogsReadMyCoinLogsData = {
-  limit?: number
-  skip?: number
-  transactionType?: TransactionType | null
-}
+    limit?: number;
+    skip?: number;
+    transactionType?: (TransactionType | null);
+};
 
-export type CoinLogsReadMyCoinLogsResponse = CoinLogsPublic
+export type CoinLogsReadMyCoinLogsResponse = (CoinLogsPublic);
 
 export type CoinLogsReadAllCoinLogsData = {
-  limit?: number
-  skip?: number
-  transactionType?: TransactionType | null
-  userId?: string | null
-}
+    limit?: number;
+    skip?: number;
+    transactionType?: (TransactionType | null);
+    userId?: (string | null);
+};
 
-export type CoinLogsReadAllCoinLogsResponse = CoinLogsPublic
+export type CoinLogsReadAllCoinLogsResponse = (CoinLogsPublic);
 
 export type CoinLogsReadCoinLogData = {
-  id: string
-}
+    id: string;
+};
 
-export type CoinLogsReadCoinLogResponse = CoinLogPublic
+export type CoinLogsReadCoinLogResponse = (CoinLogPublic);
 
 export type GrowthGetHeatmapData = {
-  days?: number
-  userId?: string | null
-}
+    days?: number;
+    userId?: (string | null);
+};
 
-export type GrowthGetHeatmapResponse = HeatmapData
+export type GrowthGetHeatmapResponse = (HeatmapData);
 
 export type GrowthGetProgressData = {
-  period?: string
-  userId?: string | null
-}
+    period?: string;
+    userId?: (string | null);
+};
 
-export type GrowthGetProgressResponse = ProgressReport
+export type GrowthGetProgressResponse = (ProgressReport);
 
 export type GrowthGetRewardsData = {
-  userId?: string | null
-}
+    userId?: (string | null);
+};
 
-export type GrowthGetRewardsResponse = RewardSummary
+export type GrowthGetRewardsResponse = (RewardSummary);
 
 export type GrowthRedeemPrizeData = {
-  prizeId: string
-}
+    prizeId: string;
+};
 
-export type GrowthRedeemPrizeResponse = PrizeRedemptionPublic
+export type GrowthRedeemPrizeResponse = (PrizeRedemptionPublic);
 
 export type GrowthGetRedemptionsData = {
-  limit?: number
-  skip?: number
-  userId?: string | null
-}
+    limit?: number;
+    skip?: number;
+    userId?: (string | null);
+};
 
-export type GrowthGetRedemptionsResponse = PrizeRedemptionsPublic
+export type GrowthGetRedemptionsResponse = (PrizeRedemptionsPublic);
 
 export type ItemsReadItemsData = {
-  limit?: number
-  skip?: number
-}
+    limit?: number;
+    skip?: number;
+};
 
-export type ItemsReadItemsResponse = ItemsPublic
+export type ItemsReadItemsResponse = (ItemsPublic);
 
 export type ItemsCreateItemData = {
-  requestBody: ItemCreate
-}
+    requestBody: ItemCreate;
+};
 
-export type ItemsCreateItemResponse = ItemPublic
+export type ItemsCreateItemResponse = (ItemPublic);
 
 export type ItemsReadItemData = {
-  id: string
-}
+    id: string;
+};
 
-export type ItemsReadItemResponse = ItemPublic
+export type ItemsReadItemResponse = (ItemPublic);
 
 export type ItemsUpdateItemData = {
-  id: string
-  requestBody: ItemUpdate
-}
+    id: string;
+    requestBody: ItemUpdate;
+};
 
-export type ItemsUpdateItemResponse = ItemPublic
+export type ItemsUpdateItemResponse = (ItemPublic);
 
 export type ItemsDeleteItemData = {
-  id: string
-}
+    id: string;
+};
 
-export type ItemsDeleteItemResponse = Message
+export type ItemsDeleteItemResponse = (Message);
 
 export type LoginLoginAccessTokenData = {
-  formData: Body_login_login_access_token
-}
+    formData: Body_login_login_access_token;
+};
 
-export type LoginLoginAccessTokenResponse = Token
+export type LoginLoginAccessTokenResponse = (Token);
 
-export type LoginTestTokenResponse = UserPublic
+export type LoginTestTokenResponse = (UserPublic);
 
 export type LoginRecoverPasswordData = {
-  email: string
-}
+    email: string;
+};
 
-export type LoginRecoverPasswordResponse = Message
+export type LoginRecoverPasswordResponse = (Message);
 
 export type LoginResetPasswordData = {
-  requestBody: NewPassword
-}
+    requestBody: NewPassword;
+};
 
-export type LoginResetPasswordResponse = Message
+export type LoginResetPasswordResponse = (Message);
 
 export type LoginRecoverPasswordHtmlContentData = {
-  email: string
-}
+    email: string;
+};
 
-export type LoginRecoverPasswordHtmlContentResponse = string
+export type LoginRecoverPasswordHtmlContentResponse = (string);
 
-export type ParentGetMyChildrenResponse = Array<ChildAccountPublic>
+export type ParentGetMyChildrenResponse = (Array<ChildAccountPublic>);
 
 export type ParentCreateChildAccountData = {
-  requestBody: ChildAccountCreate
-}
+    requestBody: ChildAccountCreate;
+};
 
-export type ParentCreateChildAccountResponse = ChildAccountPublic
+export type ParentCreateChildAccountResponse = (ChildAccountPublic);
 
 export type ParentGetChildDetailData = {
-  childId: string
-}
+    childId: string;
+};
 
-export type ParentGetChildDetailResponse = ChildAccountPublic
+export type ParentGetChildDetailResponse = (ChildAccountPublic);
 
 export type ParentUpdateChildAccountData = {
-  childId: string
-  requestBody: ChildAccountUpdate
-}
+    childId: string;
+    requestBody: ChildAccountUpdate;
+};
 
-export type ParentUpdateChildAccountResponse = ChildAccountPublic
+export type ParentUpdateChildAccountResponse = (ChildAccountPublic);
 
 export type ParentDeleteChildAccountData = {
-  childId: string
-}
+    childId: string;
+};
 
-export type ParentDeleteChildAccountResponse = Message
+export type ParentDeleteChildAccountResponse = (Message);
 
 export type ParentGetChildDashboardData = {
-  childId: string
-}
+    childId: string;
+};
 
-export type ParentGetChildDashboardResponse = unknown
+export type ParentGetChildDashboardResponse = (unknown);
 
 export type ParentGetChildTaskCompletionsData = {
-  childId: string
-  limit?: number
-  skip?: number
-}
+    childId: string;
+    limit?: number;
+    skip?: number;
+};
 
-export type ParentGetChildTaskCompletionsResponse = Array<TaskCompletionPublic>
+export type ParentGetChildTaskCompletionsResponse = (Array<TaskCompletionPublic>);
 
 export type ParentGetChildCoinLogsData = {
-  childId: string
-  limit?: number
-  skip?: number
-}
+    childId: string;
+    limit?: number;
+    skip?: number;
+};
 
-export type ParentGetChildCoinLogsResponse = CoinLogsPublic
+export type ParentGetChildCoinLogsResponse = (CoinLogsPublic);
 
 export type ParentGetChildRedemptionsData = {
-  childId: string
-  limit?: number
-  skip?: number
-}
+    childId: string;
+    limit?: number;
+    skip?: number;
+};
 
-export type ParentGetChildRedemptionsResponse = PrizeRedemptionsPublic
+export type ParentGetChildRedemptionsResponse = (PrizeRedemptionsPublic);
 
 export type ParentGetChildGrowthData = {
-  childId: string
-}
+    childId: string;
+};
 
-export type ParentGetChildGrowthResponse = unknown
+export type ParentGetChildGrowthResponse = (unknown);
 
 export type PrivateCreateUserData = {
-  requestBody: PrivateUserCreate
-}
+    requestBody: PrivateUserCreate;
+};
 
-export type PrivateCreateUserResponse = UserPublic
+export type PrivateCreateUserResponse = (UserPublic);
 
 export type PrizeRedemptionsRedeemPrizeData = {
-  requestBody: RedeemPrizeRequest
-}
+    requestBody: RedeemPrizeRequest;
+};
 
-export type PrizeRedemptionsRedeemPrizeResponse = PrizeRedemptionPublic
+export type PrizeRedemptionsRedeemPrizeResponse = (PrizeRedemptionPublic);
 
 export type PrizeRedemptionsReadMyRedemptionsData = {
-  limit?: number
-  skip?: number
-  status?: RedemptionStatus | null
-}
+    limit?: number;
+    skip?: number;
+    status?: (RedemptionStatus | null);
+};
 
-export type PrizeRedemptionsReadMyRedemptionsResponse = PrizeRedemptionsPublic
+export type PrizeRedemptionsReadMyRedemptionsResponse = (PrizeRedemptionsPublic);
 
 export type PrizeRedemptionsReadAllRedemptionsData = {
-  limit?: number
-  skip?: number
-  status?: RedemptionStatus | null
-}
+    limit?: number;
+    skip?: number;
+    status?: (RedemptionStatus | null);
+};
 
-export type PrizeRedemptionsReadAllRedemptionsResponse = PrizeRedemptionsPublic
+export type PrizeRedemptionsReadAllRedemptionsResponse = (PrizeRedemptionsPublic);
 
 export type PrizeRedemptionsReadRedemptionData = {
-  id: string
-}
+    id: string;
+};
 
-export type PrizeRedemptionsReadRedemptionResponse = PrizeRedemptionPublic
+export type PrizeRedemptionsReadRedemptionResponse = (PrizeRedemptionPublic);
 
 export type PrizeRedemptionsCancelRedemptionData = {
-  id: string
-}
+    id: string;
+};
 
-export type PrizeRedemptionsCancelRedemptionResponse = PrizeRedemptionPublic
+export type PrizeRedemptionsCancelRedemptionResponse = (PrizeRedemptionPublic);
 
 export type PrizeRedemptionsShipRedemptionData = {
-  id: string
-  requestBody: ShipRedemptionRequest
-}
+    id: string;
+    requestBody: ShipRedemptionRequest;
+};
 
-export type PrizeRedemptionsShipRedemptionResponse = PrizeRedemptionPublic
+export type PrizeRedemptionsShipRedemptionResponse = (PrizeRedemptionPublic);
 
 export type PrizeRedemptionsCompleteRedemptionData = {
-  id: string
-  requestBody: CompleteRedemptionRequest
-}
+    id: string;
+    requestBody: CompleteRedemptionRequest;
+};
 
-export type PrizeRedemptionsCompleteRedemptionResponse = PrizeRedemptionPublic
+export type PrizeRedemptionsCompleteRedemptionResponse = (PrizeRedemptionPublic);
 
 export type PrizeRedemptionsRefundRedemptionData = {
-  id: string
-  requestBody: RefundRedemptionRequest
-}
+    id: string;
+    requestBody: RefundRedemptionRequest;
+};
 
-export type PrizeRedemptionsRefundRedemptionResponse = PrizeRedemptionPublic
+export type PrizeRedemptionsRefundRedemptionResponse = (PrizeRedemptionPublic);
 
 export type PrizesReadPrizesData = {
-  limit?: number
-  skip?: number
-}
+    limit?: number;
+    skip?: number;
+};
 
-export type PrizesReadPrizesResponse = PrizesPublic
+export type PrizesReadPrizesResponse = (PrizesPublic);
 
 export type PrizesCreatePrizeData = {
-  requestBody: PrizeCreate
-}
+    requestBody: PrizeCreate;
+};
 
-export type PrizesCreatePrizeResponse = PrizePublic
+export type PrizesCreatePrizeResponse = (PrizePublic);
 
 export type PrizesReadPrizeData = {
-  id: string
-}
+    id: string;
+};
 
-export type PrizesReadPrizeResponse = PrizePublic
+export type PrizesReadPrizeResponse = (PrizePublic);
 
 export type PrizesUpdatePrizeData = {
-  id: string
-  requestBody: PrizeUpdate
-}
+    id: string;
+    requestBody: PrizeUpdate;
+};
 
-export type PrizesUpdatePrizeResponse = PrizePublic
+export type PrizesUpdatePrizeResponse = (PrizePublic);
 
 export type PrizesDeletePrizeData = {
-  id: string
-}
+    id: string;
+};
 
-export type PrizesDeletePrizeResponse = Message
+export type PrizesDeletePrizeResponse = (Message);
 
 export type PrizesParseTaobaoUrlData = {
-  url: string
-}
+    url: string;
+};
 
-export type PrizesParseTaobaoUrlResponse = TaobaoProductInfo
+export type PrizesParseTaobaoUrlResponse = (TaobaoProductInfo);
 
-export type ReferralsGetMyReferralStatsResponse = unknown
+export type ReferralsGetMyReferralStatsResponse = (unknown);
 
-export type ReferralsGetMyReferralsResponse = unknown
+export type ReferralsGetMyReferralsResponse = (unknown);
 
-export type ShippingAddressesReadShippingAddressesResponse =
-  ShippingAddressesPublic
+export type ShippingAddressesReadShippingAddressesResponse = (ShippingAddressesPublic);
 
 export type ShippingAddressesCreateShippingAddressData = {
-  requestBody: ShippingAddressCreate
-}
+    requestBody: ShippingAddressCreate;
+};
 
-export type ShippingAddressesCreateShippingAddressResponse =
-  ShippingAddressPublic
+export type ShippingAddressesCreateShippingAddressResponse = (ShippingAddressPublic);
 
 export type ShippingAddressesReadShippingAddressData = {
-  id: string
-}
+    id: string;
+};
 
-export type ShippingAddressesReadShippingAddressResponse = ShippingAddressPublic
+export type ShippingAddressesReadShippingAddressResponse = (ShippingAddressPublic);
 
 export type ShippingAddressesUpdateShippingAddressData = {
-  id: string
-  requestBody: ShippingAddressUpdate
-}
+    id: string;
+    requestBody: ShippingAddressUpdate;
+};
 
-export type ShippingAddressesUpdateShippingAddressResponse =
-  ShippingAddressPublic
+export type ShippingAddressesUpdateShippingAddressResponse = (ShippingAddressPublic);
 
 export type ShippingAddressesDeleteShippingAddressData = {
-  id: string
-}
+    id: string;
+};
 
-export type ShippingAddressesDeleteShippingAddressResponse = Message
+export type ShippingAddressesDeleteShippingAddressResponse = (Message);
 
 export type ShippingAddressesSetDefaultAddressData = {
-  id: string
-}
+    id: string;
+};
 
-export type ShippingAddressesSetDefaultAddressResponse = ShippingAddressPublic
+export type ShippingAddressesSetDefaultAddressResponse = (ShippingAddressPublic);
 
-export type TaskCompletionsGetTodayCoinLogsResponse = CoinLogsPublic
+export type TaskCompletionsGetTodayCoinLogsResponse = (CoinLogsPublic);
 
-export type TaskCompletionsGetTodayTasksResponse = TodayTasksPublic
+export type TaskCompletionsGetTodayTasksResponse = (TodayTasksPublic);
 
 export type TaskCompletionsCompleteTaskData = {
-  itemId: string
-}
+    itemId: string;
+};
 
-export type TaskCompletionsCompleteTaskResponse = TaskCompletionPublic
+export type TaskCompletionsCompleteTaskResponse = (TaskCompletionPublic);
 
 export type TaskCompletionsGetTaskCompletionsData = {
-  itemId: string
-}
+    itemId: string;
+};
 
-export type TaskCompletionsGetTaskCompletionsResponse =
-  Array<TaskCompletionPublic>
+export type TaskCompletionsGetTaskCompletionsResponse = (Array<TaskCompletionPublic>);
 
 export type UsersReadUsersData = {
-  limit?: number
-  role?: app__models__UserRole__2 | null
-  skip?: number
-}
+    limit?: number;
+    role?: (app__models__UserRole__2 | null);
+    skip?: number;
+};
 
-export type UsersReadUsersResponse = UsersPublic
+export type UsersReadUsersResponse = (UsersPublic);
 
 export type UsersCreateUserData = {
-  requestBody: UserCreate
-}
+    requestBody: UserCreate;
+};
 
-export type UsersCreateUserResponse = UserPublic
+export type UsersCreateUserResponse = (UserPublic);
 
-export type UsersReadUserMeResponse = UserPublic
+export type UsersReadUserMeResponse = (UserPublic);
 
-export type UsersDeleteUserMeResponse = Message
+export type UsersDeleteUserMeResponse = (Message);
 
 export type UsersUpdateUserMeData = {
-  requestBody: UserUpdateMe
-}
+    requestBody: UserUpdateMe;
+};
 
-export type UsersUpdateUserMeResponse = UserPublic
+export type UsersUpdateUserMeResponse = (UserPublic);
 
 export type UsersUpdatePasswordMeData = {
-  requestBody: UpdatePassword
-}
+    requestBody: UpdatePassword;
+};
 
-export type UsersUpdatePasswordMeResponse = Message
+export type UsersUpdatePasswordMeResponse = (Message);
 
 export type UsersRegisterUserData = {
-  requestBody: UserRegister
-}
+    requestBody: UserRegister;
+};
 
-export type UsersRegisterUserResponse = UserPublic
+export type UsersRegisterUserResponse = (UserPublic);
 
 export type UsersReadUserByIdData = {
-  userId: string
-}
+    userId: string;
+};
 
-export type UsersReadUserByIdResponse = UserPublic
+export type UsersReadUserByIdResponse = (UserPublic);
 
 export type UsersUpdateUserData = {
-  requestBody: UserUpdate
-  userId: string
-}
+    requestBody: UserUpdate;
+    userId: string;
+};
 
-export type UsersUpdateUserResponse = UserPublic
+export type UsersUpdateUserResponse = (UserPublic);
 
 export type UsersDeleteUserData = {
-  userId: string
-}
+    userId: string;
+};
 
-export type UsersDeleteUserResponse = Message
+export type UsersDeleteUserResponse = (Message);
 
 export type UsersVerifyEmailData = {
-  requestBody: VerifyEmail
-}
+    requestBody: VerifyEmail;
+};
 
-export type UsersVerifyEmailResponse = Message
+export type UsersVerifyEmailResponse = (Message);
 
 export type UsersResendVerificationCodeData = {
-  email: string
-}
+    email: string;
+};
 
-export type UsersResendVerificationCodeResponse = Message
+export type UsersResendVerificationCodeResponse = (Message);
 
 export type UtilsTestEmailData = {
-  emailTo: string
-}
+    emailTo: string;
+};
 
-export type UtilsTestEmailResponse = Message
+export type UtilsTestEmailResponse = (Message);
 
-export type UtilsHealthCheckResponse = boolean
+export type UtilsHealthCheckResponse = (boolean);

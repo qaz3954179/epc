@@ -853,3 +853,49 @@ class ExamReport(SQLModel):
     time_spent_seconds: int
     answers: list[dict[str, Any]]
     summary: str
+
+
+# ─── Coding Project models ─────────────────────────────────────────
+
+class CodingProjectBase(SQLModel):
+    title: str = Field(min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=1000)
+    blockly_xml: str = Field(max_length=100000)  # Blockly 积木 XML
+    generated_code: str | None = Field(default=None, max_length=100000)  # 生成的代码
+    thumbnail_url: str | None = Field(default=None, max_length=2000)
+    is_public: bool = Field(default=False)
+
+
+class CodingProjectCreate(CodingProjectBase):
+    pass
+
+
+class CodingProjectUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=1000)
+    blockly_xml: str | None = Field(default=None, max_length=100000)
+    generated_code: str | None = Field(default=None, max_length=100000)
+    thumbnail_url: str | None = Field(default=None, max_length=2000)
+    is_public: bool | None = None
+
+
+class CodingProject(CodingProjectBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    user: User | None = Relationship()
+
+
+class CodingProjectPublic(CodingProjectBase):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class CodingProjectsPublic(SQLModel):
+    data: list[CodingProjectPublic]
+    count: int
