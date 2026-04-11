@@ -18,6 +18,7 @@ const items: MenuItem[] = [
   // 宝贝专属
   { title: "学习币",   path: "/",         emoji: "🪙",  roles: ["child"] },
   { title: "今日待办", path: "/items",    emoji: "✅",  roles: ["child"] },
+  { title: "我的考试", path: "/exams",    emoji: "📝",  roles: ["child"] },
   { title: "奖品商城", path: "/prizes",   emoji: "🎁",  roles: ["child"] },
   { title: "成长记录", path: "/growth",   emoji: "📈",  roles: ["child"] },
   // 家长专属
@@ -25,12 +26,14 @@ const items: MenuItem[] = [
   { title: "监控面板",     path: "/parent/monitor",  emoji: "📊",  roles: ["parent"] },
   { title: "我的宝贝",     path: "/children",        emoji: "👶",  roles: ["parent"] },
   { title: "任务管理",     path: "/tasks",           emoji: "📋",  roles: ["parent"] },
+  { title: "考试管理",     path: "/parent/exams",    emoji: "📝",  roles: ["parent"] },
   { title: "奖品管理",     path: "/prizes",          emoji: "🎁",  roles: ["parent"] },
   { title: "推广",         path: "/referral",        emoji: "📣",  roles: ["parent"] },
   // 管理员专属
   { title: "学习币",   path: "/",         emoji: "🪙",  roles: ["admin"] },
   { title: "今日待办", path: "/items",    emoji: "✅",  roles: ["admin"] },
   { title: "任务管理", path: "/tasks",    emoji: "📋",  roles: ["admin"] },
+  { title: "考试管理", path: "/parent/exams", emoji: "📝",  roles: ["admin"] },
   { title: "奖品管理", path: "/prizes",   emoji: "🎁",  roles: ["admin"] },
   { title: "我的宝贝", path: "/children", emoji: "👶",  roles: ["admin"] },
   { title: "用户管理", path: "/admin",    emoji: "👥",  roles: ["admin"] },

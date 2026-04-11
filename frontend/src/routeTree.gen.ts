@@ -30,9 +30,13 @@ import { Route as LayoutReferralImport } from './routes/_layout/referral'
 import { Route as LayoutPrizesImport } from './routes/_layout/prizes'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutGrowthImport } from './routes/_layout/growth'
+import { Route as LayoutExamsImport } from './routes/_layout/exams'
 import { Route as LayoutChildrenImport } from './routes/_layout/children'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
 import { Route as LayoutParentMonitorImport } from './routes/_layout/parent/monitor'
+import { Route as LayoutParentExamsImport } from './routes/_layout/parent/exams'
+import { Route as LayoutExamsReportSessionIdImport } from './routes/_layout/exams/report/$sessionId'
+import { Route as LayoutExamsPlaySessionIdImport } from './routes/_layout/exams/play/$sessionId'
 
 // Create/Update Routes
 
@@ -131,6 +135,11 @@ const LayoutGrowthRoute = LayoutGrowthImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutExamsRoute = LayoutExamsImport.update({
+  path: '/exams',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 const LayoutChildrenRoute = LayoutChildrenImport.update({
   path: '/children',
   getParentRoute: () => LayoutRoute,
@@ -144,6 +153,23 @@ const LayoutAdminRoute = LayoutAdminImport.update({
 const LayoutParentMonitorRoute = LayoutParentMonitorImport.update({
   path: '/parent/monitor',
   getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutParentExamsRoute = LayoutParentExamsImport.update({
+  path: '/parent/exams',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutExamsReportSessionIdRoute = LayoutExamsReportSessionIdImport.update(
+  {
+    path: '/report/$sessionId',
+    getParentRoute: () => LayoutExamsRoute,
+  } as any,
+)
+
+const LayoutExamsPlaySessionIdRoute = LayoutExamsPlaySessionIdImport.update({
+  path: '/play/$sessionId',
+  getParentRoute: () => LayoutExamsRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -180,6 +206,10 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/children': {
       preLoaderRoute: typeof LayoutChildrenImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/exams': {
+      preLoaderRoute: typeof LayoutExamsImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/growth': {
@@ -234,9 +264,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RedemptionsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/_layout/parent/exams': {
+      preLoaderRoute: typeof LayoutParentExamsImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/parent/monitor': {
       preLoaderRoute: typeof LayoutParentMonitorImport
       parentRoute: typeof LayoutImport
+    }
+    '/_layout/exams/play/$sessionId': {
+      preLoaderRoute: typeof LayoutExamsPlaySessionIdImport
+      parentRoute: typeof LayoutExamsImport
+    }
+    '/_layout/exams/report/$sessionId': {
+      preLoaderRoute: typeof LayoutExamsReportSessionIdImport
+      parentRoute: typeof LayoutExamsImport
     }
   }
 }
@@ -247,6 +289,10 @@ export const routeTree = rootRoute.addChildren([
   LayoutRoute.addChildren([
     LayoutAdminRoute,
     LayoutChildrenRoute,
+    LayoutExamsRoute.addChildren([
+      LayoutExamsPlaySessionIdRoute,
+      LayoutExamsReportSessionIdRoute,
+    ]),
     LayoutGrowthRoute,
     LayoutItemsRoute,
     LayoutPrizesRoute,
@@ -254,6 +300,7 @@ export const routeTree = rootRoute.addChildren([
     LayoutSettingsRoute,
     LayoutTasksRoute,
     LayoutIndexRoute,
+    LayoutParentExamsRoute,
     LayoutParentMonitorRoute,
   ]),
   LoginRoute,
