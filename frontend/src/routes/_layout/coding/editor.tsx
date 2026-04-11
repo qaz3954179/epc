@@ -1,23 +1,96 @@
 import { Box, Button, Container, Flex, Heading, Input, Text, Textarea, VStack } from "@chakra-ui/react"
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router"
+import { useEffect, useState } from "react"
 import { FiSave } from "react-icons/fi"
 import useCustomToast from "@/hooks/useCustomToast"
+import { CodingService } from "@/client/codingService"
+import BlocklyEditor from "@/components/Coding/BlocklyEditor"
 
 export const Route = createFileRoute("/_layout/coding/editor")({
   component: EditorPage,
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      id: (search.id as string) || undefined,
+    }
+  },
 })
 
 function EditorPage() {
   const navigate = useNavigate()
-  const showToast = useCustomToast()
+  const { showSuccessToast, showErrorToast } = useCustomToast()
+  const queryClient = useQueryClient()
+  const { id } = useSearch({ from: "/_layout/coding/editor" })
+
   const [title, setTitle] = useState("我的作品")
   const [description, setDescription] = useState("")
+  const [blocklyXml, setBlocklyXml] = useState("")
+  const [generatedCode, setGeneratedCode] = useState("")
 
-  const handleSave = async () => {
-    // TODO: 调用 API 保存作品
-    showToast("成功", "作品已保存！", "success")
-    navigate({ to: "/coding" })
+  // 加载现有作品
+  const { data: project } = useQuery({
+    queryKey: ["coding-project", id],
+    queryFn: () => CodingService.getProject({ projectId: id! }),
+    enabled: !!id,
+  })
+
+  useEffect(() => {
+    if (project) {
+      setTitle(project.title)
+      setDescription(project.description || "")
+      setBlocklyXml(project.blockly_xml)
+      setGeneratedCode(project.generated_code || "")
+    }
+  }, [project])
+
+  const saveMutation = useMutation({
+    mutationFn: () => {
+      if (id) {
+        return CodingService.updateProject({
+          projectId: id,
+          requestBody: {
+            title,
+            description,
+            blockly_xml: blocklyXml,
+            generated_code: generatedCode,
+          },
+        })
+      } else {
+        return CodingService.createProject({
+          requestBody: {
+            title,
+            description,
+            blockly_xml: blocklyXml,
+            generated_code: generatedCode,
+          },
+        })
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["coding-projects"] })
+      showSuccessToast("作品已保存！")
+      navigate({ to: "/coding" })
+    },
+    onError: () => {
+      showErrorToast("保存失败，请重试")
+    },
+  })
+
+  const handleBlocklyChange = (xml: string, code: string) => {
+    setBlocklyXml(xml)
+    setGeneratedCode(code)
+  }
+
+  const handleSave = () => {
+    if (!title.trim()) {
+      showErrorToast("请输入作品名称")
+      return
+    }
+    if (!blocklyXml.trim()) {
+      showErrorToast("请先创建一些积木")
+      return
+    }
+    saveMutation.mutate()
   }
 
   return (
@@ -34,10 +107,10 @@ function EditorPage() {
           <Button
             colorScheme="orange"
             size="lg"
-            leftIcon={<FiSave />}
             onClick={handleSave}
+            isLoading={saveMutation.isPending}
           >
-            保存作品
+            <FiSave /> 保存作品
           </Button>
         </Flex>
 
@@ -69,31 +142,36 @@ function EditorPage() {
           </VStack>
         </Box>
 
-        {/* Blockly 编辑器占位 */}
-        <Box
-          p={12}
-          bg="white"
-          borderRadius="xl"
-          boxShadow="md"
-          minH="500px"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          border="2px dashed"
-          borderColor="gray.200"
-        >
-          <VStack gap={4}>
-            <Text fontSize="6xl">🧩</Text>
-            <Heading size="lg" color="gray.600">
-              Blockly 编辑器
-            </Heading>
-            <Text color="gray.500" textAlign="center" maxW="md">
-              这里将集成 Google Blockly 可视化编程编辑器
-              <br />
-              目前是占位区域，后续会添加完整的积木编程功能
-            </Text>
-          </VStack>
+        {/* Blockly 编辑器 */}
+        <Box bg="white" borderRadius="xl" boxShadow="md" p={4}>
+          <Text fontWeight="bold" mb={4}>
+            积木编辑区
+          </Text>
+          <BlocklyEditor
+            initialXml={blocklyXml}
+            onChange={handleBlocklyChange}
+          />
         </Box>
+
+        {/* 生成的代码预览 */}
+        {generatedCode && (
+          <Box p={6} bg="white" borderRadius="xl" boxShadow="md">
+            <Text fontWeight="bold" mb={4}>
+              生成的 JavaScript 代码
+            </Text>
+            <Box
+              as="pre"
+              p={4}
+              bg="gray.50"
+              borderRadius="md"
+              fontSize="sm"
+              overflow="auto"
+              maxH="300px"
+            >
+              {generatedCode}
+            </Box>
+          </Box>
+        )}
       </VStack>
     </Container>
   )
