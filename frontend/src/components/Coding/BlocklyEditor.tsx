@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react"
 import * as Blockly from "blockly"
 import { javascriptGenerator } from "blockly/javascript"
+import * as zhHans from "blockly/msg/zh-hans"
 import { Box } from "@chakra-ui/react"
+
+Blockly.setLocale(zhHans as unknown as Record<string, string>)
 
 interface BlocklyEditorProps {
   initialXml?: string
@@ -11,12 +14,16 @@ interface BlocklyEditorProps {
 export default function BlocklyEditor({ initialXml, onChange }: BlocklyEditorProps) {
   const blocklyDiv = useRef<HTMLDivElement>(null)
   const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null)
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
 
   useEffect(() => {
     if (!blocklyDiv.current) return
 
-    // 初始化 Blockly 工作区
+    console.log("BlocklyEditor mounting, initialXml length:", initialXml?.length || 0)
+
     const workspace = Blockly.inject(blocklyDiv.current, {
+      media: "/blockly-media/",
       toolbox: {
         kind: "categoryToolbox",
         contents: [
@@ -69,12 +76,7 @@ export default function BlocklyEditor({ initialXml, onChange }: BlocklyEditorPro
           },
         ],
       },
-      grid: {
-        spacing: 20,
-        length: 3,
-        colour: "#ccc",
-        snap: true,
-      },
+      grid: { spacing: 20, length: 3, colour: "#ccc", snap: true },
       zoom: {
         controls: true,
         wheel: true,
@@ -91,39 +93,44 @@ export default function BlocklyEditor({ initialXml, onChange }: BlocklyEditorPro
     // 加载初始 XML
     if (initialXml) {
       try {
-        Blockly.Xml.domToWorkspace(
-          Blockly.utils.xml.textToDom(initialXml),
-          workspace
-        )
+        const dom = Blockly.utils.xml.textToDom(initialXml)
+        Blockly.Xml.domToWorkspace(dom, workspace)
+        console.log("Loaded XML, blocks:", workspace.getAllBlocks(false).length)
       } catch (e) {
         console.error("Failed to load initial XML:", e)
       }
+    } else {
+      console.log("No initialXml to load")
     }
 
-    // 监听变化
-    workspace.addChangeListener(() => {
-      if (onChange) {
+    // 只在用户实际操作时触发 onChange，忽略初始化事件
+    let ready = false
+    setTimeout(() => { ready = true }, 100)
+
+    workspace.addChangeListener((e: Blockly.Events.Abstract) => {
+      if (!ready) return
+      if (e.isUiEvent) return
+      if (onChangeRef.current) {
         const xml = Blockly.Xml.workspaceToDom(workspace)
         const xmlText = Blockly.Xml.domToText(xml)
         const code = javascriptGenerator.workspaceToCode(workspace)
-        onChange(xmlText, code)
+        onChangeRef.current(xmlText, code)
       }
     })
 
     return () => {
       workspace.dispose()
+      workspaceRef.current = null
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Box
       ref={blocklyDiv}
       w="100%"
       h="100%"
-      minH="500px"
       borderRadius="xl"
       overflow="hidden"
-      boxShadow="md"
     />
   )
 }

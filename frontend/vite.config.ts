@@ -18,5 +18,8 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    include: ["blockly/blocks", "blockly/javascript"],
+  },
   plugins: [react(), TanStackRouterVite()],
 })

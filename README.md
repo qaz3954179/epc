@@ -244,3 +244,5 @@ The Full Stack FastAPI Template is licensed under the terms of the MIT license.
 - 登录方式支持多种
 - 友情赞助
 - 小程序开发
+- 一个共享空间，让家长可以分项宝贝的人物情况，写激励的话，宝贝可以看到，如果是公开分析就是全部家长可见。
+- 一个反馈窗口，任何意见和建议都可以些，分类为bug、意见、建议等等。

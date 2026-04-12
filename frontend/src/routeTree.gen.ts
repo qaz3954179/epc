@@ -34,6 +34,7 @@ import { Route as LayoutExamsImport } from './routes/_layout/exams'
 import { Route as LayoutCodingImport } from './routes/_layout/coding'
 import { Route as LayoutChildrenImport } from './routes/_layout/children'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
+import { Route as LayoutCodingIndexImport } from './routes/_layout/coding/index'
 import { Route as LayoutParentMonitorImport } from './routes/_layout/parent/monitor'
 import { Route as LayoutParentExamsImport } from './routes/_layout/parent/exams'
 import { Route as LayoutCodingEditorImport } from './routes/_layout/coding/editor'
@@ -155,6 +156,11 @@ const LayoutChildrenRoute = LayoutChildrenImport.update({
 const LayoutAdminRoute = LayoutAdminImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutCodingIndexRoute = LayoutCodingIndexImport.update({
+  path: '/',
+  getParentRoute: () => LayoutCodingRoute,
 } as any)
 
 const LayoutParentMonitorRoute = LayoutParentMonitorImport.update({
@@ -292,6 +298,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutParentMonitorImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/coding/': {
+      preLoaderRoute: typeof LayoutCodingIndexImport
+      parentRoute: typeof LayoutCodingImport
+    }
     '/_layout/exams/play/$sessionId': {
       preLoaderRoute: typeof LayoutExamsPlaySessionIdImport
       parentRoute: typeof LayoutExamsImport
@@ -309,7 +319,10 @@ export const routeTree = rootRoute.addChildren([
   LayoutRoute.addChildren([
     LayoutAdminRoute,
     LayoutChildrenRoute,
-    LayoutCodingRoute.addChildren([LayoutCodingEditorRoute]),
+    LayoutCodingRoute.addChildren([
+      LayoutCodingEditorRoute,
+      LayoutCodingIndexRoute,
+    ]),
     LayoutExamsRoute.addChildren([
       LayoutExamsPlaySessionIdRoute,
       LayoutExamsReportSessionIdRoute,
