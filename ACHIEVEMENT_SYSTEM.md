@@ -313,11 +313,11 @@ POST /api/v1/sdi/calculate
 - [x] 成就通知 API
 
 ### Phase 3：SDI 计算引擎（2周）
-- [ ] 创建 SDIRecord 表
-- [ ] SDI 计算引擎（四大指标 + 时间衰减）
-- [ ] 定时任务（每日计算 SDI）
-- [ ] 家长仪表盘 API（趋势图、分析报告）
-- [ ] 个性化引导建议生成
+- [x] 创建 SDIRecord 表
+- [x] SDI 计算引擎（四大指标 + 时间衰减）
+- [x] 家长仪表盘 API（趋势图、分析报告）
+- [x] 个性化引导建议生成
+- [ ] 定时任务（每日计算 SDI）— 部署时配置 cron
 
 ### Phase 4：前端展示（1周）
 - [ ] 孩子端成就展示页
@@ -357,4 +357,40 @@ POST /api/v1/sdi/calculate
 ---
 
 **最后更新：** 2026-04-12
-**当前状态：** Phase 1 进行中
+**当前状态：** Phase 3 完成（定时任务待部署配置）
+
+---
+
+## 十、定时任务配置
+
+### 每日 SDI 计算
+
+建议每天凌晨 1 点计算所有孩子的 SDI：
+
+```bash
+# crontab
+0 1 * * * curl -X POST http://localhost:8000/api/v1/sdi/calculate-all \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+```
+
+或使用 OpenClaw 的 cron 功能（如果部署在 OpenClaw 环境）：
+
+```json
+{
+  "name": "每日 SDI 计算",
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 1 * * *",
+    "tz": "Asia/Shanghai"
+  },
+  "payload": {
+    "kind": "systemEvent",
+    "text": "触发 SDI 计算：调用 POST /api/v1/sdi/calculate-all"
+  },
+  "sessionTarget": "main"
+}
+```
+
+### 成就检测
+
+成就检测已集成到任务完成和质量评分流程中，无需额外定时任务。

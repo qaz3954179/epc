@@ -1035,3 +1035,59 @@ class AchievementNotification(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     user: User | None = Relationship()
     achievement: Achievement | None = Relationship()
+
+
+# ─── SDI Record (自驱力指数记录) ───────────────────────────────────
+
+class SDIPeriodType(str, Enum):
+    """SDI 记录周期类型"""
+    daily = "daily"
+    weekly = "weekly"
+
+
+class SDIRecord(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE", index=True)
+    record_date: str = Field(max_length=10, index=True)  # YYYY-MM-DD
+    period_type: SDIPeriodType = Field(default=SDIPeriodType.daily, max_length=10)
+    sdi_score: float = Field(default=0.0)
+    initiative_score: float = Field(default=0.0)
+    exploration_score: float = Field(default=0.0)
+    persistence_score: float = Field(default=0.0)
+    quality_score: float = Field(default=0.0)
+    detail: dict[str, Any] = Field(default={}, sa_column=Column(JSON))
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    user: User | None = Relationship()
+
+
+class SDIRecordPublic(SQLModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    record_date: str
+    period_type: SDIPeriodType
+    sdi_score: float
+    initiative_score: float
+    exploration_score: float
+    persistence_score: float
+    quality_score: float
+    detail: dict[str, Any]
+    created_at: datetime
+
+
+class SDIRecordsPublic(SQLModel):
+    data: list[SDIRecordPublic]
+    count: int
+
+
+class SDIDashboard(SQLModel):
+    """家长端 SDI 仪表盘"""
+    current_score: float
+    previous_score: float | None = None
+    score_change: float | None = None
+    initiative_score: float
+    exploration_score: float
+    persistence_score: float
+    quality_score: float
+    trend: list[SDIRecordPublic]
+    analysis: dict[str, Any]
+    suggestions: list[str]

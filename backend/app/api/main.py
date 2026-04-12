@@ -15,6 +15,7 @@ from app.api.routes import (
     prize_redemptions,
     prizes,
     referrals,
+    sdi,
     shipping_addresses,
     task_completions,
     users,
@@ -40,6 +41,7 @@ api_router.include_router(parent.router)
 api_router.include_router(exams.router)
 api_router.include_router(coding.router)
 api_router.include_router(achievements.router)
+api_router.include_router(sdi.router)
 
 
 if settings.ENVIRONMENT == "local":
