@@ -188,18 +188,16 @@ const AddTask = ({ defaultCategory, item, children }: AddTaskProps) => {
                           <Select.Indicator />
                         </Select.IndicatorGroup>
                       </Select.Control>
-                      <Portal>
-                        <Select.Positioner>
-                          <Select.Content>
-                            {categoryCollection.items.map((item) => (
-                              <Select.Item item={item} key={item.value}>
-                                {item.label}
-                                <Select.ItemIndicator />
-                              </Select.Item>
-                            ))}
-                          </Select.Content>
-                        </Select.Positioner>
-                      </Portal>
+                      <Select.Positioner zIndex={1500}>
+                        <Select.Content>
+                          {categoryCollection.items.map((item) => (
+                            <Select.Item item={item} key={item.value}>
+                              {item.label}
+                              <Select.ItemIndicator />
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Positioner>
                     </Select.Root>
                   )}
                 />

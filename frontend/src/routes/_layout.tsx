@@ -20,7 +20,7 @@ function Layout() {
       <Flex flex="1" overflow="hidden">
         <Box
           display={{ base: "none", md: "block" }}
-          w="320px"
+          w="340px"
           flexShrink={0}
           bg="white"
           borderRight="1px solid"

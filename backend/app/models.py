@@ -435,7 +435,7 @@ class PrizeRedemption(PrizeRedemptionBase, table=True):
         foreign_key="prize.id", nullable=False, ondelete="RESTRICT"
     )
     prize_name: str = Field(max_length=255)
-    prize_type: str = Field(max_length=20)
+    prize_type: str = Field(default="physical", max_length=20)
     status: RedemptionStatus = Field(default=RedemptionStatus.pending, max_length=20)
     shipping_address_id: uuid.UUID | None = Field(
         default=None, foreign_key="shippingaddress.id", nullable=True

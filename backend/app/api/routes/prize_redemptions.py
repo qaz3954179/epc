@@ -102,11 +102,15 @@ def redeem_prize(
         session.add(prize)
         
         # 创建兑换记录
+        prize_type_str = "physical"
+        if prize.prize_type:
+            prize_type_str = prize.prize_type.value if isinstance(prize.prize_type, PrizeType) else str(prize.prize_type)
+        
         redemption = PrizeRedemption(
             user_id=current_user.id,
             prize_id=prize.id,
             prize_name=prize.name,
-            prize_type=(prize.prize_type.value if prize.prize_type else PrizeType.physical.value),
+            prize_type=prize_type_str,
             coins_spent=prize.coins_cost,
             status=RedemptionStatus.pending,
             user_note=request.user_note,

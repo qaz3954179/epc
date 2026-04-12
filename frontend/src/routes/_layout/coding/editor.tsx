@@ -30,7 +30,7 @@ function EditorPage() {
   // 用 ref 保存最新的 XML，防止切换全屏时被清空
   const blocklyXmlRef = useRef("")
 
-  const { data: project } = useQuery({
+  const { data: project, isPending: isProjectLoading } = useQuery({
     queryKey: ["coding-project", id],
     queryFn: () => CodingService.getProject({ projectId: id! }),
     enabled: !!id,
@@ -219,10 +219,16 @@ function EditorPage() {
             </Flex>
             
             <Box h="500px">
-              <BlocklyEditor
-                initialXml={blocklyXml}
-                onChange={handleBlocklyChange}
-              />
+              {(!id || blocklyXml) ? (
+                <BlocklyEditor
+                  initialXml={blocklyXml}
+                  onChange={handleBlocklyChange}
+                />
+              ) : (
+                <Flex h="100%" align="center" justify="center">
+                  <Text color="gray.400">加载中...</Text>
+                </Flex>
+              )}
             </Box>
           </Box>
 
