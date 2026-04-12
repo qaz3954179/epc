@@ -131,8 +131,8 @@ function PlayPage() {
         <Text fontSize="5xl">🎉</Text>
         <Text fontSize="2xl" fontWeight="bold" color="gray.600">所有题目已完成！</Text>
         <Button size="lg" borderRadius={16} bg="linear-gradient(135deg, #667eea, #764ba2)" color="white"
-          onClick={handleFinish} loading={submitMutation.isPending}>
-          交卷查看成绩
+          onClick={handleFinish} disabled={submitMutation.isPending}>
+          {submitMutation.isPending ? "提交中..." : "交卷查看成绩"}
         </Button>
       </Flex>
     )
@@ -160,7 +160,11 @@ function PlayPage() {
               </Badge>
             </Flex>
           </Flex>
-          <Progress value={progress} borderRadius="full" h="12px" colorPalette="purple" />
+          <Progress.Root value={progress} borderRadius="full" h="12px" colorPalette="purple">
+            <Progress.Track>
+              <Progress.Range />
+            </Progress.Track>
+          </Progress.Root>
         </Box>
 
         {/* 题目卡片 */}
@@ -243,9 +247,8 @@ function PlayPage() {
               <Button flex={1} h="60px" borderRadius={16} fontSize="xl" fontWeight="black"
                 bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)" color="white"
                 disabled={!answer.trim() || answerMutation.isPending}
-                loading={answerMutation.isPending}
                 onClick={handleSubmitAnswer}>
-                提交答案 💪
+                {answerMutation.isPending ? "提交中..." : "提交答案 💪"}
               </Button>
               {currentIndex < questions.length - 1 && (
                 <Button h="60px" borderRadius={16} variant="outline" color="gray.400"
@@ -264,8 +267,8 @@ function PlayPage() {
         {/* 交卷按钮 */}
         <Flex justify="center">
           <Button size="lg" borderRadius={16} variant="outline" colorPalette="purple"
-            onClick={handleFinish} loading={submitMutation.isPending}>
-            交卷
+            onClick={handleFinish} disabled={submitMutation.isPending}>
+            {submitMutation.isPending ? "提交中..." : "交卷"}
           </Button>
         </Flex>
       </Container>

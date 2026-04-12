@@ -241,6 +241,6 @@ function ExamsPage() {
   )
 }
 
-export const Route = createFileRoute("/_layout/exams")({
+export const Route = createFileRoute("/_layout/exams/")({
   component: ExamsPage,
 })

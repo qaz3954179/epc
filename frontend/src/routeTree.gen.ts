@@ -30,10 +30,10 @@ import { Route as LayoutReferralImport } from './routes/_layout/referral'
 import { Route as LayoutPrizesImport } from './routes/_layout/prizes'
 import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutGrowthImport } from './routes/_layout/growth'
-import { Route as LayoutExamsImport } from './routes/_layout/exams'
 import { Route as LayoutCodingImport } from './routes/_layout/coding'
 import { Route as LayoutChildrenImport } from './routes/_layout/children'
 import { Route as LayoutAdminImport } from './routes/_layout/admin'
+import { Route as LayoutExamsIndexImport } from './routes/_layout/exams/index'
 import { Route as LayoutCodingIndexImport } from './routes/_layout/coding/index'
 import { Route as LayoutParentMonitorImport } from './routes/_layout/parent/monitor'
 import { Route as LayoutParentExamsImport } from './routes/_layout/parent/exams'
@@ -138,11 +138,6 @@ const LayoutGrowthRoute = LayoutGrowthImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
-const LayoutExamsRoute = LayoutExamsImport.update({
-  path: '/exams',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
 const LayoutCodingRoute = LayoutCodingImport.update({
   path: '/coding',
   getParentRoute: () => LayoutRoute,
@@ -155,6 +150,11 @@ const LayoutChildrenRoute = LayoutChildrenImport.update({
 
 const LayoutAdminRoute = LayoutAdminImport.update({
   path: '/admin',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutExamsIndexRoute = LayoutExamsIndexImport.update({
+  path: '/exams/',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -180,14 +180,14 @@ const LayoutCodingEditorRoute = LayoutCodingEditorImport.update({
 
 const LayoutExamsReportSessionIdRoute = LayoutExamsReportSessionIdImport.update(
   {
-    path: '/report/$sessionId',
-    getParentRoute: () => LayoutExamsRoute,
+    path: '/exams/report/$sessionId',
+    getParentRoute: () => LayoutRoute,
   } as any,
 )
 
 const LayoutExamsPlaySessionIdRoute = LayoutExamsPlaySessionIdImport.update({
-  path: '/play/$sessionId',
-  getParentRoute: () => LayoutExamsRoute,
+  path: '/exams/play/$sessionId',
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -228,10 +228,6 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/coding': {
       preLoaderRoute: typeof LayoutCodingImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/exams': {
-      preLoaderRoute: typeof LayoutExamsImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/growth': {
@@ -302,13 +298,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutCodingIndexImport
       parentRoute: typeof LayoutCodingImport
     }
+    '/_layout/exams/': {
+      preLoaderRoute: typeof LayoutExamsIndexImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/exams/play/$sessionId': {
       preLoaderRoute: typeof LayoutExamsPlaySessionIdImport
-      parentRoute: typeof LayoutExamsImport
+      parentRoute: typeof LayoutImport
     }
     '/_layout/exams/report/$sessionId': {
       preLoaderRoute: typeof LayoutExamsReportSessionIdImport
-      parentRoute: typeof LayoutExamsImport
+      parentRoute: typeof LayoutImport
     }
   }
 }
@@ -323,10 +323,6 @@ export const routeTree = rootRoute.addChildren([
       LayoutCodingEditorRoute,
       LayoutCodingIndexRoute,
     ]),
-    LayoutExamsRoute.addChildren([
-      LayoutExamsPlaySessionIdRoute,
-      LayoutExamsReportSessionIdRoute,
-    ]),
     LayoutGrowthRoute,
     LayoutItemsRoute,
     LayoutPrizesRoute,
@@ -336,6 +332,9 @@ export const routeTree = rootRoute.addChildren([
     LayoutIndexRoute,
     LayoutParentExamsRoute,
     LayoutParentMonitorRoute,
+    LayoutExamsIndexRoute,
+    LayoutExamsPlaySessionIdRoute,
+    LayoutExamsReportSessionIdRoute,
   ]),
   LoginRoute,
   RecoverPasswordRoute,

@@ -23,6 +23,13 @@ class UserRole(str, Enum):
     child = "child"    # 宝贝
 
 
+class TriggerType(str, Enum):
+    """任务完成触发方式"""
+    self_initiated = "self_initiated"      # 孩子主动完成
+    parent_reminded = "parent_reminded"    # 家长提醒后完成
+    deadline_driven = "deadline_driven"    # 临近截止才完成
+
+
 # Shared properties
 class UserBase(SQLModel):
     email: EmailStr | None = Field(default=None, max_length=255)  # 宝贝不需要邮箱
@@ -222,10 +229,22 @@ class NewPassword(SQLModel):
 # Task Completion models
 class TaskCompletionBase(SQLModel):
     completed_at: datetime = Field(default_factory=datetime.utcnow)
+    trigger_type: TriggerType | None = Field(default=None, max_length=30)
+    is_extra: bool = Field(default=False)
+    extra_detail: str | None = Field(default=None, max_length=500)
+    quality_score: int | None = Field(default=None, ge=1, le=5)
 
 
 class TaskCompletionCreate(SQLModel):
     item_id: uuid.UUID
+    trigger_type: TriggerType | None = None
+    is_extra: bool = False
+    extra_detail: str | None = Field(default=None, max_length=500)
+
+
+class TaskCompletionQualityUpdate(SQLModel):
+    """家长对任务完成质量评分"""
+    quality_score: int = Field(ge=1, le=5)
 
 
 class TaskCompletion(TaskCompletionBase, table=True):

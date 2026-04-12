@@ -4,9 +4,10 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
-import { FiPlus, FiTrash2, FiEdit } from "react-icons/fi"
+import { FiPlus, FiTrash2, FiCalendar } from "react-icons/fi"
 import useCustomToast from "@/hooks/useCustomToast"
 import { examService } from "@/client/examService"
+import { ParentService } from "@/client"
 import type {
   ExamTemplate, ExamSubject, ExamDifficulty, ExamGameMode, QuestionType,
 } from "@/client/examTypes"
@@ -224,12 +225,94 @@ function AddQuestionForm({ templateId, onClose }: { templateId: string; onClose:
   )
 }
 
+// ─── 预约考试表单 ─────────────────────────────────────────────────
+function BookExamForm({ templateId, onClose }: { templateId: string; onClose: () => void }) {
+  const queryClient = useQueryClient()
+  const { showSuccessToast, showErrorToast } = useCustomToast()
+  const [childId, setChildId] = useState("")
+
+  // 默认时间：1小时后（本地时间）
+  const getDefaultTime = () => {
+    const d = new Date()
+    d.setHours(d.getHours() + 1, 0, 0, 0)
+    // datetime-local 需要本地时间格式 YYYY-MM-DDTHH:mm
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const hours = String(d.getHours()).padStart(2, '0')
+    const minutes = String(d.getMinutes()).padStart(2, '0')
+    return `${year}-${month}-${day}T${hours}:${minutes}`
+  }
+  const [scheduledAt, setScheduledAt] = useState(getDefaultTime)
+
+  const { data: children = [] } = useQuery({
+    queryKey: ["parent-children"],
+    queryFn: () => ParentService.getMyChildren(),
+  })
+
+  const mutation = useMutation({
+    mutationFn: () =>
+      examService.createBooking({
+        template_id: templateId,
+        child_id: childId,
+        scheduled_at: new Date(scheduledAt).toISOString(),
+      }),
+    onSuccess: () => {
+      showSuccessToast("预约成功！宝贝可以在考试页面看到了")
+      queryClient.invalidateQueries({ queryKey: ["exam-bookings"] })
+      onClose()
+    },
+    onError: (err: any) => showErrorToast(err?.response?.data?.detail || "预约失败"),
+  })
+
+  return (
+    <Box bg="blue.50" borderRadius={16} p={5} mb={4}>
+      <Text fontSize="md" fontWeight="bold" mb={3}>📅 预约考试</Text>
+      <VStack gap={3} align="stretch">
+        <Box>
+          <Text fontSize="sm" color="gray.500" mb={1}>选择宝贝</Text>
+          {children.length === 0 ? (
+            <Text fontSize="sm" color="red.400">还没有添加宝贝账户，请先在「宝贝管理」中添加</Text>
+          ) : (
+            <Flex gap={2} flexWrap="wrap">
+              {children.map((c) => (
+                <Button key={c.id} size="sm" borderRadius={10}
+                  bg={childId === c.id ? "purple.500" : "white"}
+                  color={childId === c.id ? "white" : "gray.600"}
+                  onClick={() => setChildId(c.id)}>
+                  {c.nickname || c.full_name || c.username || "宝贝"}
+                </Button>
+              ))}
+            </Flex>
+          )}
+        </Box>
+        <Box>
+          <Text fontSize="sm" color="gray.500" mb={1}>预约时间</Text>
+          <Input type="datetime-local" borderRadius={12} bg="white"
+            value={scheduledAt}
+            onChange={(e) => setScheduledAt(e.target.value)} />
+        </Box>
+        <Flex gap={3} justify="flex-end">
+          <Button size="sm" variant="outline" borderRadius={10} onClick={onClose}>取消</Button>
+          <Button size="sm" borderRadius={10} bg="blue.500" color="white"
+            loading={mutation.isPending}
+            onClick={() => mutation.mutate()}
+            disabled={!childId || children.length === 0}>
+            确认预约
+          </Button>
+        </Flex>
+      </VStack>
+    </Box>
+  )
+}
+
 // ─── 模板卡片 ─────────────────────────────────────────────────────
 function TemplateCard({ tpl }: { tpl: ExamTemplate }) {
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const [expanded, setExpanded] = useState(false)
   const [showAddQ, setShowAddQ] = useState(false)
+  const [showBooking, setShowBooking] = useState(false)
 
   const { data: questionsData } = useQuery({
     queryKey: ["exam-questions", tpl.id],
@@ -313,6 +396,10 @@ function TemplateCard({ tpl }: { tpl: ExamTemplate }) {
               题目列表 ({questions.length})
             </Text>
             <Flex gap={2}>
+              <Button size="sm" borderRadius={10} bg="blue.500" color="white"
+                onClick={() => setShowBooking(!showBooking)}>
+                <FiCalendar /> 预约考试
+              </Button>
               <Button size="sm" borderRadius={10} bg="purple.500" color="white"
                 onClick={() => setShowAddQ(!showAddQ)}>
                 <FiPlus /> 添加题目
@@ -325,6 +412,7 @@ function TemplateCard({ tpl }: { tpl: ExamTemplate }) {
             </Flex>
           </Flex>
 
+          {showBooking && <BookExamForm templateId={tpl.id} onClose={() => setShowBooking(false)} />}
           {showAddQ && <AddQuestionForm templateId={tpl.id} onClose={() => setShowAddQ(false)} />}
 
           <VStack gap={2} align="stretch">

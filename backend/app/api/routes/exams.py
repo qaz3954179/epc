@@ -8,7 +8,7 @@
 """
 import uuid
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
@@ -271,7 +271,7 @@ def create_booking(
     else:
         raise HTTPException(status_code=400, detail="请指定宝贝 child_id")
 
-    if body.scheduled_at < datetime.utcnow():
+    if body.scheduled_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=400, detail="预约时间不能是过去")
 
     booking = ExamBooking(

@@ -5,7 +5,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from sqlmodel import col, func, select
 
-from app.api.deps import CurrentUser, CurrentChild, SessionDep
+from app.api.deps import CurrentUser, CurrentChild, CurrentParent, SessionDep
 from app.models import (
     CoinLog,
     CoinLogPublic,
@@ -13,7 +13,9 @@ from app.models import (
     Item,
     Message,
     TaskCompletion,
+    TaskCompletionCreate,
     TaskCompletionPublic,
+    TaskCompletionQualityUpdate,
     TodayTaskPublic,
     TodayTasksPublic,
     User,
@@ -125,9 +127,11 @@ def complete_task(
     session: SessionDep,
     current_user: CurrentUser,
     item_id: uuid.UUID,
+    completion_data: TaskCompletionCreate,
 ) -> Any:
     """
     Record a task completion. Respects the target_count limit per day.
+    支持记录 trigger_type（触发方式）、is_extra（超额完成）等字段。
     """
     # 只允许 child 角色完成任务
     if current_user.role != UserRole.child and not current_user.is_superuser:
@@ -166,6 +170,9 @@ def complete_task(
         item_id=item_id,
         user_id=current_user.id,
         completed_at=datetime.utcnow(),
+        trigger_type=completion_data.trigger_type,
+        is_extra=completion_data.is_extra,
+        extra_detail=completion_data.extra_detail,
     )
     session.add(completion)
 
@@ -197,6 +204,63 @@ def get_task_completions(
             TaskCompletion.user_id == current_user.id,
             col(TaskCompletion.completed_at) >= start,
             col(TaskCompletion.completed_at) <= end,
+        )
+        .order_by(col(TaskCompletion.completed_at).desc())
+    )
+    completions = session.exec(stmt).all()
+    return completions
+
+
+@router.patch("/{completion_id}/quality", response_model=TaskCompletionPublic)
+def rate_task_quality(
+    session: SessionDep,
+    current_user: CurrentParent,
+    completion_id: uuid.UUID,
+    body: TaskCompletionQualityUpdate,
+) -> Any:
+    """
+    家长对孩子的任务完成质量评分（1-5分）。
+    仅家长可操作，且只能评自己孩子的完成记录。
+    """
+    completion = session.get(TaskCompletion, completion_id)
+    if not completion:
+        raise HTTPException(status_code=404, detail="完成记录不存在")
+
+    # 校验是否是自己孩子的记录
+    child = session.get(User, completion.user_id)
+    if not child or child.parent_id != current_user.id:
+        raise HTTPException(status_code=403, detail="只能评价自己孩子的任务")
+
+    completion.quality_score = body.quality_score
+    session.add(completion)
+    session.commit()
+    session.refresh(completion)
+    return completion
+
+
+@router.get("/child/{child_id}/completions", response_model=list[TaskCompletionPublic])
+def get_child_completions(
+    session: SessionDep,
+    current_user: CurrentParent,
+    child_id: uuid.UUID,
+    days: int = 7,
+) -> Any:
+    """
+    家长查看孩子最近 N 天的任务完成记录（含 trigger_type、quality_score 等）。
+    用于行为数据分析。
+    """
+    from datetime import timedelta
+
+    child = session.get(User, child_id)
+    if not child or child.parent_id != current_user.id:
+        raise HTTPException(status_code=403, detail="只能查看自己孩子的记录")
+
+    since = datetime.utcnow() - timedelta(days=days)
+    stmt = (
+        select(TaskCompletion)
+        .where(
+            TaskCompletion.user_id == child_id,
+            col(TaskCompletion.completed_at) >= since,
         )
         .order_by(col(TaskCompletion.completed_at).desc())
     )
