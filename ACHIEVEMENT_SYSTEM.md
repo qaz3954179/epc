@@ -306,11 +306,11 @@ POST /api/v1/sdi/calculate
 - [ ] 添加家长质量评分 API
 
 ### Phase 2：成就系统（2周）
-- [ ] 创建 Achievement、UserAchievement、AchievementNotification 表
-- [ ] 成就定义 CRUD API
-- [ ] 成就检测引擎（条件评估器）
-- [ ] 成就解锁记录 API
-- [ ] 成就通知 API
+- [x] 创建 Achievement、UserAchievement、AchievementNotification 表
+- [x] 成就定义 CRUD API
+- [x] 成就检测引擎（条件评估器）
+- [x] 成就解锁记录 API
+- [x] 成就通知 API
 
 ### Phase 3：SDI 计算引擎（2周）
 - [ ] 创建 SDIRecord 表

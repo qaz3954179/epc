@@ -5,6 +5,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from sqlmodel import col, func, select
 
+from app.achievement_checker import check_achievements_for_user
 from app.api.deps import CurrentUser, CurrentChild, CurrentParent, SessionDep
 from app.models import (
     CoinLog,
@@ -184,6 +185,13 @@ def complete_task(
 
     session.commit()
     session.refresh(completion)
+
+    # 触发成就检测
+    try:
+        check_achievements_for_user(session, current_user.id)
+    except Exception:
+        pass  # 成就检测失败不影响主流程
+
     return completion
 
 
@@ -235,6 +243,13 @@ def rate_task_quality(
     session.add(completion)
     session.commit()
     session.refresh(completion)
+
+    # 评分后触发成就检测
+    try:
+        check_achievements_for_user(session, completion.user_id)
+    except Exception:
+        pass
+
     return completion
 
 

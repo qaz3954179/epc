@@ -918,3 +918,120 @@ class CodingProjectPublic(CodingProjectBase):
 class CodingProjectsPublic(SQLModel):
     data: list[CodingProjectPublic]
     count: int
+
+
+# ─── Achievement System models ─────────────────────────────────────
+
+class AchievementCategory(str, Enum):
+    """成就类别"""
+    hidden = "hidden"        # 隐藏成就，条件不可见
+    milestone = "milestone"  # 里程碑成就，条件可见
+
+
+class AchievementConditionType(str, Enum):
+    """成就条件类型"""
+    streak = "streak"        # 连续天数
+    count = "count"          # 累计次数
+    rate = "rate"            # 比率达标
+    composite = "composite"  # 复合条件
+
+
+class AchievementBase(SQLModel):
+    name: str = Field(min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=500)
+    icon: str = Field(default="🏆", max_length=50)
+    reveal_message: str = Field(max_length=1000)
+    category: AchievementCategory = Field(default=AchievementCategory.hidden, max_length=20)
+    condition_type: AchievementConditionType = Field(max_length=20)
+    condition_config: dict[str, Any] = Field(default={}, sa_column=Column(JSON))
+    coins_bonus: int = Field(default=0, ge=0)
+    is_active: bool = Field(default=True)
+
+
+class AchievementCreate(AchievementBase):
+    pass
+
+
+class AchievementUpdate(SQLModel):
+    name: str | None = Field(default=None, min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=500)
+    icon: str | None = Field(default=None, max_length=50)
+    reveal_message: str | None = Field(default=None, max_length=1000)
+    category: AchievementCategory | None = None
+    condition_type: AchievementConditionType | None = None
+    condition_config: dict[str, Any] | None = None
+    coins_bonus: int | None = Field(default=None, ge=0)
+    is_active: bool | None = None
+
+
+class Achievement(AchievementBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class AchievementPublic(AchievementBase):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class AchievementsPublic(SQLModel):
+    data: list[AchievementPublic]
+    count: int
+
+
+class AchievementChildView(SQLModel):
+    """孩子视角的成就（隐藏成就不显示条件）"""
+    id: uuid.UUID
+    name: str
+    icon: str
+    reveal_message: str | None = None  # 仅已解锁时显示
+    category: AchievementCategory
+    unlocked: bool
+    unlocked_at: datetime | None = None
+
+
+class AchievementChildSummary(SQLModel):
+    """孩子的成就概览"""
+    unlocked: list[AchievementChildView]
+    unlocked_count: int
+    total_hidden: str  # "?" 保持神秘感
+
+
+# ─── UserAchievement (解锁记录) ────────────────────────────────────
+
+class UserAchievement(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    achievement_id: uuid.UUID = Field(foreign_key="achievement.id", nullable=False, ondelete="CASCADE")
+    unlocked_at: datetime = Field(default_factory=datetime.utcnow)
+    trigger_snapshot: dict[str, Any] = Field(default={}, sa_column=Column(JSON))
+    user: User | None = Relationship()
+    achievement: Achievement | None = Relationship()
+
+
+class UserAchievementPublic(SQLModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    achievement_id: uuid.UUID
+    unlocked_at: datetime
+    trigger_snapshot: dict[str, Any]
+    achievement: AchievementPublic | None = None
+
+
+class UserAchievementsPublic(SQLModel):
+    data: list[UserAchievementPublic]
+    count: int
+
+
+# ─── AchievementNotification (通知队列) ────────────────────────────
+
+class AchievementNotification(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    achievement_id: uuid.UUID = Field(foreign_key="achievement.id", nullable=False, ondelete="CASCADE")
+    is_read: bool = Field(default=False)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    user: User | None = Relationship()
+    achievement: Achievement | None = Relationship()

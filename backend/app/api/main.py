@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.routes import (
+    achievements,
     children,
     coding,
     coin_logs,
@@ -38,6 +39,7 @@ api_router.include_router(children.router)
 api_router.include_router(parent.router)
 api_router.include_router(exams.router)
 api_router.include_router(coding.router)
+api_router.include_router(achievements.router)
 
 
 if settings.ENVIRONMENT == "local":
