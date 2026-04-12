@@ -22,12 +22,14 @@ const items: MenuItem[] = [
   { title: "编程乐园", path: "/coding",   emoji: "💻",  roles: ["child"] },
   { title: "奖品商城", path: "/prizes",   emoji: "🎁",  roles: ["child"] },
   { title: "成长记录", path: "/growth",   emoji: "📈",  roles: ["child"] },
+  { title: "我的成就", path: "/achievements", emoji: "🏆", roles: ["child"] },
   // 家长专属
   { title: "学习币",       path: "/",               emoji: "🪙",  roles: ["parent"] },
   { title: "监控面板",     path: "/parent/monitor",  emoji: "📊",  roles: ["parent"] },
   { title: "我的宝贝",     path: "/children",        emoji: "👶",  roles: ["parent"] },
   { title: "任务管理",     path: "/tasks",           emoji: "📋",  roles: ["parent"] },
   { title: "考试管理",     path: "/parent/exams",    emoji: "📝",  roles: ["parent"] },
+  { title: "自驱力分析",   path: "/parent/sdi",      emoji: "📊",  roles: ["parent"] },
   { title: "编程管理",     path: "/coding",          emoji: "💻",  roles: ["parent"] },
   { title: "奖品管理",     path: "/prizes",          emoji: "🎁",  roles: ["parent"] },
   { title: "推广",         path: "/referral",        emoji: "📣",  roles: ["parent"] },
@@ -42,6 +44,7 @@ const items: MenuItem[] = [
   { title: "用户管理", path: "/admin",    emoji: "👥",  roles: ["admin"] },
   { title: "推广",     path: "/referral", emoji: "📣",  roles: ["admin"] },
   { title: "成长记录", path: "/growth",   emoji: "📈",  roles: ["admin"] },
+  { title: "自驱力分析", path: "/parent/sdi", emoji: "📊", roles: ["admin"] },
   // 所有角色
   { title: "设置",     path: "/settings", emoji: "⚙️" },
 ]
