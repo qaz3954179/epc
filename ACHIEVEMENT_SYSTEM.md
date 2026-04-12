@@ -300,10 +300,10 @@ POST /api/v1/sdi/calculate
 
 ### Phase 1：数据采集层（1周）
 - [x] 扩展 TaskCompletion 表（trigger_type, quality_score, is_extra, extra_detail）
-- [ ] 创建数据库迁移脚本
-- [ ] 更新 TaskCompletion 相关模型
-- [ ] 更新任务完成 API 支持新字段
-- [ ] 添加家长质量评分 API
+- [x] 创建数据库迁移脚本
+- [x] 更新 TaskCompletion 相关模型
+- [x] 更新任务完成 API 支持新字段
+- [x] 添加家长质量评分 API
 
 ### Phase 2：成就系统（2周）
 - [x] 创建 Achievement、UserAchievement、AchievementNotification 表
@@ -317,7 +317,7 @@ POST /api/v1/sdi/calculate
 - [x] SDI 计算引擎（四大指标 + 时间衰减）
 - [x] 家长仪表盘 API（趋势图、分析报告）
 - [x] 个性化引导建议生成
-- [ ] 定时任务（每日计算 SDI）— 部署时配置 cron
+- [x] 定时任务（每日计算 SDI）— 已配置 cron (每日 01:00)
 
 ### Phase 4：前端展示（1周）
 - [x] 孩子端成就展示页
