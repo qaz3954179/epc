@@ -103,6 +103,12 @@ class Settings(BaseSettings):
     CASDOOR_ORG_NAME: str = "built-in"
     CASDOOR_APP_NAME: str = "epc"
 
+    # SDI 权重配置（四项之和应为 1.0）
+    SDI_WEIGHT_INITIATIVE: float = 0.4
+    SDI_WEIGHT_EXPLORATION: float = 0.2
+    SDI_WEIGHT_PERSISTENCE: float = 0.2
+    SDI_WEIGHT_QUALITY: float = 0.2
+
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = (

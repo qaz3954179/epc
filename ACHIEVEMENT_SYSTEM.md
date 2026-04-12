@@ -119,7 +119,7 @@ SDI = (
 - 创建/编辑/删除成就定义（包括条件、文案、图标、是否隐藏）
 - 查看全局成就解锁统计（哪些成就解锁率高/低，用于调优）
 - 手动授予/撤销特殊成就
-- 配置 SDI 权重参数（主动性0.4、探索性0.2、持续性0.2、质量0.2）
+- 配置 SDI 权重参数（通过环境变量：`SDI_WEIGHT_INITIATIVE` / `SDI_WEIGHT_EXPLORATION` / `SDI_WEIGHT_PERSISTENCE` / `SDI_WEIGHT_QUALITY`，默认 0.4/0.2/0.2/0.2）
 - 查看所有孩子的 SDI 趋势数据
 
 ### 家长（parent）

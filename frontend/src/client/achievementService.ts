@@ -21,6 +21,7 @@ export interface AchievementChildView {
   id: string
   name: string
   icon: string
+  description: string | null
   reveal_message: string | null
   category: "hidden" | "milestone"
   unlocked: boolean
@@ -28,9 +29,9 @@ export interface AchievementChildView {
 }
 
 export interface AchievementChildSummary {
-  unlocked: AchievementChildView[]
+  achievements: AchievementChildView[]
   unlocked_count: number
-  total_hidden: string
+  total_count: number
 }
 
 export interface UserAchievement {

@@ -259,8 +259,8 @@ def get_my_achievements(
 ) -> Any:
     """
     孩子查看自己的成就。
-    已解锁的显示名称+图标+揭晓文案+解锁时间。
-    未解锁的隐藏成就不显示任何信息，只显示总数为 "?"。
+    已解锁：显示名称+图标+揭晓文案+解锁时间。
+    未解锁：显示名称+图标+达成要求（description），锁住状态。
     """
     # 获取所有活跃成就
     all_achievements = session.exec(
@@ -275,27 +275,58 @@ def get_my_achievements(
     for ua in unlocked_records:
         unlocked_map[ua.achievement_id] = ua
 
-    unlocked_views: list[AchievementChildView] = []
+    views: list[AchievementChildView] = []
+    unlocked_count = 0
+
     for a in all_achievements:
         ua = unlocked_map.get(a.id)
         if ua:
-            unlocked_views.append(AchievementChildView(
+            unlocked_count += 1
+            views.append(AchievementChildView(
                 id=a.id,
                 name=a.name,
                 icon=a.icon,
+                description=a.description,
                 reveal_message=a.reveal_message,
                 category=a.category,
                 unlocked=True,
                 unlocked_at=ua.unlocked_at,
             ))
+        elif a.category == AchievementCategory.hidden:
+            # 隐藏成就未解锁：不暴露名称和条件
+            views.append(AchievementChildView(
+                id=a.id,
+                name="???",
+                icon="❓",
+                description=None,
+                reveal_message=None,
+                category=a.category,
+                unlocked=False,
+                unlocked_at=None,
+            ))
+        else:
+            # 里程碑成就未解锁：显示名称、图标和达成要求
+            views.append(AchievementChildView(
+                id=a.id,
+                name=a.name,
+                icon=a.icon,
+                description=a.description,
+                reveal_message=None,
+                category=a.category,
+                unlocked=False,
+                unlocked_at=None,
+            ))
 
-    # 按解锁时间倒序
+    # 已解锁的排前面（按解锁时间倒序），未解锁的排后面
+    unlocked_views = [v for v in views if v.unlocked]
+    locked_views = [v for v in views if not v.unlocked]
     unlocked_views.sort(key=lambda v: v.unlocked_at or datetime.min, reverse=True)
+    sorted_views = unlocked_views + locked_views
 
     return AchievementChildSummary(
-        unlocked=unlocked_views,
-        unlocked_count=len(unlocked_views),
-        total_hidden="?",
+        achievements=sorted_views,
+        unlocked_count=unlocked_count,
+        total_count=len(all_achievements),
     )
 
 

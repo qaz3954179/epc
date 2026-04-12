@@ -20,6 +20,7 @@ from typing import Any
 
 from sqlmodel import Session, col, func, select
 
+from app.core.config import settings
 from app.models import (
     Item,
     SDIPeriodType,
@@ -31,13 +32,15 @@ from app.models import (
     UserRole,
 )
 
-# SDI 权重配置
-WEIGHTS = {
-    "initiative": 0.4,
-    "exploration": 0.2,
-    "persistence": 0.2,
-    "quality": 0.2,
-}
+
+def _get_weights() -> dict[str, float]:
+    """从配置读取 SDI 权重，支持环境变量覆盖。"""
+    return {
+        "initiative": settings.SDI_WEIGHT_INITIATIVE,
+        "exploration": settings.SDI_WEIGHT_EXPLORATION,
+        "persistence": settings.SDI_WEIGHT_PERSISTENCE,
+        "quality": settings.SDI_WEIGHT_QUALITY,
+    }
 
 # 所有任务分类
 ALL_CATEGORIES = {"daily", "exam", "game", "pe"}
@@ -66,11 +69,12 @@ def calculate_sdi_for_user(
     persistence = _calc_persistence(session, user_id, target_date)
     quality = _calc_quality(session, user_id, target_date)
 
+    weights = _get_weights()
     sdi_score = round(
-        initiative["score"] * WEIGHTS["initiative"]
-        + exploration["score"] * WEIGHTS["exploration"]
-        + persistence["score"] * WEIGHTS["persistence"]
-        + quality["score"] * WEIGHTS["quality"],
+        initiative["score"] * weights["initiative"]
+        + exploration["score"] * weights["exploration"]
+        + persistence["score"] * weights["persistence"]
+        + quality["score"] * weights["quality"],
         1,
     )
 
@@ -79,7 +83,7 @@ def calculate_sdi_for_user(
         "exploration": exploration,
         "persistence": persistence,
         "quality": quality,
-        "weights": WEIGHTS,
+        "weights": weights,
     }
 
     # 查找或创建记录

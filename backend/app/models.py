@@ -982,10 +982,11 @@ class AchievementsPublic(SQLModel):
 
 
 class AchievementChildView(SQLModel):
-    """孩子视角的成就（隐藏成就不显示条件）"""
+    """孩子视角的成就"""
     id: uuid.UUID
     name: str
     icon: str
+    description: str | None = None  # 达成要求
     reveal_message: str | None = None  # 仅已解锁时显示
     category: AchievementCategory
     unlocked: bool
@@ -994,9 +995,9 @@ class AchievementChildView(SQLModel):
 
 class AchievementChildSummary(SQLModel):
     """孩子的成就概览"""
-    unlocked: list[AchievementChildView]
+    achievements: list[AchievementChildView]
     unlocked_count: int
-    total_hidden: str  # "?" 保持神秘感
+    total_count: int
 
 
 # ─── UserAchievement (解锁记录) ────────────────────────────────────

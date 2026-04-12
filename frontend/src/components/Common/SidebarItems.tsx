@@ -40,6 +40,7 @@ const items: MenuItem[] = [
   { title: "考试管理", path: "/parent/exams", emoji: "📝",  roles: ["admin"] },
   { title: "编程管理", path: "/coding",       emoji: "💻",  roles: ["admin"] },
   { title: "奖品管理", path: "/prizes",   emoji: "🎁",  roles: ["admin"] },
+  { title: "成就管理", path: "/admin/achievements", emoji: "🏆", roles: ["admin"] },
   { title: "我的宝贝", path: "/children", emoji: "👶",  roles: ["admin"] },
   { title: "用户管理", path: "/admin",    emoji: "👥",  roles: ["admin"] },
   { title: "推广",     path: "/referral", emoji: "📣",  roles: ["admin"] },

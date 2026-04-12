@@ -32,14 +32,15 @@ import { Route as LayoutItemsImport } from './routes/_layout/items'
 import { Route as LayoutGrowthImport } from './routes/_layout/growth'
 import { Route as LayoutCodingImport } from './routes/_layout/coding'
 import { Route as LayoutChildrenImport } from './routes/_layout/children'
-import { Route as LayoutAdminImport } from './routes/_layout/admin'
 import { Route as LayoutAchievementsImport } from './routes/_layout/achievements'
 import { Route as LayoutExamsIndexImport } from './routes/_layout/exams/index'
 import { Route as LayoutCodingIndexImport } from './routes/_layout/coding/index'
+import { Route as LayoutAdminIndexImport } from './routes/_layout/admin/index'
 import { Route as LayoutParentSdiImport } from './routes/_layout/parent/sdi'
 import { Route as LayoutParentMonitorImport } from './routes/_layout/parent/monitor'
 import { Route as LayoutParentExamsImport } from './routes/_layout/parent/exams'
 import { Route as LayoutCodingEditorImport } from './routes/_layout/coding/editor'
+import { Route as LayoutAdminAchievementsImport } from './routes/_layout/admin/achievements'
 import { Route as LayoutExamsReportSessionIdImport } from './routes/_layout/exams/report/$sessionId'
 import { Route as LayoutExamsPlaySessionIdImport } from './routes/_layout/exams/play/$sessionId'
 
@@ -150,11 +151,6 @@ const LayoutChildrenRoute = LayoutChildrenImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
-const LayoutAdminRoute = LayoutAdminImport.update({
-  path: '/admin',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
 const LayoutAchievementsRoute = LayoutAchievementsImport.update({
   path: '/achievements',
   getParentRoute: () => LayoutRoute,
@@ -168,6 +164,11 @@ const LayoutExamsIndexRoute = LayoutExamsIndexImport.update({
 const LayoutCodingIndexRoute = LayoutCodingIndexImport.update({
   path: '/',
   getParentRoute: () => LayoutCodingRoute,
+} as any)
+
+const LayoutAdminIndexRoute = LayoutAdminIndexImport.update({
+  path: '/admin/',
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 const LayoutParentSdiRoute = LayoutParentSdiImport.update({
@@ -188,6 +189,11 @@ const LayoutParentExamsRoute = LayoutParentExamsImport.update({
 const LayoutCodingEditorRoute = LayoutCodingEditorImport.update({
   path: '/editor',
   getParentRoute: () => LayoutCodingRoute,
+} as any)
+
+const LayoutAdminAchievementsRoute = LayoutAdminAchievementsImport.update({
+  path: '/admin/achievements',
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 const LayoutExamsReportSessionIdRoute = LayoutExamsReportSessionIdImport.update(
@@ -232,10 +238,6 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/achievements': {
       preLoaderRoute: typeof LayoutAchievementsImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/admin': {
-      preLoaderRoute: typeof LayoutAdminImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/children': {
@@ -298,6 +300,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RedemptionsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/_layout/admin/achievements': {
+      preLoaderRoute: typeof LayoutAdminAchievementsImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/coding/editor': {
       preLoaderRoute: typeof LayoutCodingEditorImport
       parentRoute: typeof LayoutCodingImport
@@ -312,6 +318,10 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/parent/sdi': {
       preLoaderRoute: typeof LayoutParentSdiImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/admin/': {
+      preLoaderRoute: typeof LayoutAdminIndexImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/coding/': {
@@ -338,7 +348,6 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   LayoutRoute.addChildren([
     LayoutAchievementsRoute,
-    LayoutAdminRoute,
     LayoutChildrenRoute,
     LayoutCodingRoute.addChildren([
       LayoutCodingEditorRoute,
@@ -351,9 +360,11 @@ export const routeTree = rootRoute.addChildren([
     LayoutSettingsRoute,
     LayoutTasksRoute,
     LayoutIndexRoute,
+    LayoutAdminAchievementsRoute,
     LayoutParentExamsRoute,
     LayoutParentMonitorRoute,
     LayoutParentSdiRoute,
+    LayoutAdminIndexRoute,
     LayoutExamsIndexRoute,
     LayoutExamsPlaySessionIdRoute,
     LayoutExamsReportSessionIdRoute,

@@ -86,57 +86,100 @@ const UnlockPopup = ({
 )
 
 // ── 成就卡片 ──────────────────────────────────────────
-const AchievementCard = ({ achievement }: { achievement: AchievementChildView }) => (
-  <Box
-    bg="white"
-    borderRadius={16}
-    p={5}
-    boxShadow="sm"
-    transition="all 0.2s"
-    _hover={{ boxShadow: "md", transform: "translateY(-2px)" }}
-    opacity={achievement.unlocked ? 1 : 0.5}
-    position="relative"
-    overflow="hidden"
-  >
-    {achievement.unlocked && (
-      <Box
-        position="absolute"
-        top={2}
-        right={2}
-        bg="green.100"
-        color="green.600"
-        fontSize="xs"
-        px={2}
-        py={0.5}
-        borderRadius={8}
-        fontWeight="bold"
-      >
-        已解锁
-      </Box>
-    )}
-    <Flex direction="column" align="center" gap={3}>
-      <Text fontSize="4xl">{achievement.icon}</Text>
-      <Text fontWeight="bold" fontSize="md" textAlign="center">
-        {achievement.name}
-      </Text>
-      {achievement.unlocked && achievement.reveal_message && (
-        <Text
+const AchievementCard = ({ achievement }: { achievement: AchievementChildView }) => {
+  const isHiddenLocked = !achievement.unlocked && achievement.name === "???"
+  
+  return (
+    <Box
+      bg="white"
+      borderRadius={16}
+      p={5}
+      boxShadow="sm"
+      transition="all 0.2s"
+      _hover={{ boxShadow: "md", transform: "translateY(-2px)" }}
+      position="relative"
+      overflow="hidden"
+    >
+      {achievement.unlocked ? (
+        <Box
+          position="absolute"
+          top={2}
+          right={2}
+          bg="green.100"
+          color="green.600"
           fontSize="xs"
-          color="gray.500"
-          textAlign="center"
-          lineHeight="tall"
+          px={2}
+          py={0.5}
+          borderRadius={8}
+          fontWeight="bold"
         >
-          {achievement.reveal_message}
-        </Text>
+          已解锁
+        </Box>
+      ) : (
+        <Box
+          position="absolute"
+          top={2}
+          right={2}
+          fontSize="lg"
+        >
+          🔒
+        </Box>
       )}
-      {achievement.unlocked && achievement.unlocked_at && (
-        <Text fontSize="xs" color="gray.400">
-          {new Date(achievement.unlocked_at).toLocaleDateString("zh-CN")}
+      <Flex direction="column" align="center" gap={3}>
+        <Text
+          fontSize="4xl"
+          filter={achievement.unlocked ? "none" : "grayscale(100%)"}
+          opacity={achievement.unlocked ? 1 : (isHiddenLocked ? 0.3 : 0.5)}
+        >
+          {achievement.icon}
         </Text>
-      )}
-    </Flex>
-  </Box>
-)
+        <Text
+          fontWeight="bold"
+          fontSize="md"
+          textAlign="center"
+          color={achievement.unlocked ? "gray.800" : "gray.400"}
+        >
+          {achievement.name}
+        </Text>
+        {achievement.unlocked && achievement.reveal_message && (
+          <Text
+            fontSize="xs"
+            color="gray.500"
+            textAlign="center"
+            lineHeight="tall"
+          >
+            {achievement.reveal_message}
+          </Text>
+        )}
+        {!achievement.unlocked && achievement.description && (
+          <Text
+            fontSize="xs"
+            color="gray.400"
+            textAlign="center"
+            lineHeight="tall"
+          >
+            {achievement.description}
+          </Text>
+        )}
+        {isHiddenLocked && (
+          <Text
+            fontSize="xs"
+            color="gray.300"
+            textAlign="center"
+            fontStyle="italic"
+          >
+            神秘成就，等待解锁...
+          </Text>
+        )}
+        {achievement.unlocked && achievement.unlocked_at && (
+          <Text fontSize="xs" color="gray.400">
+            {new Date(achievement.unlocked_at).toLocaleDateString("zh-CN")}
+          </Text>
+        )}
+      </Flex>
+    </Box>
+  )
+}
 
 // ── 主页面 ────────────────────────────────────────────
 const Achievements = () => {
@@ -195,13 +238,13 @@ const Achievements = () => {
           py={2}
         >
           <Text fontSize="sm" color="orange.600" fontWeight="bold">
-            已解锁 {summary?.unlocked_count ?? 0} / {summary?.total_hidden ?? "?"} 个
+            已解锁 {summary?.unlocked_count ?? 0} / {summary?.total_count ?? 0} 个
           </Text>
         </Box>
       </Flex>
 
       {/* 成就列表 */}
-      {summary && summary.unlocked.length > 0 ? (
+      {summary && summary.achievements && summary.achievements.length > 0 ? (
         <Grid
           templateColumns={{
             base: "repeat(2, 1fr)",
@@ -210,7 +253,7 @@ const Achievements = () => {
           }}
           gap={4}
         >
-          {summary.unlocked.map((a) => (
+          {summary.achievements.map((a) => (
             <AchievementCard key={a.id} achievement={a} />
           ))}
         </Grid>
@@ -225,7 +268,7 @@ const Achievements = () => {
         >
           <Text fontSize="5xl">🔒</Text>
           <Text fontSize="lg" color="gray.500">
-            还没有解锁任何成就
+            还没有任何成就
           </Text>
           <Text fontSize="sm" color="gray.400">
             继续完成任务，惊喜会在不经意间出现哦！
