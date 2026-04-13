@@ -62,6 +62,9 @@ def _check_template_access(template: ExamTemplate | None, user: User) -> ExamTem
         raise HTTPException(status_code=404, detail="考试模板不存在")
     if user.is_superuser or user.role == UserRole.admin:
         return template
+    # 公开试卷所有人可访问
+    if template.is_public:
+        return template
     if template.created_by == user.id:
         return template
     # child 可以访问 parent 创建的模板
@@ -110,12 +113,17 @@ def list_templates(
     skip: int = 0, limit: int = 100,
 ) -> Any:
     """获取考试模板列表"""
+    from sqlalchemy import or_
+
     if current_user.is_superuser or current_user.role == UserRole.admin:
         where = []
     elif current_user.role == UserRole.child:
-        where = [ExamTemplate.created_by == current_user.parent_id] if current_user.parent_id else [ExamTemplate.id == None]  # noqa: E711
+        # 孩子可见：家长创建的 + 公开的
+        parent_filter = (ExamTemplate.created_by == current_user.parent_id) if current_user.parent_id else (ExamTemplate.id == None)  # noqa: E711
+        where = [or_(parent_filter, ExamTemplate.is_public == True)]  # noqa: E712
     else:
-        where = [ExamTemplate.created_by == current_user.id]
+        # 家长可见：自己创建的 + 公开的
+        where = [or_(ExamTemplate.created_by == current_user.id, ExamTemplate.is_public == True)]  # noqa: E712
 
     count = session.exec(
         select(func.count()).select_from(ExamTemplate).where(*where)

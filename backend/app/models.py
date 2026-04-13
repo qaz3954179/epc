@@ -662,6 +662,7 @@ class ExamTemplateBase(SQLModel):
     coins_reward_rules: dict[str, Any] = Field(default={}, sa_column=Column(JSON))
     game_mode: ExamGameMode = Field(default=ExamGameMode.classic, max_length=20)
     is_active: bool = Field(default=True)
+    is_public: bool = Field(default=False)  # 公开试卷所有家长可见
 
 
 class ExamTemplateCreate(ExamTemplateBase):
@@ -677,6 +678,7 @@ class ExamTemplateUpdate(SQLModel):
     coins_reward_rules: dict[str, Any] | None = None
     game_mode: ExamGameMode | None = None
     is_active: bool | None = None
+    is_public: bool | None = None
 
 
 class ExamTemplate(ExamTemplateBase, table=True):
@@ -1092,3 +1094,269 @@ class SDIDashboard(SQLModel):
     trend: list[SDIRecordPublic]
     analysis: dict[str, Any]
     suggestions: list[str]
+
+
+# ─── Vocabulary System models ──────────────────────────────────────
+
+class VocabGrade(str, Enum):
+    """年级"""
+    grade_1 = "grade_1"
+    grade_2 = "grade_2"
+    grade_3 = "grade_3"
+    grade_4 = "grade_4"
+    grade_5 = "grade_5"
+    grade_6 = "grade_6"
+    grade_7 = "grade_7"
+    grade_8 = "grade_8"
+    grade_9 = "grade_9"
+
+
+class VocabSemester(str, Enum):
+    """学期"""
+    first = "first"
+    second = "second"
+
+
+class VocabTaskMode(str, Enum):
+    """词汇任务模式"""
+    spelling = "spelling"        # 看中文拼写英文
+    choice = "choice"            # 选择题
+    dictation = "dictation"      # 听写
+
+
+class VocabSessionStatus(str, Enum):
+    """词汇答题状态"""
+    in_progress = "in_progress"
+    completed = "completed"
+
+
+# ─── VocabBook (词库) ──────────────────────────────────────────────
+
+class VocabBookBase(SQLModel):
+    title: str = Field(min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=500)
+    grade: VocabGrade = Field(max_length=20)
+    semester: VocabSemester = Field(max_length=20)
+    cover_image_url: str | None = Field(default=None, max_length=2000)
+    is_public: bool = Field(default=False)
+
+
+class VocabBookCreate(VocabBookBase):
+    pass
+
+
+class VocabBookUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=500)
+    grade: VocabGrade | None = None
+    semester: VocabSemester | None = None
+    cover_image_url: str | None = Field(default=None, max_length=2000)
+    is_public: bool | None = None
+
+
+class VocabBook(VocabBookBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_by: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    creator: User | None = Relationship()
+    words: list["VocabWord"] = Relationship(back_populates="book", cascade_delete=True)
+
+
+class VocabBookPublic(VocabBookBase):
+    id: uuid.UUID
+    created_by: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+    word_count: int = 0
+
+
+class VocabBooksPublic(SQLModel):
+    data: list[VocabBookPublic]
+    count: int
+
+
+# ─── VocabWord (单词) ──────────────────────────────────────────────
+
+class VocabWordBase(SQLModel):
+    word: str = Field(min_length=1, max_length=200)
+    phonetic: str | None = Field(default=None, max_length=200)
+    meaning: str = Field(min_length=1, max_length=500)
+    example_sentence: str | None = Field(default=None, max_length=1000)
+    audio_url: str | None = Field(default=None, max_length=2000)
+    unit: int = Field(default=1, ge=1)
+    sort_order: int = Field(default=0)
+
+
+class VocabWordCreate(VocabWordBase):
+    pass
+
+
+class VocabWordUpdate(SQLModel):
+    word: str | None = Field(default=None, min_length=1, max_length=200)
+    phonetic: str | None = Field(default=None, max_length=200)
+    meaning: str | None = Field(default=None, min_length=1, max_length=500)
+    example_sentence: str | None = Field(default=None, max_length=1000)
+    audio_url: str | None = Field(default=None, max_length=2000)
+    unit: int | None = Field(default=None, ge=1)
+    sort_order: int | None = None
+
+
+class VocabWord(VocabWordBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    book_id: uuid.UUID = Field(foreign_key="vocabbook.id", nullable=False, ondelete="CASCADE")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    book: VocabBook | None = Relationship(back_populates="words")
+
+
+class VocabWordPublic(VocabWordBase):
+    id: uuid.UUID
+    book_id: uuid.UUID
+    created_at: datetime
+
+
+class VocabWordsPublic(SQLModel):
+    data: list[VocabWordPublic]
+    count: int
+
+
+# ─── VocabTask (词汇任务) ─────────────────────────────────────────
+
+class VocabTaskBase(SQLModel):
+    title: str = Field(min_length=1, max_length=255)
+    book_id: uuid.UUID
+    unit_from: int = Field(ge=1)
+    unit_to: int = Field(ge=1)
+    task_mode: VocabTaskMode = Field(default=VocabTaskMode.spelling, max_length=20)
+    word_count: int = Field(default=20, ge=1, le=200)
+    time_limit_seconds: int | None = Field(default=None, ge=0)
+    coins_reward_rules: dict[str, Any] = Field(default={}, sa_column=Column(JSON))
+    is_active: bool = Field(default=True)
+
+
+class VocabTaskCreate(VocabTaskBase):
+    assigned_to: uuid.UUID | None = None
+
+
+class VocabTaskUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=255)
+    unit_from: int | None = Field(default=None, ge=1)
+    unit_to: int | None = Field(default=None, ge=1)
+    task_mode: VocabTaskMode | None = None
+    word_count: int | None = Field(default=None, ge=1, le=200)
+    time_limit_seconds: int | None = Field(default=None, ge=0)
+    coins_reward_rules: dict[str, Any] | None = None
+    is_active: bool | None = None
+
+
+class VocabTask(VocabTaskBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_by: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    assigned_to: uuid.UUID | None = Field(default=None, foreign_key="user.id", nullable=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    creator: User | None = Relationship(
+        sa_relationship_kwargs={"foreign_keys": "[VocabTask.created_by]"}
+    )
+    assignee: User | None = Relationship(
+        sa_relationship_kwargs={"foreign_keys": "[VocabTask.assigned_to]"}
+    )
+
+
+class VocabTaskPublic(VocabTaskBase):
+    id: uuid.UUID
+    created_by: uuid.UUID
+    assigned_to: uuid.UUID | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class VocabTasksPublic(SQLModel):
+    data: list[VocabTaskPublic]
+    count: int
+
+
+# ─── VocabSession (答题会话) ──────────────────────────────────────
+
+class VocabSession(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    task_id: uuid.UUID = Field(foreign_key="vocabtask.id", nullable=False, ondelete="CASCADE")
+    child_id: uuid.UUID = Field(foreign_key="user.id", nullable=False, ondelete="CASCADE")
+    started_at: datetime = Field(default_factory=datetime.utcnow)
+    finished_at: datetime | None = Field(default=None)
+    correct_count: int = Field(default=0)
+    total_count: int = Field(default=0)
+    accuracy_rate: float = Field(default=0.0)
+    coins_earned: int = Field(default=0)
+    combo_max: int = Field(default=0)
+    status: VocabSessionStatus = Field(default=VocabSessionStatus.in_progress, max_length=20)
+    word_ids: list[str] = Field(default=[], sa_column=Column(JSON))
+    task: VocabTask | None = Relationship()
+    child: User | None = Relationship()
+    answers: list["VocabAnswer"] = Relationship(back_populates="session", cascade_delete=True)
+
+
+class VocabSessionPublic(SQLModel):
+    id: uuid.UUID
+    task_id: uuid.UUID
+    child_id: uuid.UUID
+    started_at: datetime
+    finished_at: datetime | None
+    correct_count: int
+    total_count: int
+    accuracy_rate: float
+    coins_earned: int
+    combo_max: int
+    status: VocabSessionStatus
+
+
+class VocabSessionsPublic(SQLModel):
+    data: list[VocabSessionPublic]
+    count: int
+
+
+# ─── VocabAnswer (答题记录) ───────────────────────────────────────
+
+class VocabAnswer(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    session_id: uuid.UUID = Field(foreign_key="vocabsession.id", nullable=False, ondelete="CASCADE")
+    word_id: uuid.UUID = Field(foreign_key="vocabword.id", nullable=False, ondelete="CASCADE")
+    child_answer: str = Field(max_length=500)
+    is_correct: bool = Field(default=False)
+    time_spent_ms: int = Field(default=0, ge=0)
+    combo_count: int = Field(default=0, ge=0)
+    answered_at: datetime = Field(default_factory=datetime.utcnow)
+    session: VocabSession | None = Relationship(back_populates="answers")
+    word: VocabWord | None = Relationship()
+
+
+class VocabAnswerCreate(SQLModel):
+    word_id: uuid.UUID
+    child_answer: str = Field(max_length=500)
+    time_spent_ms: int = Field(default=0, ge=0)
+
+
+class VocabAnswerPublic(SQLModel):
+    id: uuid.UUID
+    session_id: uuid.UUID
+    word_id: uuid.UUID
+    child_answer: str
+    is_correct: bool
+    time_spent_ms: int
+    combo_count: int
+    answered_at: datetime
+
+
+# ─── VocabReport (答题报告) ───────────────────────────────────────
+
+class VocabReport(SQLModel):
+    session_id: uuid.UUID
+    task_title: str
+    correct_count: int
+    total_count: int
+    accuracy_rate: float
+    combo_max: int
+    coins_earned: int
+    time_spent_seconds: int
+    wrong_words: list[dict[str, Any]]
+    summary: str
