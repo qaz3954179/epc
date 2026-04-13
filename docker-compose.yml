@@ -163,7 +163,7 @@ services:
 
   # ─── Casdoor (OAuth / SSO) ────────────────────────────────────────
   casdoor-db:
-    image: mysql:8.0
+    image: mysql:9.6
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${CASDOOR_DB_PASSWORD:-casdoor_pass}
