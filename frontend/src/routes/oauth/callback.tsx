@@ -3,6 +3,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
 import { exchangeOAuthCode } from "@/lib/casdoor"
+import { exchangeWeChatCode } from "@/lib/wechat"
 
 export const Route = createFileRoute("/oauth/callback")({
   component: OAuthCallback,
@@ -22,14 +23,41 @@ function OAuthCallback() {
       return
     }
 
-    exchangeOAuthCode(code, state || undefined)
-      .then((data) => {
+    // 判断是微信登录还是 Casdoor 登录
+    // 微信回调的 code 通常较长，且 URL 可能包含特定参数
+    // 更可靠的方式：先尝试微信回调，如果失败再尝试 Casdoor
+    const tryWeChat = async () => {
+      try {
+        const data = await exchangeWeChatCode(code, state || undefined)
         localStorage.setItem("access_token", data.access_token)
         navigate({ to: "/" })
-      })
-      .catch((err) => {
-        setError(err.message || "登录失败，请重试")
-      })
+        return true
+      } catch {
+        return false
+      }
+    }
+
+    const tryCasdoor = async () => {
+      try {
+        const data = await exchangeOAuthCode(code, state || undefined)
+        localStorage.setItem("access_token", data.access_token)
+        navigate({ to: "/" })
+        return true
+      } catch {
+        return false
+      }
+    }
+
+    // 先尝试微信，再尝试 Casdoor
+    tryWeChat().then((wechatOk) => {
+      if (!wechatOk) {
+        tryCasdoor().then((casdoorOk) => {
+          if (!casdoorOk) {
+            setError("登录失败，请重试")
+          }
+        })
+      }
+    })
   }, [navigate])
 
   return (

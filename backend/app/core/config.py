@@ -103,6 +103,12 @@ class Settings(BaseSettings):
     CASDOOR_ORG_NAME: str = "built-in"
     CASDOOR_APP_NAME: str = "epc"
 
+    # WeChat OAuth（微信开放平台 / 微信公众平台）
+    WECHAT_APP_ID: str = ""
+    WECHAT_APP_SECRET: str = ""
+    # 登录类型：open（开放平台网站扫码）或 mp（微信公众号/服务号）
+    WECHAT_LOGIN_TYPE: str = "open"
+
     # SDI 权重配置（四项之和应为 1.0）
     SDI_WEIGHT_INITIATIVE: float = 0.4
     SDI_WEIGHT_EXPLORATION: float = 0.2

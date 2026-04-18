@@ -17,6 +17,7 @@ import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 import Logo from "/assets/images/logo.svg"
 import { passwordRules } from "../utils"
 import { getCasdoorConfig, buildCasdoorLoginUrl, type CasdoorConfig } from "@/lib/casdoor"
+import { getWeChatConfig, buildWeChatLoginUrl, type WeChatConfig } from "@/lib/wechat"
 
 export const Route = createFileRoute("/login")({
     component: Login,
@@ -180,19 +181,37 @@ function ChildLoginForm() {
  * 社交登录按钮组
  */
 function SocialLoginButtons() {
-    const [config, setConfig] = useState<CasdoorConfig | null>(null)
+    const [casdoorConfig, setCasdoorConfig] = useState<CasdoorConfig | null>(null)
+    const [wechatConfig, setWechatConfig] = useState<WeChatConfig | null>(null)
 
     useEffect(() => {
-        getCasdoorConfig().then(setConfig).catch(() => {})
+        getCasdoorConfig().then(setCasdoorConfig).catch(() => {})
+        getWeChatConfig().then(setWechatConfig).catch(() => {})
     }, [])
 
     const handleSocialLogin = () => {
-        if (!config) return
+        if (!casdoorConfig) return
         const redirectUri = `${window.location.origin}/oauth/callback`
-        window.location.href = buildCasdoorLoginUrl(config, redirectUri)
+        window.location.href = buildCasdoorLoginUrl(casdoorConfig, redirectUri)
     }
 
-    if (!config || !config.client_id) return null
+    const handleWeChatLogin = async () => {
+        try {
+            const redirectUri = `${window.location.origin}/oauth/callback`
+            const url = await buildWeChatLoginUrl(redirectUri)
+            if (url) {
+                window.location.href = url
+            }
+        } catch (e) {
+            console.error("WeChat login failed:", e)
+        }
+    }
+
+    // 微信登录独立按钮（只要微信配置可用就显示）
+    const showWeChat = wechatConfig?.enabled
+
+    // Casdoor 社交按钮（如果有 Casdoor 配置才显示）
+    if (!casdoorConfig?.client_id && !showWeChat) return null
 
     return (
         <Box w="100%">
@@ -202,42 +221,50 @@ function SocialLoginButtons() {
                 <Separator flex={1} />
             </Flex>
             <Flex justify="center" gap={4} mt={3}>
-                <IconButton
-                    aria-label="微信登录"
-                    variant="outline"
-                    rounded="full"
-                    size="lg"
-                    borderColor="#E5E7EB"
-                    transition="all 0.2s"
-                    _hover={{ borderColor: "#07C160", bg: "rgba(7, 193, 96, 0.05)", transform: "translateY(-2px)" }}
-                    onClick={handleSocialLogin}
-                >
-                    <Text fontSize="20px">💬</Text>
-                </IconButton>
-                <IconButton
-                    aria-label="QQ登录"
-                    variant="outline"
-                    rounded="full"
-                    size="lg"
-                    borderColor="#E5E7EB"
-                    transition="all 0.2s"
-                    _hover={{ borderColor: "#12B7F5", bg: "rgba(18, 183, 245, 0.05)", transform: "translateY(-2px)" }}
-                    onClick={handleSocialLogin}
-                >
-                    <Text fontSize="20px">🐧</Text>
-                </IconButton>
-                <IconButton
-                    aria-label="Google登录"
-                    variant="outline"
-                    rounded="full"
-                    size="lg"
-                    borderColor="#E5E7EB"
-                    transition="all 0.2s"
-                    _hover={{ borderColor: "#4285F4", bg: "rgba(66, 133, 244, 0.05)", transform: "translateY(-2px)" }}
-                    onClick={handleSocialLogin}
-                >
-                    <Text fontSize="20px">🔍</Text>
-                </IconButton>
+                {/* 微信登录按钮 */}
+                {showWeChat && (
+                    <IconButton
+                        aria-label="微信登录"
+                        variant="outline"
+                        rounded="full"
+                        size="lg"
+                        borderColor="#E5E7EB"
+                        transition="all 0.2s"
+                        _hover={{ borderColor: "#07C160", bg: "rgba(7, 193, 96, 0.05)", transform: "translateY(-2px)" }}
+                        onClick={handleWeChatLogin}
+                    >
+                        <Text fontSize="20px">💬</Text>
+                    </IconButton>
+                )}
+                {/* Casdoor 社交按钮 */}
+                {casdoorConfig?.client_id && (
+                    <>
+                        <IconButton
+                            aria-label="QQ登录"
+                            variant="outline"
+                            rounded="full"
+                            size="lg"
+                            borderColor="#E5E7EB"
+                            transition="all 0.2s"
+                            _hover={{ borderColor: "#12B7F5", bg: "rgba(18, 183, 245, 0.05)", transform: "translateY(-2px)" }}
+                            onClick={handleSocialLogin}
+                        >
+                            <Text fontSize="20px">🐧</Text>
+                        </IconButton>
+                        <IconButton
+                            aria-label="Google登录"
+                            variant="outline"
+                            rounded="full"
+                            size="lg"
+                            borderColor="#E5E7EB"
+                            transition="all 0.2s"
+                            _hover={{ borderColor: "#4285F4", bg: "rgba(66, 133, 244, 0.05)", transform: "translateY(-2px)" }}
+                            onClick={handleSocialLogin}
+                        >
+                            <Text fontSize="20px">🔍</Text>
+                        </IconButton>
+                    </>
+                )}
             </Flex>
         </Box>
     )
