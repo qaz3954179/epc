@@ -15,7 +15,7 @@ import { InputGroup } from "@/components/ui/input-group"
 import { PasswordInput } from "@/components/ui/password-input"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 import { confirmPasswordRules, emailPattern, passwordRules } from "@/utils"
-import Logo from "/assets/images/logo.svg"
+import Logo from "/assets/images/erpc.png"
 
 export const Route = createFileRoute("/signup")({
   component: SignUp,
@@ -78,8 +78,9 @@ function SignUp() {
           <Image
             src={Logo}
             alt="Education Rewards Plan of Children"
-            height="auto"
-            maxW="2xs"
+            height="72px"
+            width="72px"
+            objectFit="contain"
             alignSelf="center"
             mb={2}
           />

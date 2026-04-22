@@ -1,6 +1,6 @@
 import { Flex, Image, Text } from "@chakra-ui/react"
 import { Link } from "@tanstack/react-router"
-import Logo from "/assets/images/logo_epc.svg"
+import Logo from "/assets/images/erpc.png"
 import UserMenu from "./UserMenu"
 
 function Navbar() {
@@ -22,7 +22,7 @@ function Navbar() {
     >
       <Link to="/">
         <Flex align="center" gap={2} cursor="pointer">
-          <Image src={Logo} alt="Logo" maxW="40px" />
+          <Image src={Logo} alt="Logo" maxW="36px" maxH="36px" objectFit="contain" />
           <Text fontSize="xl" fontWeight="black"
             bgGradient="to-r" gradientFrom="purple.500" gradientTo="pink.400"
             bgClip="text"

@@ -14,7 +14,7 @@ import { Field } from "@/components/ui/field"
 import { InputGroup } from "@/components/ui/input-group"
 import { toaster } from "@/components/ui/toaster"
 import { isLoggedIn } from "@/hooks/useAuth"
-import Logo from "/assets/images/logo.svg"
+import Logo from "/assets/images/erpc.png"
 
 export const Route = createFileRoute("/verify-email")({
   component: VerifyEmail,
@@ -170,8 +170,9 @@ function VerifyEmail() {
           <Image
             src={Logo}
             alt="Education Rewards Plan of Children"
-            height={"48px"}
-            fit={"contain"}
+            height={"60px"}
+            width={"60px"}
+            objectFit={"contain"}
           />
           <Text textAlign={"center"} color={"#4B5563"} fontSize="lg" fontWeight="medium">
             验证您的邮箱

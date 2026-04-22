@@ -20,7 +20,7 @@ import {
 } from "react-icons/fi"
 
 import { Button } from "@/components/ui/button"
-import Logo from "/assets/images/logo.svg"
+import Logo from "/assets/images/erpc.png"
 
 export const Route = createFileRoute("/landing/parent")({
   component: ParentLanding,
@@ -143,7 +143,9 @@ function ParentLanding() {
           <Image
             src={Logo}
             alt="学习币"
-            h="48px"
+            h="64px"
+            w="64px"
+            objectFit="contain"
             mx="auto"
             mb={6}
           />
