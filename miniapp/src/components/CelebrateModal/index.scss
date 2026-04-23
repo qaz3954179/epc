@@ -1,0 +1,84 @@
+.celebrate-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: celebrate-fade-in 0.2s ease;
+
+  &__content {
+    position: relative;
+    background: $color-bg-white;
+    border-radius: $radius-xl;
+    padding: 40px 48px;
+    text-align: center;
+    animation: celebrate-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  &__emoji {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+    color: $color-text;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  &__coins {
+    font-size: 20px;
+    font-weight: 600;
+    color: $color-primary;
+    display: block;
+  }
+
+  &__particles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+  }
+
+  &__particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: particle-fly 0.8s ease-out forwards;
+
+    @for $i from 0 through 11 {
+      &--#{$i} {
+        $angle: $i * 30deg;
+        $colors: (#f5576c, #667eea, #43e97b, #f093fb, #ff9500, #38f9d7);
+        background: nth($colors, ($i % 6) + 1);
+        transform: rotate($angle) translateY(0);
+        animation-delay: #{$i * 0.03}s;
+      }
+    }
+  }
+}
+
+@keyframes celebrate-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes celebrate-pop {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes particle-fly {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-80px) scale(0); opacity: 0; }
+}

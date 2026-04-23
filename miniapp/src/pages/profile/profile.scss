@@ -1,0 +1,56 @@
+.profile-page {
+  &__menu {
+    margin-top: $spacing-lg;
+  }
+
+  &__referral {
+    @include card;
+    margin-top: $spacing-lg;
+
+    &-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: $spacing-sm;
+    }
+
+    &-stats {
+      display: flex;
+      gap: $spacing-lg;
+      margin-bottom: $spacing-md;
+    }
+
+    &-stat {
+      text-align: center;
+    }
+
+    &-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: $color-primary;
+      display: block;
+    }
+
+    &-label {
+      font-size: 12px;
+      color: $color-text-secondary;
+      display: block;
+      margin-top: 2px;
+    }
+
+    &-code {
+      @include flex-between;
+      background: $color-bg;
+      border-radius: $radius-md;
+      padding: $spacing-sm $spacing-md;
+      font-size: 14px;
+    }
+
+    &-copy {
+      color: $color-primary;
+      font-weight: 600;
+      @include touch-area;
+      @include flex-center;
+    }
+  }
+}

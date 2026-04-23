@@ -1,0 +1,82 @@
+.garden-page {
+  .baby-card {
+    background: $color-bg-white;
+    border-radius: $radius-lg;
+    padding: $spacing-md;
+    margin-bottom: $spacing-lg;
+    box-shadow: $shadow-sm;
+
+    &__header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    &__avatar { font-size: 36px; }
+
+    &__info { flex: 1; }
+
+    &__name {
+      font-size: 18px;
+      font-weight: 700;
+      display: block;
+    }
+
+    &__coins {
+      font-size: 14px;
+      color: $color-primary;
+      margin-top: 2px;
+      display: block;
+    }
+
+    &__stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    &__stat {
+      flex: 1;
+      text-align: center;
+      background: $color-bg;
+      border-radius: $radius-md;
+      padding: 10px;
+    }
+
+    &__stat-value {
+      font-size: 15px;
+      font-weight: 600;
+      display: block;
+    }
+
+    &__stat-label {
+      font-size: 11px;
+      color: $color-text-secondary;
+      margin-top: 2px;
+      display: block;
+    }
+
+    &__detail-link {
+      text-align: right;
+      font-size: 13px;
+      color: $color-primary;
+      min-height: $child-touch-min;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+  }
+
+  .planet-placeholder {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: $radius-lg;
+    padding: 32px;
+    text-align: center;
+
+    &__text {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 15px;
+    }
+  }
+}

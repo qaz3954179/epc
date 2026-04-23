@@ -1,0 +1,39 @@
+// src/styles/variables.scss
+$primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+$reward-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+
+$child-font-size-base: 16px;
+$child-font-size-title: 20px;
+$child-btn-height: 60px;
+$child-touch-min: 44px;
+
+$parent-font-size-base: 14px;
+$parent-font-size-title: 18px;
+
+$color-primary: #667eea;
+$color-primary-dark: #5a6fd6;
+$color-success: #43e97b;
+$color-warning: #f5576c;
+$color-orange: #ff9500;
+$color-text: #333333;
+$color-text-secondary: #888888;
+$color-text-light: #bbbbbb;
+$color-bg: #f5f5f5;
+$color-bg-white: #ffffff;
+$color-border: #e8e8e8;
+
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-xl: 20px;
+
+$spacing-xs: 8px;
+$spacing-sm: 12px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+$shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);

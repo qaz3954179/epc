@@ -1,0 +1,58 @@
+.baby-selector {
+  position: relative;
+  margin-bottom: $spacing-md;
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: $color-bg-white;
+    border-radius: $radius-md;
+    box-shadow: $shadow-sm;
+    min-height: $child-touch-min;
+  }
+
+  &__avatar { font-size: 24px; }
+  &__name {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  &__arrow {
+    font-size: 12px;
+    color: $color-text-secondary;
+    transition: transform 0.2s;
+    &--open { transform: rotate(180deg); }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: $color-bg-white;
+    border-radius: $radius-md;
+    box-shadow: $shadow-md;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    min-height: $child-touch-min;
+
+    &--active { background: rgba(102, 126, 234, 0.08); }
+    &:active { background: rgba(0, 0, 0, 0.04); }
+  }
+
+  &__option-avatar { font-size: 20px; }
+  &__option-name { flex: 1; font-size: 15px; }
+  &__check { color: $color-primary; font-weight: 600; }
+}

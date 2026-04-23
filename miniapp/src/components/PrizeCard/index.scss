@@ -1,0 +1,82 @@
+.prize-card {
+  background: $color-bg-white;
+  border-radius: $radius-md;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+
+  &--disabled { opacity: 0.5; }
+
+  &__img-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    background: $color-bg;
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
+
+  &__sold-out {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 8px;
+  }
+
+  &__name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 10px 4px;
+    min-height: 40px;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 10px 10px;
+  }
+
+  &__price {
+    font-size: 14px;
+    font-weight: 600;
+    color: $color-primary;
+  }
+
+  &__btn {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: $color-border;
+    color: $color-text-secondary;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+
+    &--active {
+      background: $primary-gradient;
+      color: #fff;
+    }
+    &:active { opacity: 0.85; }
+  }
+}

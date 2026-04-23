@@ -1,0 +1,111 @@
+.achievements-page {
+  min-height: 100vh;
+  padding: 16px;
+  padding-bottom: 40px;
+
+  &__header {
+    margin-bottom: 16px;
+  }
+
+  &__progress {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 24px 20px;
+    gap: 20px;
+  }
+
+  &__progress-ring {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+
+  &__progress-fill {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  &__progress-inner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__progress-number {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+  }
+
+  &__progress-label {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  &__header-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  &__header-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  // 筛选栏
+  &__filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  &__filter-pill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: $color-bg-white;
+    font-size: 13px;
+    color: $color-text-secondary;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &.active {
+      background: $primary-gradient;
+      color: #ffffff;
+    }
+
+    &:active {
+      opacity: 0.85;
+    }
+  }
+
+  // 成就网格
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}

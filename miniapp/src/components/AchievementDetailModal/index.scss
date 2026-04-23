@@ -1,0 +1,167 @@
+.achievement-detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: detail-fade-in 0.3s ease;
+
+  &__content {
+    position: relative;
+    background: $color-bg-white;
+    border-radius: 24px;
+    padding: 40px 32px 32px;
+    text-align: center;
+    width: 80%;
+    max-width: 320px;
+    animation: detail-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+  }
+
+  &__particles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  &__particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: particle-burst 1s ease-out forwards;
+
+    @for $i from 0 through 15 {
+      &--#{$i} {
+        $angle: $i * 22.5deg;
+        $colors: (#f5576c, #667eea, #43e97b, #f093fb, #ff9500, #38f9d7, #764ba2, #ffd700);
+        background: nth($colors, ($i % 8) + 1);
+        animation-delay: #{$i * 0.02}s;
+      }
+    }
+  }
+
+  &__emoji {
+    font-size: 72px;
+    display: block;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__name {
+    font-size: 22px;
+    font-weight: 700;
+    color: $color-text;
+    display: block;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__desc {
+    font-size: 14px;
+    color: $color-text-secondary;
+    line-height: 1.6;
+    display: block;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__message {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__message-label {
+    display: block;
+    font-size: 12px;
+    color: $color-primary;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  &__message-text {
+    font-size: 14px;
+    color: $color-text;
+    line-height: 1.5;
+    display: block;
+  }
+
+  &__time {
+    font-size: 12px;
+    color: $color-text-secondary;
+    display: block;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__category-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: $primary-gradient;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__close {
+    width: 100%;
+    padding: 14px 0;
+    border-radius: 12px;
+    background: $primary-gradient;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+
+    &:active {
+      opacity: 0.85;
+    }
+  }
+}
+
+@keyframes detail-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes detail-pop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes particle-burst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(
+      calc(cos(22.5deg * var(--i, 0)) * 100px),
+      calc(sin(22.5deg * var(--i, 0)) * 100px)
+    ) scale(0);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,55 @@
+.heatmap {
+  background: $color-bg-white;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  box-shadow: $shadow-sm;
+
+  &__weekdays {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 4px;
+    padding-left: 0;
+  }
+
+  &__weekday {
+    width: 14px;
+    height: 14px;
+    font-size: 10px;
+    color: $color-text-secondary;
+    text-align: center;
+    line-height: 14px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 14px);
+    gap: 3px;
+  }
+
+  &__cell {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    &:active { opacity: 0.7; }
+  }
+
+  &__legend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    justify-content: flex-end;
+  }
+
+  &__legend-text {
+    font-size: 10px;
+    color: $color-text-secondary;
+  }
+
+  &__legend-cell {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+  }
+}

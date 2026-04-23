@@ -1,0 +1,62 @@
+.exam-booking-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $color-bg-white;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  margin-bottom: $spacing-sm;
+  box-shadow: $shadow-sm;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__emoji { font-size: 28px; }
+
+  &__info { flex: 1; min-width: 0; }
+
+  &__title {
+    font-size: 15px;
+    font-weight: 600;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__time {
+    font-size: 12px;
+    color: $color-text-secondary;
+    margin-top: 2px;
+    display: block;
+  }
+
+  &__right { flex-shrink: 0; margin-left: 12px; }
+
+  &__btn {
+    background: $primary-gradient;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: $radius-md;
+    min-height: $child-touch-min;
+    display: flex;
+    align-items: center;
+    &:active { opacity: 0.85; }
+  }
+
+  &__tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 10px;
+
+    &--done { background: rgba(67, 233, 123, 0.15); color: #2d9e5b; }
+    &--wait { background: rgba(102, 126, 234, 0.1); color: $color-primary; }
+  }
+}

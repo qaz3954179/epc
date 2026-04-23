@@ -1,0 +1,94 @@
+.data-page {
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-xs;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__heatmap-card {
+    @include card;
+    padding: $spacing-md;
+  }
+
+  &__completions {
+    @include card;
+  }
+
+  &__coin-logs {
+    @include card;
+  }
+}
+
+.completion-item {
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm 0;
+  border-bottom: 1px solid $color-border;
+
+  &:last-child { border-bottom: none; }
+
+  &__time {
+    font-size: 13px;
+    color: $color-text-secondary;
+    width: 50px;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    margin: 0 $spacing-sm;
+  }
+
+  &__title {
+    font-size: 14px;
+    display: block;
+    @include text-ellipsis;
+  }
+
+  &__rating {
+    font-size: 12px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  &__coins {
+    font-size: 13px;
+    color: $color-success;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+}
+
+.coin-log-item {
+  @include flex-between;
+  padding: $spacing-sm 0;
+  border-bottom: 1px solid $color-border;
+
+  &:last-child { border-bottom: none; }
+
+  &__info { flex: 1; }
+
+  &__desc {
+    font-size: 14px;
+    display: block;
+    @include text-ellipsis;
+  }
+
+  &__time {
+    font-size: 12px;
+    color: $color-text-secondary;
+    display: block;
+    margin-top: 2px;
+  }
+
+  &__amount {
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-left: $spacing-sm;
+
+    &--earn { color: #43e97b; }
+    &--spend { color: $color-warning; }
+  }
+}

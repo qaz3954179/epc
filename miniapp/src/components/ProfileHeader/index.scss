@@ -1,0 +1,50 @@
+.profile-header {
+  border-radius: $radius-xl;
+  padding: $spacing-lg;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: $spacing-lg;
+  color: #fff;
+
+  &--parent {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  &--child {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+
+  &__avatar-wrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__avatar { font-size: 28px; }
+
+  &__info { flex: 1; }
+
+  &__name {
+    font-size: 18px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  &__stats {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__stat {
+    font-size: 13px;
+    opacity: 0.9;
+  }
+}

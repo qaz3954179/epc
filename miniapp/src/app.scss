@@ -1,0 +1,51 @@
+@use './styles/variables.scss' as *;
+@use './styles/mixins.scss' as *;
+
+page {
+  background-color: $color-bg;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+  font-size: $parent-font-size-base;
+  color: $color-text;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+.page-container {
+  min-height: 100vh;
+  padding: $spacing-md;
+  padding-bottom: calc(#{$spacing-xl} + env(safe-area-inset-bottom));
+}
+
+.section {
+  margin-bottom: $spacing-lg;
+
+  &__title {
+    font-size: $parent-font-size-title;
+    font-weight: 600;
+    margin-bottom: $spacing-sm;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+  }
+
+  &__badge {
+    background: $color-warning;
+    color: #fff;
+    font-size: 12px;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    @include flex-center;
+    padding: 0 6px;
+  }
+}
+
+.divider {
+  height: 1px;
+  background: $color-border;
+  margin: $spacing-md 0;
+}
