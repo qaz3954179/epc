@@ -11,6 +11,7 @@ from app.api.routes import (
     login,
     oauth,
     parent,
+    planets,
     private,
     prize_redemptions,
     prizes,
@@ -44,6 +45,7 @@ api_router.include_router(exams.router)
 api_router.include_router(coding.router)
 api_router.include_router(achievements.router)
 api_router.include_router(sdi.router)
+api_router.include_router(planets.router)
 
 
 if settings.ENVIRONMENT == "local":

@@ -1,0 +1,203 @@
+@import '../../../styles/variables.scss';
+
+.planet-manage-page {
+  min-height: 100vh;
+  background: $color-bg;
+  padding: $spacing-md;
+}
+
+.planet-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.planet-card {
+  background: $color-bg-white;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  box-shadow: $shadow-sm;
+
+  &__top {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__visual {
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    display: block;
+    font-size: $parent-font-size-title;
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  &__wish {
+    display: block;
+    font-size: 13px;
+    color: $color-text-secondary;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__stats {
+    display: flex;
+    gap: $spacing-sm;
+    margin-top: $spacing-xs;
+  }
+
+  &__stat {
+    font-size: 12px;
+    color: $color-text-light;
+  }
+
+  &__actions {
+    margin-top: $spacing-sm;
+    padding-top: $spacing-sm;
+    border-top: 1px solid $color-border;
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    border-radius: $radius-md;
+    background: rgba(102, 126, 234, 0.08);
+    font-size: $parent-font-size-base;
+    color: $color-primary;
+    font-weight: 500;
+
+    &:active { opacity: 0.7; }
+  }
+}
+
+// Modal
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-content {
+  width: 100%;
+  background: $color-bg-white;
+  border-radius: $radius-xl $radius-xl 0 0;
+  padding: $spacing-lg;
+  padding-bottom: 40px;
+  max-height: 80vh;
+  overflow-y: auto;
+
+  &__title {
+    display: block;
+    font-size: $parent-font-size-title;
+    font-weight: 600;
+    color: $color-text;
+    text-align: center;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+    margin-top: $spacing-lg;
+  }
+
+  &__btn {
+    flex: 1;
+    height: 44px;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $parent-font-size-base;
+    font-weight: 500;
+
+    &--cancel {
+      background: $color-bg;
+      color: $color-text-secondary;
+    }
+
+    &--confirm {
+      background: $primary-gradient;
+      color: #fff;
+    }
+
+    &--disabled { opacity: 0.5; }
+
+    &:active { opacity: 0.8; }
+  }
+}
+
+.form-group {
+  margin-bottom: $spacing-md;
+
+  &__label {
+    display: block;
+    font-size: 13px;
+    color: $color-text-secondary;
+    margin-bottom: 6px;
+  }
+
+  &__input {
+    width: 100%;
+    height: 44px;
+    background: $color-bg;
+    border-radius: $radius-md;
+    padding: 0 $spacing-sm;
+    font-size: $parent-font-size-base;
+    color: $color-text;
+  }
+
+  &__textarea {
+    width: 100%;
+    min-height: 80px;
+    background: $color-bg;
+    border-radius: $radius-md;
+    padding: $spacing-sm;
+    font-size: $parent-font-size-base;
+    color: $color-text;
+    line-height: 1.5;
+  }
+}
+
+.difficulty-picker {
+  display: flex;
+  gap: $spacing-xs;
+
+  &__item {
+    flex: 1;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-md;
+    background: $color-bg;
+    font-size: 13px;
+    color: $color-text-secondary;
+    border: 1px solid transparent;
+
+    &--active {
+      background: rgba(102, 126, 234, 0.1);
+      color: $color-primary;
+      border-color: $color-primary;
+    }
+  }
+}

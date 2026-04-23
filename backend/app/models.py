@@ -1360,3 +1360,262 @@ class VocabReport(SQLModel):
     time_spent_seconds: int
     wrong_words: list[dict[str, Any]]
     summary: str
+
+
+# ─── Wish Planet System models ─────────────────────────────────────
+
+class WishStatus(str, Enum):
+    """愿望状态"""
+    pending = "pending"        # 待审核
+    approved = "approved"      # 已通过
+    deferred = "deferred"      # 暂缓
+    rejected = "rejected"      # 已拒绝
+
+
+class PlanetStage(str, Enum):
+    """星球阶段"""
+    seed = "seed"              # 种子期（刚许愿）
+    sprout = "sprout"          # 萌芽期（家长通过）
+    growing = "growing"        # 成长期（完成部分里程碑）
+    thriving = "thriving"      # 繁荣期（完成大部分里程碑）
+    born = "born"              # 诞生（所有里程碑完成）
+    dimming = "dimming"        # 变暗（长期不活跃）
+
+
+class MilestoneType(str, Enum):
+    """里程碑类型"""
+    card_read = "card_read"          # 阅读知识卡片
+    task_streak = "task_streak"      # 习惯连续打卡
+    coins_saved = "coins_saved"      # 攒币目标
+    exam_passed = "exam_passed"      # 通过考试
+    custom = "custom"                # 自定义
+
+
+class CardDifficulty(str, Enum):
+    """知识卡片难度"""
+    easy = "easy"
+    medium = "medium"
+    hard = "hard"
+
+
+# ─── Wish（愿望）─────────────────────────────────────────────────
+
+class WishBase(SQLModel):
+    content: str = Field(min_length=1, max_length=500)
+    category: str | None = Field(default=None, max_length=50)
+    emoji: str | None = Field(default=None, max_length=10)
+
+
+class WishCreate(WishBase):
+    pass
+
+
+class WishUpdate(SQLModel):
+    content: str | None = Field(default=None, min_length=1, max_length=500)
+    category: str | None = Field(default=None, max_length=50)
+    emoji: str | None = Field(default=None, max_length=10)
+
+
+class WishReview(SQLModel):
+    """家长审核愿望"""
+    status: WishStatus
+    parent_response: str | None = Field(default=None, max_length=1000)
+
+
+class Wish(WishBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    child_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
+    status: WishStatus = Field(default=WishStatus.pending, max_length=20)
+    parent_response: str | None = Field(default=None, max_length=1000)
+    responded_at: datetime | None = Field(default=None)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    child: User | None = Relationship()
+    planet: Optional["WishPlanet"] = Relationship(
+        back_populates="wish", cascade_delete=True
+    )
+
+
+class WishPublic(WishBase):
+    id: uuid.UUID
+    child_id: uuid.UUID
+    status: WishStatus
+    parent_response: str | None = None
+    responded_at: datetime | None = None
+    created_at: datetime
+
+
+class WishesPublic(SQLModel):
+    data: list[WishPublic]
+    count: int
+
+
+# ─── WishPlanet（星球）───────────────────────────────────────────
+
+class WishPlanetBase(SQLModel):
+    name: str = Field(min_length=1, max_length=100)
+    color: str = Field(default="#667eea", max_length=20)
+    emoji: str = Field(default="🪐", max_length=10)
+
+
+class WishPlanetCreate(WishPlanetBase):
+    pass
+
+
+class WishPlanetUpdate(SQLModel):
+    name: str | None = Field(default=None, min_length=1, max_length=100)
+    color: str | None = Field(default=None, max_length=20)
+    emoji: str | None = Field(default=None, max_length=10)
+
+
+class WishPlanet(WishPlanetBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    wish_id: uuid.UUID = Field(
+        foreign_key="wish.id", nullable=False, ondelete="CASCADE", unique=True
+    )
+    child_id: uuid.UUID = Field(
+        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+    )
+    stage: PlanetStage = Field(default=PlanetStage.seed, max_length=20)
+    brightness: int = Field(default=50, ge=0, le=100)
+    total_milestones: int = Field(default=5)
+    completed_milestones: int = Field(default=0)
+    is_active: bool = Field(default=True)
+    born_at: datetime | None = Field(default=None)
+    last_activity_at: datetime | None = Field(default=None)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    wish: Wish | None = Relationship(back_populates="planet")
+    child: User | None = Relationship()
+    milestones: list["PlanetMilestone"] = Relationship(
+        back_populates="planet", cascade_delete=True
+    )
+    cards: list["KnowledgeCard"] = Relationship(
+        back_populates="planet", cascade_delete=True
+    )
+
+
+class WishPlanetPublic(WishPlanetBase):
+    id: uuid.UUID
+    wish_id: uuid.UUID
+    child_id: uuid.UUID
+    stage: PlanetStage
+    brightness: int
+    total_milestones: int
+    completed_milestones: int
+    is_active: bool
+    born_at: datetime | None = None
+    last_activity_at: datetime | None = None
+    created_at: datetime
+
+
+class WishPlanetsPublic(SQLModel):
+    data: list[WishPlanetPublic]
+    count: int
+
+
+# ─── PlanetMilestone（里程碑）────────────────────────────────────
+
+class PlanetMilestoneBase(SQLModel):
+    title: str = Field(min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=500)
+    milestone_type: MilestoneType = Field(max_length=20)
+    target_value: int = Field(default=1, ge=1)
+    sort_order: int = Field(default=0)
+
+
+class PlanetMilestoneCreate(PlanetMilestoneBase):
+    pass
+
+
+class PlanetMilestoneUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=500)
+    target_value: int | None = Field(default=None, ge=1)
+    sort_order: int | None = None
+
+
+class MilestoneProgressUpdate(SQLModel):
+    """更新里程碑进度"""
+    increment: int = Field(default=1, ge=1)
+
+
+class PlanetMilestone(PlanetMilestoneBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    planet_id: uuid.UUID = Field(
+        foreign_key="wishplanet.id", nullable=False, ondelete="CASCADE"
+    )
+    current_value: int = Field(default=0, ge=0)
+    is_completed: bool = Field(default=False)
+    completed_at: datetime | None = Field(default=None)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    planet: WishPlanet | None = Relationship(back_populates="milestones")
+
+
+class PlanetMilestonePublic(PlanetMilestoneBase):
+    id: uuid.UUID
+    planet_id: uuid.UUID
+    current_value: int
+    is_completed: bool
+    completed_at: datetime | None = None
+    created_at: datetime
+
+
+class PlanetMilestonesPublic(SQLModel):
+    data: list[PlanetMilestonePublic]
+    count: int
+
+
+# ─── KnowledgeCard（知识卡片）────────────────────────────────────
+
+class KnowledgeCardBase(SQLModel):
+    title: str = Field(min_length=1, max_length=255)
+    content: str = Field(min_length=1, max_length=5000)
+    fun_fact: str | None = Field(default=None, max_length=1000)
+    difficulty: CardDifficulty = Field(default=CardDifficulty.easy, max_length=20)
+    sort_order: int = Field(default=0)
+
+
+class KnowledgeCardCreate(KnowledgeCardBase):
+    pass
+
+
+class KnowledgeCardUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=255)
+    content: str | None = Field(default=None, min_length=1, max_length=5000)
+    fun_fact: str | None = Field(default=None, max_length=1000)
+    difficulty: CardDifficulty | None = None
+    sort_order: int | None = None
+
+
+class KnowledgeCard(KnowledgeCardBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    planet_id: uuid.UUID = Field(
+        foreign_key="wishplanet.id", nullable=False, ondelete="CASCADE"
+    )
+    is_read: bool = Field(default=False)
+    read_at: datetime | None = Field(default=None)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    planet: WishPlanet | None = Relationship(back_populates="cards")
+
+
+class KnowledgeCardPublic(KnowledgeCardBase):
+    id: uuid.UUID
+    planet_id: uuid.UUID
+    is_read: bool
+    read_at: datetime | None = None
+    created_at: datetime
+
+
+class KnowledgeCardsPublic(SQLModel):
+    data: list[KnowledgeCardPublic]
+    count: int
+
+
+# ─── Wish Planet Detail (星球详情，含里程碑和卡片) ─────────────────
+
+class WishPlanetDetail(WishPlanetPublic):
+    """星球详情，包含里程碑和知识卡片"""
+    wish: WishPublic | None = None
+    milestones: list[PlanetMilestonePublic] = []
+    cards: list[KnowledgeCardPublic] = []

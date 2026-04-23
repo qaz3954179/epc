@@ -223,11 +223,82 @@ export interface ReferralStats {
   referral_link: string;
 }
 
-// ============ Planets (Phase 1 placeholder) ============
-export interface PlanetPublic {
+// ============ Wish Planet System ============
+export type WishStatus = 'pending' | 'approved' | 'deferred' | 'rejected';
+export type PlanetStage = 'seed' | 'sprout' | 'growing' | 'thriving' | 'born' | 'dimming';
+export type MilestoneType = 'card_read' | 'task_streak' | 'coins_saved' | 'exam_passed' | 'custom';
+export type CardDifficulty = 'easy' | 'medium' | 'hard';
+
+export interface WishPublicV2 {
+  id: string;
+  child_id: string;
+  content: string;
+  category: string | null;
+  emoji: string | null;
+  status: WishStatus;
+  parent_response: string | null;
+  responded_at: string | null;
+  created_at: string;
+  planet: PlanetBrief | null;
+}
+
+export interface PlanetBrief {
   id: string;
   name: string;
+  stage: PlanetStage;
+  brightness: number;
+}
+
+export interface WishPublicNested {
+  id: string;
+  content: string;
+  category: string | null;
+  emoji: string | null;
+  status: WishStatus;
+  parent_response: string | null;
+}
+
+export interface PlanetDetail {
+  id: string;
   wish_id: string;
-  growth_stage: number;
+  child_id: string;
+  name: string;
+  color: string;
+  emoji: string;
+  stage: PlanetStage;
+  brightness: number;
+  total_milestones: number;
+  completed_milestones: number;
+  is_active: boolean;
+  born_at: string | null;
+  last_activity_at: string | null;
   created_at: string;
+  wish: WishPublicNested | null;
+  milestones: MilestonePublic[];
+  cards: KnowledgeCardPublic[];
+}
+
+export interface MilestonePublic {
+  id: string;
+  planet_id: string;
+  title: string;
+  description: string | null;
+  milestone_type: MilestoneType;
+  target_value: number;
+  current_value: number;
+  is_completed: boolean;
+  completed_at: string | null;
+  sort_order: number;
+}
+
+export interface KnowledgeCardPublic {
+  id: string;
+  planet_id: string;
+  title: string;
+  content: string;
+  fun_fact: string | null;
+  difficulty: CardDifficulty;
+  is_read: boolean;
+  read_at: string | null;
+  sort_order: number;
 }

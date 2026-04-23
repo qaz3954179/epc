@@ -14,6 +14,9 @@ export default defineAppConfig({
       root: 'subpackages/child',
       pages: [
         'achievements/achievements',
+        'wish/wish',
+        'planet-detail/planet-detail',
+        'card-reader/card-reader',
       ],
     },
     {
@@ -23,6 +26,7 @@ export default defineAppConfig({
         'wish-review/wish-review',
         'exam-schedule/exam-schedule',
         'task-manage/task-manage',
+        'planet-manage/planet-manage',
       ],
     },
   ],

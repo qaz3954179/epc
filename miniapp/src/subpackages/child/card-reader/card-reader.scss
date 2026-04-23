@@ -1,0 +1,104 @@
+@import '../../../styles/variables.scss';
+
+.card-reader-page {
+  min-height: 100vh;
+  background: $color-bg;
+  padding: $spacing-lg;
+  padding-bottom: 120px;
+}
+
+.card-reader-empty {
+  text-align: center;
+  padding: $spacing-xl;
+  font-size: 16px;
+  color: $color-text-secondary;
+}
+
+.card-reader {
+  &__header {
+    text-align: center;
+    padding: $spacing-lg 0;
+  }
+
+  &__title {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__difficulty {
+    display: block;
+    margin-top: $spacing-xs;
+    font-size: 16px;
+  }
+
+  &__body {
+    background: $color-bg-white;
+    border-radius: $radius-xl;
+    padding: $spacing-lg;
+    box-shadow: $shadow-md;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__content {
+    font-size: 18px;
+    line-height: 1.8;
+    color: $color-text;
+    display: block;
+  }
+
+  &__funfact {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+    border-radius: $radius-lg;
+    padding: $spacing-md;
+    border-left: 4px solid $color-orange;
+  }
+
+  &__funfact-label {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: $color-orange;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__funfact-text {
+    display: block;
+    font-size: 15px;
+    line-height: 1.6;
+    color: $color-text;
+  }
+
+  &__bottom {
+    position: fixed;
+    bottom: 32px;
+    left: $spacing-lg;
+    right: $spacing-lg;
+  }
+
+  &__btn {
+    height: $child-btn-height;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+
+    &--primary {
+      background: $primary-gradient;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+
+      &:active { transform: scale(0.97); }
+    }
+
+    &--done {
+      background: $color-success;
+      opacity: 0.7;
+    }
+
+    &--disabled { opacity: 0.5; }
+  }
+}
