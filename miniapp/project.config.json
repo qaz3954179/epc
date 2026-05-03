@@ -2,14 +2,16 @@
   "miniprogramRoot": "dist/weapp/",
   "projectname": "epc-miniapp",
   "description": "EPC 教育平台小程序",
-  "appid": "wx0000000000000000",
+  "appid": "wx9ddc4fbca6645fd7",
   "setting": {
     "urlCheck": true,
     "es6": false,
     "enhance": false,
     "compileHotReLoad": false,
     "postcss": false,
-    "minified": false
+    "minified": false,
+    "swc": false,
+    "disableSWC": true
   },
   "compileType": "miniprogram"
 }

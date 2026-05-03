@@ -24,7 +24,6 @@ const items: MenuItem[] = [
   { title: "成长记录", path: "/growth",   emoji: "📈",  roles: ["child"] },
   { title: "我的成就", path: "/achievements", emoji: "🏆", roles: ["child"] },
   // 家长专属
-  { title: "学习币",       path: "/",               emoji: "🪙",  roles: ["parent"] },
   { title: "监控面板",     path: "/parent/monitor",  emoji: "📊",  roles: ["parent"] },
   { title: "我的宝贝",     path: "/children",        emoji: "👶",  roles: ["parent"] },
   { title: "任务管理",     path: "/tasks",           emoji: "📋",  roles: ["parent"] },

@@ -9,7 +9,7 @@
 set -e
 
 DEPLOY_DIR="/opt/epc"
-REPO_URL="git@github.com:YOUR_USERNAME/epc.git"  # 替换为你的仓库地址
+REPO_URL="git@github.com:qaz3954179/epc.git"  # 替换为你的仓库地址
 BRANCH="main"
 
 # ─── 参数解析 ───────────────────────────────
